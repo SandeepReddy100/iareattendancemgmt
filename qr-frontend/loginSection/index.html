@@ -394,7 +394,7 @@
             localStorage.setItem("rollno", data.student.rollno);
             localStorage.setItem("profileData", JSON.stringify(data.student));
             setTimeout(() => {
-              window.location.href = "../Dashboard/index.html";
+              window.location.href = "/qr-frontend/Dashboard/index.html";
             }, 1500);
           } else if (role === "faculty") {
             localStorage.setItem("facultyEmail", email);
