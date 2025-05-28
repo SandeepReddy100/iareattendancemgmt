@@ -3,7 +3,7 @@ const profileBtn = document.querySelector("#profile-btn");
 const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
-
+const backendUrl = "https://iareattendancemgmt.onrender.com";
 profileBtn.onclick = function () {
   sideMenu.classList.toggle('active');
 }
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function downloadAttendance() {
   // Optional: allow user to choose a date
   const date = new Date().toISOString().slice(0, 10); // today by default
-  const url = `http://localhost:5000/api/admin/attendance/report`;
+  const url = `${backendUrl}/api/admin/attendance/report`;
 
   fetch(url)
     .then(response => {

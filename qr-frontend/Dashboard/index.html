@@ -115,8 +115,11 @@
     <script src="app.js"></script>
     <script src="timeTable.js"></script>
     <script>
+      // const backendUrl = "https://iareattendancemgmt.onrender.com";
       function updateProfileUI(student) {
         console.log("Updating profile UI with student:", student);
+        console.log("profileName:", document.getElementById("profileName"));
+        console.log("profileRollNo:", document.getElementById("profileRollNo"));
 
         document.getElementById("profileName").textContent =
           student.name || "N/A";
@@ -167,7 +170,7 @@
             localStorage.removeItem("profileDataTimestamp");
           }
         }
-        fetch(`http://localhost:5000/api/student/${encodeURIComponent(rollno)}`)
+        fetch(`${backendUrl}/api/student/${encodeURIComponent(rollno)}`)
           .then((res) => {
             if (!res.ok) throw new Error("Failed to fetch profile");
             return res.json();

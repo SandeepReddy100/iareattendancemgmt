@@ -3,6 +3,7 @@ const messageBox = document.getElementById("messageBox");
 const signInBtn = document.getElementById("loginBtn");
 const btnText = document.getElementById("btnText");
 const loader = document.getElementById("loader");
+const backendUrl = "https://iareattendancemgmt.onrender.com";
 
 // Handle background color switching for selected radio label
 const labels = document.querySelectorAll(".role-option");
@@ -50,7 +51,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const endpoint = `http://localhost:5000/api/${role}/login`;
+  const endpoint = `${backendUrl}/api/${role}/login`;
 
   btnText.textContent = "Signing in...";
   loader.classList.remove("hidden");

@@ -3,7 +3,7 @@ const profileBtn = document.querySelector("#profile-btn");
 const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
-
+const backendUrl = "https://iareattendancemgmt.onrender.com";
 profileBtn.onclick = function() {
     sideMenu.classList.toggle('active');
 }
@@ -88,25 +88,25 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Send data to backend
-    fetch("/submit-courses", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then(response => {
-        if (!response.ok) throw new Error("Network response failed");
-        return response.json();
-      })
-      .then(result => {
-        alert("Courses submitted successfully!");
-        startQRScanner();
-      })
-      .catch(error => {
-        console.error("Error submitting courses:", error);
-        alert("Failed to submit courses");
-      });
+  //   fetch("/submit-courses", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify(data)
+  //   })
+  //     .then(response => {
+  //       if (!response.ok) throw new Error("Network response failed");
+  //       return response.json();
+  //     })
+  //     .then(result => {
+  //       alert("Courses submitted successfully!");
+  //       startQRScanner();
+  //     })
+  //     .catch(error => {
+  //       console.error("Error submitting courses:", error);
+  //       alert("Failed to submit courses");
+  //     });
   });
 });
 
@@ -131,6 +131,9 @@ function startQRScanner() {
     }
   ).catch(err => {
     console.error("Failed to start scanner", err);
+
+
+    
   });
 }
 

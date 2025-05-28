@@ -320,7 +320,7 @@
     const signInBtn = document.getElementById("loginBtn");
     const btnText = document.getElementById("btnText");
     const loader = document.getElementById("loader");
-
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
     // JS to handle bg color switching for selected radio label
     const labels = document.querySelectorAll("#roleSelector label");
 
@@ -370,7 +370,7 @@
         return;
       }
 
-      const endpoint = `http://localhost:5000/api/${role}/login`;
+      const endpoint = `${backendUrl}/api/${role}/login`;
 
       btnText.textContent = "Signing in...";
       loader.classList.add("visible");

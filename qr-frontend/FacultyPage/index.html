@@ -166,6 +166,7 @@
     <script src="timeTable.js"></script>
     <script src="app.js"></script>
     <script>
+        // const backendUrl = "https://iareattendancemgmt.onrender.com";
         function updateFacultyUI(faculty) {
             console.log("Updating faculty UI with:", faculty);
 
@@ -202,7 +203,7 @@
                 }
             }
 
-            fetch(`http://localhost:5000/api/faculty/${encodeURIComponent(facultyEmail)}`)
+            fetch(`${backendUrl}/api/faculty/${encodeURIComponent(facultyEmail)}`)
                 .then((res) => {
                     if (!res.ok) throw new Error("Failed to fetch faculty profile");
                     return res.json();

@@ -160,7 +160,7 @@
     const scannedQRCodes = new Set();
     const scannedStudents = [];
     const html5QrCode = new Html5Qrcode("reader");
-
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
     window.onload = function () {
       const courses = JSON.parse(localStorage.getItem('selectedCourses'));
       if (courses) {
@@ -236,7 +236,7 @@
         presentArrays: scannedStudents
       };
 
-      fetch("http://localhost:5000/api/faculty/mark-all", {
+      fetch(`${backendUrl}/api/faculty/mark-all`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
