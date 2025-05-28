@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    :root {
+      --color-primary: #00796B;
+      --color-danger: #ff7782;
+      --color-success: #41f1b6;
+      --color-warning: #ffbb55;
+      --color-white: #fff;
+      --color-info: #7d8da1;
+      --color-dark: #2c3e50;
+      --color-light: rgba(132, 139, 200, 0.08);
+      --color-dark-variant: #677483;
+      --color-background: #f6f6f9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--color-background);
+      color: var(--color-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: var(--color-primary);
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--color-white);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .card {
+      background-color: var(--color-light);
+      border-left: 4px solid var(--color-primary);
+      padding: 12px 16px;
+      border-radius: 10px;
+    }
+
+    .card h3 {
+      color: var(--color-primary);
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .card ul {
+      padding-left: 18px;
+    }
+
+    .card li {
+      font-weight: bold;
+      color: var(--color-dark-variant);
+      margin-bottom: 4px;
+    }
+
+    #reader {
+      width: 300px;
+      max-width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      align-self: center;
+    }
+
+    #result {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-primary);
+      background-color: var(--color-light);
+      padding: 10px 14px;
+      border: 1px solid var(--color-success);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    #result.already-scanned {
+      color: var(--color-danger);
+      border-color: var(--color-danger);
+    }
+
+    #homeBtn {
+      align-self: center;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-white);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-dark-variant));
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #homeBtn:hover {
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 10px;
+      color: var(--color-info);
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 12px;
+      }
+
+      #reader {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>QR Code Scanner</h1>
+  <div class="container">
+    <div class="card" id="selectedCourses"></div>
+    <div id="reader"></div>
+    <div id="result">Waiting for QR scan...</div>
+    <button id="homeBtn">Finish</button>
+  </div>
+
+  <footer>© 2025 • Camera permission required</footer>
+
+  <script>
+    const resultContainer = document.getElementById("result");
+    const selectedCoursesDiv = document.getElementById("selectedCourses");
+    const scannedQRCodes = new Set();
+    const scannedStudents = [];
+    const html5QrCode = new Html5Qrcode("reader");
+
+    window.onload = function () {
+      const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      if (courses) {
+        selectedCoursesDiv.innerHTML = `
+          <h3>Selected Courses</h3>
+          <ul>
+            <li>1st Period: ${courses.period1}</li>
+            <li>2nd Period: ${courses.period2}</li>
+            <li>3rd Period: ${courses.period3}</li>
+          </ul>
+        `;
+      } else {
+        selectedCoursesDiv.innerHTML = `<p style="color: var(--color-danger); font-weight: bold;">No courses selected!</p>`;
+      }
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 350, height: 650 } },
+        onScanSuccess,
+        onScanFailure
+      ).catch(err => {
+        console.error("Camera start error:", err);
+      });
+    };
+
+    function onScanSuccess(decodedText, decodedResult) {
+      const lines = decodedText.split('\n');
+      const rollLine = lines.find(line => line.includes('Roll No:'));
+      const batchLine = lines.find(line => line.includes('Batch:'));
+
+      if (!rollLine || !batchLine) {
+        resultContainer.innerText = "❌ Invalid QR format!";
+        resultContainer.classList.add('already-scanned');
+        return;
+      }
+
+      const rollno = rollLine.split('Roll No:')[1].trim();
+      const batch = batchLine.split('Batch:')[1].trim();
+
+      if (scannedQRCodes.has(rollno)) {
+        resultContainer.innerText = `⚠️ Attendance already marked for Roll No: ${rollno}`;
+        resultContainer.classList.add('already-scanned');
+        return;
+      }
+
+      scannedQRCodes.add(rollno);
+      scannedStudents.push({ rollno, batch });
+
+      resultContainer.innerText = `✅ Attendance marked for Roll No: ${rollno}`;
+      resultContainer.classList.remove('already-scanned');
+    }
+
+    function onScanFailure(error) {
+      // Optional: handle scan failures silently
+    }
+
+    document.getElementById("homeBtn").addEventListener("click", () => {
+      const homeBtn = document.getElementById("homeBtn");
+      homeBtn.disabled = true;
+      homeBtn.textContent = "Processing...";
+
+      const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      if (!courses || scannedStudents.length === 0) {
+        // alert("❌ Missing course selection or no students scanned!");
+        homeBtn.disabled = false;
+        homeBtn.textContent = "Finish";
+        window.location.href = "../FacultyPage/index.html"
+        return;
+      }
+      const payload = {
+        date: new Date().toISOString().slice(0, 10),
+        courseList: [courses.period1, courses.period2, courses.period3],
+        presentArrays: scannedStudents
+      };
+
+      fetch("http://localhost:5000/api/faculty/mark-all", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          if (!response.ok) throw new Error("❌ Attendance marking failed!");
+          return response.json();
+        })
+        .then(data => {
+          alert("✅ Attendance marked successfully!");
+          console.log("✅ Server Response:", data);
+          localStorage.removeItem("scannedStudents");
+          scannedQRCodes.clear();
+          scannedStudents.length = 0;
+          resultContainer.innerText = "🎉 Attendance data sent!";
+
+          html5QrCode.stop().then(() => {
+            console.log("Camera stopped.");
+          }).catch(err => {
+            console.warn("Error stopping camera:", err);
+          });
+        })
+        .catch(error => {
+          console.error("Error posting attendance:", error);
+          alert("❌ Failed to mark attendance. See console.");
+        })
+        .finally(() => {
+          homeBtn.disabled = false;
+          homeBtn.textContent = "Finish";
+        });
+    });
+  </script>
+</body>
+
+</html>

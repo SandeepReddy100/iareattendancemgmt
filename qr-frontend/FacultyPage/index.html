@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="IARE-LOGO.png" alt>
+            <h2>IARE</h2>
+        </div>
+        <div class="navbar">
+            <a href="index.html" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <!-- <a href="timeTable.html" onclick="timeTableAll()">
+                    <span class="material-icons-sharp">today</span>
+                    <h3>Time Table</h3>
+                </a> -->
+
+            <!-- <a href="password.html">
+                <span class="material-icons-sharp">password</span>
+                <h3>Change Password</h3>
+            </a> -->
+            <div id="profile-btn">
+                <span class="material-icons-sharp">person</span>
+            </div>
+            <a href="#">
+                <span class="material-icons-sharp" onclick="logout()">logout</span>
+                <h3 onclick="logout()">Logout</h3>
+            </a>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+
+    </header>
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                </div>
+                <div class="about">
+                    <h5><span class="material-icons-sharp">person_outline</span>
+                        NAME</h5>
+                    <p id="facultyName"></p>
+
+                    <h5><span class="material-icons-sharp">confirmation_number</span>
+                        ID </h5>
+                    <p id="facultyID"></p>
+
+                    <h5><span class="material-icons-sharp">groups</span>ASSIGNED
+                        BATCH</h5>
+                    <p id="facultyBatch">SKILL UP & SKILL NEXT</p>
+
+                    <h5><span class="material-icons-sharp">email</span>
+                        EMAIL</h5>
+                    <p id="facultyEmail"></p>
+                </div>
+            </div>
+        </aside>
+        <main>
+            <h1>Dashboard</h1>
+            <div class="subjects">
+
+                <div class="eg">
+                    <span class="material-icons-sharp">architecture</span>
+                    <h3>overall Presenties</h3>
+                    <h2>79/84</h2>
+                    <div class="progress">
+                        <svg>
+                            <circle cx="38" cy="38" r="36"></circle>
+                        </svg>
+                        <div class="number">
+                            <p>86%</p>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+
+                <div class="mth">
+                    <span class="material-icons-sharp">functions</span>
+                    <h3>overall Absenties</h3>
+                    <h2>27/29</h2>
+                    <div class="progress">
+                        <svg>
+                            <circle cx="38" cy="38" r="36"></circle>
+                        </svg>
+                        <div class="number">
+                            <p>93%</p>
+                        </div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+
+                <!-- Make this whole box clickable with styling preserved -->
+                <div class="cs clickable-box" onclick="window.location.href='CourseSelection.html'">
+                    <span class="material-icons-sharp">computer</span>
+                    <h3>Scan StudentQr</h3>
+                    <div class="icon-container">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/qr-code.png" alt="QR Scan Icon">
+                    </div>
+                </div>
+
+                <div class="cg">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Post Announcements</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/megaphone.png" alt="Announcement Icon">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="timetable" id="timetable">
+                <div>
+                    <span id="prevDay">&lt;</span>
+                    <h2>Today's Timetable</h2>
+                    <span id="nextDay">&gt;</span>
+                </div>
+                <span class="closeBtn" onclick="timeTableAll()">X</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Room No.</th>
+                            <th>Subject</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+
+        <!-- <div class="right">
+            <div class="announcements">
+                <h2>Announcements</h2>
+                <div class="updates">
+                    <div class="message">
+                        <p> <b>Academic</b> Summer training internship with Live Projects.</p>
+                        <small class="text-muted">2 Minutes Ago</small>
+                    </div>
+                    <div class="message">
+                        <p> <b>Co-curricular</b> Global internship oportunity by Student organization.</p>
+                        <small class="text-muted">10 Minutes Ago</small>
+                    </div>
+                    <div class="message">
+                        <p> <b>Examination</b> Instructions for Mid Term Examination.</p>
+                        <small class="text-muted">Yesterday</small>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+    <script src="timeTable.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function updateFacultyUI(faculty) {
+            console.log("Updating faculty UI with:", faculty);
+
+            document.getElementById("facultyName").textContent =
+                faculty.name || "N/A";
+            document.getElementById("facultyID").textContent =
+                faculty.facultyid || "N/A";
+            document.getElementById("facultyEmail").textContent =
+                faculty.email || "N/A";
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const facultyEmail = localStorage.getItem("facultyEmail");
+            if (!facultyEmail) {
+                console.warn("No faculty email found in localStorage. Please login.");
+                return;
+            }
+
+            const cachedFacultyRaw = localStorage.getItem("facultyData");
+            if (cachedFacultyRaw) {
+                try {
+                    const cachedFaculty = JSON.parse(cachedFacultyRaw);
+                    updateFacultyUI(cachedFaculty);
+
+                    const cacheTime = localStorage.getItem("facultyDataTimestamp");
+                    if (cacheTime && Date.now() - parseInt(cacheTime) < 3600000) {
+                        console.log("Using cached faculty data, skipping API fetch.");
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Error parsing cached faculty data:", err);
+                    localStorage.removeItem("facultyData");
+                    localStorage.removeItem("facultyDataTimestamp");
+                }
+            }
+
+            fetch(`http://localhost:5000/api/faculty/${encodeURIComponent(facultyEmail)}`)
+                .then((res) => {
+                    if (!res.ok) throw new Error("Failed to fetch faculty profile");
+                    return res.json();
+                })
+                .then((data) => {
+                    const faculty = data.faculty || data;
+                    localStorage.setItem("facultyData", JSON.stringify(faculty));
+                    localStorage.setItem("facultyDataTimestamp", Date.now().toString());
+                    updateFacultyUI(faculty);
+                })
+                .catch((err) => {
+                    console.error("Error fetching faculty profile:", err);
+                });
+        });
+    </script>
+</body>
+
+</html>

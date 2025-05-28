@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo" title="University Management System">
+        <img src="iare logo.jpeg" alt="" />
+        <h1>IARE</h1>
+      </div>
+      <div class="navbar">
+        <a href="index.html" class="active">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <!-- <a href="timetable.html" onclick="timeTableAll()">
+          <span class="material-icons-sharp">today</span>
+          <h3>Time Table</h3>
+        </a> -->
+        <!-- <a href="password.html">
+          <span class="material-icons-sharp">password</span>
+          <h3>Change Password</h3>
+        </a> -->
+        <a href="#">
+          <span class="material-icons-sharp" onclick="logout()">logout</span>
+          <h3 onclick="logout()">Logout</h3>
+        </a>
+      </div>
+      <div id="profile-btn">
+        <span class="material-icons-sharp">person</span>
+      </div>
+    </header>
+    <div class="container">
+      <aside>
+        <div class="profile">
+          <div class="top">
+            <!-- Optional profile photo here -->
+             <h2>Student Profile</h2>
+          </div>
+          <div class="about">
+            <h5>
+              <span class="material-icons-sharp">person_outline</span> NAME
+            </h5>
+            <p id="profileName"></p>
+
+            <h5>
+              <span class="material-icons-sharp">confirmation_number</span> ROLL
+              NO
+            </h5>
+            <p id="profileRollNo"></p>
+
+            <h5><span class="material-icons-sharp">computer</span> BRANCH</h5>
+            <p id="profileBranch"></p>
+
+            <h5><span class="material-icons-sharp">groups</span> BATCH</h5>
+            <p id="profileBatch"></p>
+
+            <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
+            <p id="profileEmail"></p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-container responsive-layout">
+        <img id="qrImage" alt="QR Code will appear here" />
+        <!-- Attendance Section -->
+        <div class="attendance-section">
+          <h1>Attendance</h1>
+          <div class="subjects">
+            <div class="eg">
+              <span class="material-icons-sharp">architecture</span>
+              <h3>Overall Attendance</h3>
+              <h2>79/84</h2>
+              <div class="progress">
+                <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                <div class="number"><p>86%</p></div>
+              </div>
+              <small class="text-muted">Last 24 Hours</small>
+            </div>
+            <div class="mth">
+              <span class="material-icons-sharp">functions</span>
+              <h3>Competitive Programming</h3>
+              <h2>27/29</h2>
+              <div class="progress">
+                <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                <div class="number"><p>93%</p></div>
+              </div>
+              <small class="text-muted">Last 24 Hours</small>
+            </div>
+            <div class="cs">
+              <span class="material-icons-sharp">computer</span>
+              <h3>Java FullStack Development</h3>
+              <h2>27/30</h2>
+              <div class="progress">
+                <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                <div class="number"><p>81%</p></div>
+              </div>
+              <small class="text-muted">Last 24 Hours</small>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+    </footer>
+    <script src="app.js"></script>
+    <script src="timeTable.js"></script>
+    <script>
+      function updateProfileUI(student) {
+        console.log("Updating profile UI with student:", student);
+
+        document.getElementById("profileName").textContent =
+          student.name || "N/A";
+        document.getElementById("profileRollNo").textContent =
+          student.rollno || "N/A";
+        document.getElementById("profileBranch").textContent =
+          student.branch || "N/A";
+        document.getElementById("profileBatch").textContent =
+          student.batch || "N/A";
+        document.getElementById("profileEmail").textContent =
+          student.email || "N/A";
+
+        // Display QR code image directly
+        if (student.qrLink) {
+          console.log("Displaying QR code from link:", student.qrLink);
+          const qrImage = document.getElementById("qrImage");
+          const rollNo = document.getElementById("rollNo");
+          qrImage.src = student.qrLink;
+          qrImage.alt = `${student.rollno} QR Code`;
+          // Remove hardcoded widths/heights and use responsive class styling instead
+          qrImage.classList.add("qr-image");
+        } else {
+          console.warn("student.qrLink missing");
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const rollno = localStorage.getItem("rollno");
+        if (!rollno) {
+          console.warn("No roll number found in localStorage. Please login.");
+          return;
+        }
+
+        const cachedProfileRaw = localStorage.getItem("profileData");
+        if (cachedProfileRaw) {
+          try {
+            const cachedProfile = JSON.parse(cachedProfileRaw);
+            updateProfileUI(cachedProfile);
+
+            const cacheTime = localStorage.getItem("profileDataTimestamp");
+            if (cacheTime && Date.now() - parseInt(cacheTime) < 3600000) {
+              console.log("Using cached profile data, skipping API fetch.");
+              return;
+            }
+          } catch (err) {
+            console.error("Error parsing cached profile:", err);
+            localStorage.removeItem("profileData");
+            localStorage.removeItem("profileDataTimestamp");
+          }
+        }
+        fetch(`http://localhost:5000/api/student/${encodeURIComponent(rollno)}`)
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch profile");
+            return res.json();
+          })
+          .then((data) => {
+            const student = data.student || data;
+            localStorage.setItem("profileData", JSON.stringify(student));
+            localStorage.setItem("profileDataTimestamp", Date.now().toString());
+            updateProfileUI(student);
+          })
+          .catch((err) => {
+            console.error("Error fetching profile:", err);
+          });
+      });
+    </script>
+      <script>
+    const days = [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const today = new Date().getDay();
+    let currentDayIndex = today;
+
+    function renderTimetable(dayIndex) {
+        const timetableBody = document.getElementById("timetable-body");
+        if (!timetableBody) return;
+
+        timetableBody.innerHTML = "";
+        const dayData = days[dayIndex];
+
+        dayData.forEach(row => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${row.time}</td>
+                <td>${row.roomNumber}</td>
+                <td>${row.subject}</td>
+                <td>${row.type}</td>
+            `;
+            timetableBody.appendChild(tr);
+        });
+
+        document.querySelector(".timetable h2").textContent = `${dayNames[dayIndex]}'s Timetable`;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        renderTimetable(currentDayIndex);
+
+        document.getElementById("prevDay")?.addEventListener("click", () => {
+            currentDayIndex = (currentDayIndex - 1 + 7) % 7;
+            renderTimetable(currentDayIndex);
+        });
+
+        document.getElementById("nextDay")?.addEventListener("click", () => {
+            currentDayIndex = (currentDayIndex + 1) % 7;
+            renderTimetable(currentDayIndex);
+        });
+    });
+
+    // Timetable Data
+    const Sunday = [{ time: 'Sunday', roomNumber: 'Holiday', subject: 'No class Available', type: '' }];
+    const Monday = [
+        { time: '09-10 AM', roomNumber: '38-718', subject: 'DBMS130', type: 'Lecture' },
+        { time: '10-11 AM', roomNumber: '38-718', subject: 'MTH166', type: 'Tutorial' },
+        { time: '12-01 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
+    ];
+    const Tuesday = [
+        { time: '09-10 AM', roomNumber: '27-304Y', subject: 'MTH166', type: 'Tutorial' },
+        { time: '11-12 AM', roomNumber: '28-107', subject: 'CS849', type: 'Lecture' },
+        { time: '12-01 PM', roomNumber: '28-107', subject: 'CS849', type: 'Lecture' },
+        { time: '02-03 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
+    ];
+    const Wednesday = [
+        { time: '10-11 AM', roomNumber: '33-309', subject: 'DBMS130', type: 'Lecture' },
+        { time: '11-12 AM', roomNumber: '38-719', subject: 'CS200', type: 'Lecture' }
+    ];
+    const Thursday = [
+        { time: '11-12 AM', roomNumber: '33-309', subject: 'MTH166', type: 'Lecture' },
+        { time: '01-02 PM', roomNumber: '38-719', subject: 'CS849', type: 'Lecture' },
+        { time: '02-03 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
+    ];
+    const Friday = [
+        { time: '10-11 AM', roomNumber: '33-309', subject: 'MEC103', type: 'Lecture' },
+        { time: '11-12 AM', roomNumber: '33-309', subject: 'MEC103', type: 'Lecture' },
+        { time: '02-03 PM', roomNumber: '33-601', subject: 'CS849', type: 'Tutorial' }
+    ];
+    const Saturday = [
+        { time: '09-10 AM', roomNumber: '34-604', subject: 'DBMS130', type: 'Tutorial' },
+        { time: '10-11 AM', roomNumber: '34-604', subject: 'DBMS130', type: 'Lecture' },
+        { time: '01-02 PM', roomNumber: '33-309', subject: 'MTH166', type: 'Lecture' }
+    ];
+
+    </script>
+  </body>
+</html>
