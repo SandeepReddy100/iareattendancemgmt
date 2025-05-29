@@ -163,18 +163,18 @@
     const backendUrl = "https://iareattendancemgmt.onrender.com";
     window.onload = function () {
       const courses = JSON.parse(localStorage.getItem('selectedCourses'));
-      if (courses) {
-        selectedCoursesDiv.innerHTML = `
-          <h3>Selected Courses</h3>
-          <ul>
-            <li>1st Period: ${courses.period1}</li>
-            <li>2nd Period: ${courses.period2}</li>
-            <li>3rd Period: ${courses.period3}</li>
-          </ul>
-        `;
-      } else {
-        selectedCoursesDiv.innerHTML = `<p style="color: var(--color-danger); font-weight: bold;">No courses selected!</p>`;
-      }
+      // if (courses) {
+      //   selectedCoursesDiv.innerHTML = `
+      //     <h3>Selected Courses</h3>
+      //     <ul>
+      //       <li>1st Period: ${courses.period1}</li>
+      //       <li>2nd Period: ${courses.period2}</li>
+      //       <li>3rd Period: ${courses.period3}</li>
+      //     </ul>
+      //   `;
+      // } else {
+      //   selectedCoursesDiv.innerHTML = `<p style="color: var(--color-danger); font-weight: bold;">No courses selected!</p>`;
+      // }
 
       html5QrCode.start(
         { facingMode: "environment" },
