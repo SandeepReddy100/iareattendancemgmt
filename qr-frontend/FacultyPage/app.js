@@ -139,5 +139,5 @@ function startQRScanner() {
 
 function logout() {
   localStorage.clear();
-  window.location.href = 'qr-frontend/index.html';
+  window.location.href = '/';
 }
