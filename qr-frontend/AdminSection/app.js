@@ -147,5 +147,5 @@ function logout() {
   sessionStorage.clear(); // if you use sessionStorage
 
   // Redirect to login page
-  window.location.href = "../loginSection/index.html";
+  window.location.href = "index.html";
 }

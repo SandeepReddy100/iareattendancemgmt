@@ -133,11 +133,11 @@ function startQRScanner() {
     console.error("Failed to start scanner", err);
 
 
-    
+
   });
 }
 
 function logout() {
   localStorage.clear();
-  window.location.href = '../loginSection/index.html';
+  window.location.href = 'index.html';
 }
