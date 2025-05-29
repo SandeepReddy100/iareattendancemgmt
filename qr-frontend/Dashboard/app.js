@@ -70,6 +70,6 @@ document.querySelector('.timetable div h2').innerHTML = "Today's Timetable"; //T
  
 function logout() {
   localStorage.clear();
-  window.location.href = 'index.html';
+  window.location.href = '/';
 }
 
