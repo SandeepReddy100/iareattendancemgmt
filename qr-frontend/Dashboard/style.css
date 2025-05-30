@@ -451,7 +451,7 @@ main .timetable.active .closeBtn{
   text-align: center;
 }
 
-.qr-image {
+#qrImage {
   width: 80%;
   max-width: 300px;
   height: auto;
