@@ -27,7 +27,7 @@ app.use('/api/admin',adminRoutes);
 app.use('/api/student', studentAuthRoutes);
 app.use('/api/faculty', facultyAuth)
 app.use('/api/admin', adminAuthRoutes);
-app.use('/api/student', studentRoutes);      
+// app.use('/api/student', studentRoutes);      
 app.use('/api/faculty', attendanceRoutes); 
 app.use('/api/faculty',facultyRoutes)
 

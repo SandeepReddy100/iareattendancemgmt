@@ -223,6 +223,7 @@
       homeBtn.textContent = "Processing...";
 
       const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      const batch = JSON.parse(localStorage.getItem('selectedbatch'));
       if (!courses || scannedStudents.length === 0) {
         // alert("❌ Missing course selection or no students scanned!");
         homeBtn.disabled = false;
@@ -230,7 +231,12 @@
         window.location.href = "../FacultyPage/index.html"
         return;
       }
+
+
+      const collectionName = `attendance_${batch.toLowerCase()}`;
+
       const payload = {
+        collectionName: collectionName,
         date: new Date().toISOString().slice(0, 10),
         courseList: [courses.period1, courses.period2, courses.period3],
         presentArrays: scannedStudents

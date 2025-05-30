@@ -2,25 +2,33 @@ const express = require('express');
 const router = express.Router();
 const XLSX = require('xlsx');
 const Student = require('../models/student');
-const Attendance = require('../models/attendance.model');
-const Admin=require('../models/admin');
-router.get('/attendance/report', async (req, res) => {
+const getAttendanceModel = require('../utils/getAttendanceModel');
+
+router.get('/attendance/report/:collectionName', async (req, res) => {
   try {
-    const date = req.query.date || new Date().toISOString().slice(0, 10);
-    const students = await Student.find({});
-    let rows = [];
+    const collectionName = req.params.collectionName;
+
+    if (!collectionName) {
+      return res.status(400).json({ message: 'Missing collectionName parameter' });
+    }
+
+    const reportDate = new Date().toISOString().slice(0, 10);
+    const Attendance = getAttendanceModel(collectionName);
+
+    // Find only students who have an attendance record in this specific collection
+    const attendanceRecords = await Attendance.find({});
+    const rollnosWithAttendance = attendanceRecords.map(a => a.rollno);
+
+    // Get student details only for those roll numbers
+    const students = await Student.find({ rollno: { $in: rollnosWithAttendance } });
+
     let serial = 1;
+    const rows = [];
 
     for (const student of students) {
-      const attendance = await Attendance.findOne({ rollno: student.rollno });
-
-      let isPresent = false;
-
-      if (attendance && attendance.dailyLogs) {
-        // Filter logs for this date and check if at least one log is 'present'
-        const logsForDate = attendance.dailyLogs.filter(log => log.date === date);
-        isPresent = logsForDate.some(log => log.status === 'present');
-      }
+      const attendance = attendanceRecords.find(a => a.rollno === student.rollno);
+      const logsForDate = attendance?.dailyLogs?.filter(log => log.date === reportDate) || [];
+      const isPresent = logsForDate.some(log => log.status === 'present');
 
       rows.push({
         'S.No': serial++,
@@ -32,49 +40,34 @@ router.get('/attendance/report', async (req, res) => {
       });
     }
 
-    // Create and send Excel file
+    // Sort: Absent first, then Present
+    rows.sort((a, b) => a.Status === 'Absent' ? -1 : b.Status === 'Absent' ? 1 : 0);
+
+    // Create worksheet and set column widths
     const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+      { wch: 6 },   // S.No
+      { wch: 12 },  // Roll No
+      { wch: 35 },  // Name
+      { wch: 15 },  // Branch
+      { wch: 20 },  // Batch
+      { wch: 12 },  // Status
+    ];
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance Report');
 
     const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 
-    res.setHeader('Content-Disposition', `attachment; filename=attendance_report_${date}.xlsx`);
+    res.setHeader('Content-Disposition', `attachment; filename=attendance_report_${reportDate}.xlsx`);
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
     return res.send(buffer);
+
   } catch (err) {
     console.error('Error generating attendance report:', err);
     return res.status(500).json({ message: 'Server error' });
   }
 });
 
-// POST: Update Admin Password
-router.post('/update-password', async (req, res) => {
-  const { adminEmail, currentPassword, newPassword } = req.body;
-
-  if (!adminEmail || !currentPassword || !newPassword) {
-    return res.status(400).json({ message: 'adminEmail, currentPassword, and newPassword are required' });
-  }
-
-  try {
-    const admin = await Admin.findOne({ email: adminEmail });
-
-    if (!admin) {
-      return res.status(404).json({ message: 'Admin not found' });
-    }
-
-    if (admin.password !== currentPassword) {
-      return res.status(401).json({ message: 'Current password is incorrect' });
-    }
-
-    admin.password = newPassword;
-    await admin.save();
-
-    res.json({ message: 'Admin password updated successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
 module.exports = router;
