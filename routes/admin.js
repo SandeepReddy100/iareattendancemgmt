@@ -3,7 +3,7 @@ const router = express.Router();
 const XLSX = require('xlsx');
 const Student = require('../models/student');
 const Attendance = require('../models/attendance.model');
-
+const Admin=require('../models/admin');
 router.get('/attendance/report', async (req, res) => {
   try {
     const date = req.query.date || new Date().toISOString().slice(0, 10);
@@ -49,5 +49,32 @@ router.get('/attendance/report', async (req, res) => {
   }
 });
 
+// POST: Update Admin Password
+router.post('/update-password', async (req, res) => {
+  const { adminEmail, currentPassword, newPassword } = req.body;
 
+  if (!adminEmail || !currentPassword || !newPassword) {
+    return res.status(400).json({ message: 'adminEmail, currentPassword, and newPassword are required' });
+  }
+
+  try {
+    const admin = await Admin.findOne({ email: adminEmail });
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    if (admin.password !== currentPassword) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    admin.password = newPassword;
+    await admin.save();
+
+    res.json({ message: 'Admin password updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 module.exports = router;

@@ -27,4 +27,50 @@ router.get('/:rollno', async (req, res) => {
   }
 });
 
+// POST /api/student/update-password
+router.post('/update-password', async (req, res) => {
+  const { rollno, currentPassword, newPassword } = req.body;
+
+  try {
+    const student = await Student.findOne({ rollno });
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    // Directly compare plain text passwords
+    if (student.password !== currentPassword) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    // Directly assign new plain text password
+    student.password = newPassword;
+    await student.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('Error updating password:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// // GET /attendance/:rollno
+// router.get('/attendance/:rollno', async (req, res) => {
+//   const { rollno } = req.params;
+
+//   try {
+//     const record = await Attendance.findOne(
+//       { rollno },
+//       { rollno: 1, overallAttendance: 1, courseAttendance: 1, _id: 0 }
+//     );
+
+//     if (!record) {
+//       return res.status(404).json({ message: `No attendance record found for rollno: ${rollno}` });
+//     }
+
+//     res.json(record);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Server error while fetching attendance' });
+//   }
+// });
 module.exports = router;
