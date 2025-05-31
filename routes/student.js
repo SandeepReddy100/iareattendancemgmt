@@ -30,7 +30,7 @@ router.get('/:rollno', async (req, res) => {
 // POST /api/student/update-password
 router.post('/update-password', async (req, res) => {
   const { rollno, currentPassword, newPassword } = req.body;
-
+  console.log({rollno, currentPassword, newPassword});
   try {
     const student = await Student.findOne({ rollno });
     if (!student) {

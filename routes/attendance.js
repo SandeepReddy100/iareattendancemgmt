@@ -58,22 +58,22 @@ router.post('/mark-all', async (req, res) => {
             incOps[`courseAttendance.${course}.presentDays`] = 1;
           }
         }
-      } else {
-        // Courses have different names — create one dailyLog per unique course
-        for (const course of uniqueCourses) {
-          if (alreadyMarkedCourses.has(course)) continue;
+      // } else {
+      //   // Courses have different names — create one dailyLog per unique course
+      //   for (const course of uniqueCourses) {
+      //     if (alreadyMarkedCourses.has(course)) continue;
 
-          newDailyLogs.push({
-            date,
-            course,
-            status: isPresent ? 'present' : 'absent'
-          });
+      //     newDailyLogs.push({
+      //       date,
+      //       course,
+      //       status: isPresent ? 'present' : 'absent'
+      //     });
 
-          incOps[`courseAttendance.${course}.totalDays`] = 1;
-          if (isPresent) {
-            incOps[`courseAttendance.${course}.presentDays`] = 1;
-          }
-        }
+      //     incOps[`courseAttendance.${course}.totalDays`] = 1;
+      //     if (isPresent) {
+      //       incOps[`courseAttendance.${course}.presentDays`] = 1;
+      //     }
+      //   }
       }
 
 
