@@ -352,11 +352,10 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const emailInput = document.getElementById("email");
+      const emailInput = document.getElementById("email").value.trim();
       const passwordInput = document.getElementById("password");
       const roleInput = document.querySelector('input[name="role"]:checked');
 
-      emailInput=emailInput.value.trim();
       const email = emailInput.value.toLowerCase();
       const password = passwordInput.value.trim();
       const role = roleInput ? roleInput.value : "";
