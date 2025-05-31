@@ -28,10 +28,9 @@ app.use('/api/admin',adminRoutes);
 app.use('/api/student', studentAuthRoutes);
 app.use('/api/faculty', facultyAuth)
 app.use('/api/admin', adminAuthRoutes);
-// app.use('/api/students', studentRoutes);      
-app.use('/api/faculty', attendanceRoutes); 
+app.use('/api/students', studentRoutes);      
+app.use('/api/facultys', attendanceRoutes); 
 app.use('/api/faculty',facultyRoutes)
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

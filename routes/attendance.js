@@ -58,22 +58,6 @@ router.post('/mark-all', async (req, res) => {
             incOps[`courseAttendance.${course}.presentDays`] = 1;
           }
         }
-      // } else {
-      //   // Courses have different names — create one dailyLog per unique course
-      //   for (const course of uniqueCourses) {
-      //     if (alreadyMarkedCourses.has(course)) continue;
-
-      //     newDailyLogs.push({
-      //       date,
-      //       course,
-      //       status: isPresent ? 'present' : 'absent'
-      //     });
-
-      //     incOps[`courseAttendance.${course}.totalDays`] = 1;
-      //     if (isPresent) {
-      //       incOps[`courseAttendance.${course}.presentDays`] = 1;
-      //     }
-      //   }
       }
 
 
@@ -336,67 +320,6 @@ router.post('/mark-all', async (req, res) => {
 
 
 // GET /api/attendance/report?rollno=...&course=...&date=...
-router.get('/report', async (req, res) => {
-  const { rollno, course, date } = req.query;
-
-  const query = {};
-  if (rollno) query.rollno = rollno;
-  if (course || date) query.dailyLogs = {};
-
-  if (course) query.dailyLogs.course = course;
-  if (date) query.dailyLogs.date = date;
-
-  try {
-    const data = await Attendance.find(query);
-    res.json(data);
-  } catch (err) {
-    console.error('Report fetch error:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// Attendance Collection endpoint 
-router.get('/all', async (req, res) => {
-  const { batch, courseName } = req.query;
-
-  try {
-    let query = {};
-    if (batch) query.batch = batch;
-
-    const attendanceDocs = await Attendance.find(query);
-
-    if (!attendanceDocs.length) {
-      return res.status(404).json({ message: 'No attendance records found' });
-    }
-
-    const results = attendanceDocs.map(att => {
-      const courseStats = att.courseAttendance.get(courseName) || { totalDays: 0, presentDays: 0 };
-      const attendancePercentage = courseStats.totalDays === 0
-        ? 0
-        : ((courseStats.presentDays / courseStats.totalDays) * 100).toFixed(2);
-
-      return {
-        rollno: att.rollno,
-        name: att.name,
-        branch: att.branch,
-        batch: att.batch,
-        courseName: courseName || 'All Courses',
-        courseAttendance: courseName ? { [courseName]: courseStats } : Object.fromEntries(att.courseAttendance),
-        overallAttendance: att.overallAttendance,
-        overallPercentage: att.overallAttendance.totalDays === 0
-          ? 0
-          : ((att.overallAttendance.presentDays / att.overallAttendance.totalDays) * 100).toFixed(2)
-      };
-    });
-
-    return res.json(results);
-  } catch (error) {
-    console.error('Error fetching attendance records:', error);
-    return res.status(500).json({ message: 'Error fetching data', error: error.message });
-  }
-});
-
-
 module.exports = router;
 
 
