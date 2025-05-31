@@ -357,7 +357,9 @@
       const roleInput = document.querySelector('input[name="role"]:checked');
 
       
-      const email = emailInput.value.trim();
+      const emails = emailInput.value.trim();
+      const email = emails.toLowerCase();
+      
       const password = passwordInput.value.trim();
       const role = roleInput ? roleInput.value : "";
 

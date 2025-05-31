@@ -182,7 +182,7 @@
           localStorage.removeItem("profileDataTimestamp");
         }
       }
-      fetch(`http://localhost:5000/api/student/${encodeURIComponent(rollno)}`)
+      fetch(`${backendUrl}/api/student/${encodeURIComponent(rollno)}`)
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch profile");
           return res.json();
