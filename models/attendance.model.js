@@ -27,4 +27,4 @@ const attendanceSchema = new mongoose.Schema({
   lastUpdated: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Attendance', attendanceSchema, 'attendance');
+module.exports = mongoose.model('Attendance', attendanceSchema);

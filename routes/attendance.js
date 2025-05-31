@@ -255,84 +255,84 @@ router.post('/mark-all', async (req, res) => {
 //   }
 // });
 
-router.post('/mark-all', async (req, res) => {
-  try {
-    const { date, courseList, presentArrays } = req.body;
-    if (!date || !Array.isArray(courseList) || !Array.isArray(presentArrays)) {
-      return res.status(400).json({ message: 'Missing or invalid data' });
-    }
+// router.post('/mark-all', async (req, res) => {
+//   try {
+//     const { date, courseList, presentArrays } = req.body;
+//     if (!date || !Array.isArray(courseList) || !Array.isArray(presentArrays)) {
+//       return res.status(400).json({ message: 'Missing or invalid data' });
+//     }
 
-    // Extract roll numbers from presentArrays
-    const presentRollNumbers = presentArrays.map(s => s.rollno);
+//     // Extract roll numbers from presentArrays
+//     const presentRollNumbers = presentArrays.map(s => s.rollno);
 
-    // Get all students
-    const students = await Student.find();
+//     // Get all students
+//     const students = await Student.find();
 
-    let updatedStudents = [];
+//     let updatedStudents = [];
 
-    for (const student of students) {
-      const rollno = student.rollno;
-      const attendance = await Attendance.findOne({ rollno });
+//     for (const student of students) {
+//       const rollno = student.rollno;
+//       const attendance = await Attendance.findOne({ rollno });
 
-      // Skip if no attendance doc for this student (do not create new)
-      if (!attendance) continue;
+//       // Skip if no attendance doc for this student (do not create new)
+//       if (!attendance) continue;
 
-      const isPresent = presentRollNumbers.includes(rollno);
+//       const isPresent = presentRollNumbers.includes(rollno);
 
-      // Filter logs for this date
-      const dailyLogsForDate = attendance.dailyLogs.filter(log => log.date === date) || [];
+//       // Filter logs for this date
+//       const dailyLogsForDate = attendance.dailyLogs.filter(log => log.date === date) || [];
 
-      // Collect courses already recorded on this date for this student
-      const alreadyMarkedCourses = new Set(dailyLogsForDate.map(log => log.course));
+//       // Collect courses already recorded on this date for this student
+//       const alreadyMarkedCourses = new Set(dailyLogsForDate.map(log => log.course));
 
-      let newDailyLogs = [];
-      let incOps = {};
+//       let newDailyLogs = [];
+//       let incOps = {};
 
-      // For each course in courseList, add if not already marked on this date
-      for (const course of courseList) {
-        if (alreadyMarkedCourses.has(course)) continue; // skip duplicate
+//       // For each course in courseList, add if not already marked on this date
+//       for (const course of courseList) {
+//         if (alreadyMarkedCourses.has(course)) continue; // skip duplicate
 
-        newDailyLogs.push({
-          date,
-          course,
-          status: isPresent ? 'present' : 'absent'
-        });
+//         newDailyLogs.push({
+//           date,
+//           course,
+//           status: isPresent ? 'present' : 'absent'
+//         });
 
-        incOps[`courseAttendance.${course}.totalDays`] = 1;
-        if (isPresent) {
-          incOps[`courseAttendance.${course}.presentDays`] = 1;
-        }
-      }
+//         incOps[`courseAttendance.${course}.totalDays`] = 1;
+//         if (isPresent) {
+//           incOps[`courseAttendance.${course}.presentDays`] = 1;
+//         }
+//       }
 
-      if (newDailyLogs.length === 0) continue; // nothing new to update
+//       if (newDailyLogs.length === 0) continue; // nothing new to update
 
-      incOps['overallAttendance.totalDays'] = 1;
-      if (isPresent) {
-        incOps['overallAttendance.presentDays'] = 1;
-      }
+//       incOps['overallAttendance.totalDays'] = 1;
+//       if (isPresent) {
+//         incOps['overallAttendance.presentDays'] = 1;
+//       }
 
-      const updateOps = {
-        $push: { dailyLogs: { $each: newDailyLogs } },
-        $inc: incOps,
-        $set: { lastUpdated: new Date() }
-      };
+//       const updateOps = {
+//         $push: { dailyLogs: { $each: newDailyLogs } },
+//         $inc: incOps,
+//         $set: { lastUpdated: new Date() }
+//       };
 
-      await Attendance.findOneAndUpdate({ rollno }, updateOps);
+//       await Attendance.findOneAndUpdate({ rollno }, updateOps);
 
-      updatedStudents.push({ rollno, status: isPresent ? 'present' : 'absent' });
-    }
+//       updatedStudents.push({ rollno, status: isPresent ? 'present' : 'absent' });
+//     }
 
-    res.json({
-      message: 'Attendance marked for all students',
-      count: updatedStudents.length,
-      details: updatedStudents
-    });
+//     res.json({
+//       message: 'Attendance marked for all students',
+//       count: updatedStudents.length,
+//       details: updatedStudents
+//     });
 
-  } catch (error) {
-    console.error('Error marking attendance:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+//   } catch (error) {
+//     console.error('Error marking attendance:', error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 
 // GET /api/attendance/report?rollno=...&course=...&date=...
@@ -398,3 +398,7 @@ router.get('/all', async (req, res) => {
 
 
 module.exports = router;
+
+
+
+

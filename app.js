@@ -19,6 +19,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
+
 .then(() => console.log('Connected to MongoDB testDb'))
 .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -27,9 +28,10 @@ app.use('/api/admin',adminRoutes);
 app.use('/api/student', studentAuthRoutes);
 app.use('/api/faculty', facultyAuth)
 app.use('/api/admin', adminAuthRoutes);
-// app.use('/api/student', studentRoutes);      
+// app.use('/api/students', studentRoutes);      
 app.use('/api/faculty', attendanceRoutes); 
 app.use('/api/faculty',facultyRoutes)
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
