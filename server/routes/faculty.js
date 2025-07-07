@@ -2,16 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Faculty = require('../models/faculty');
 
-// GET /api/faculty/:email - Get faculty by email
-
-
-router.get('/:email', async (req, res) => {
+// GET /api/faculty/:facultyid - Get faculty by id
+router.get('/:facultyid', async (req, res) => {
   try {
-    const { email } = req.params;
+    const { facultyid } = req.params;
     console.log('Looking for faculty with email:', email);
 
     const faculty = await Faculty.findOne(
-      { email },
+      { facultyid },
       'name facultyid email'
     );
 
@@ -19,14 +17,12 @@ router.get('/:email', async (req, res) => {
       console.log('Faculty not found');
       return res.status(404).json({ message: 'Faculty not found' });
     }
-
-    console.log('Faculty found:', faculty);
     res.json(faculty);
   } catch (err) {
-    console.error('Error fetching faculty:', err);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Please try again after some time' });
   }
 });
+
 // POST: Update Faculty Password
 router.post('/update-password', async (req, res) => {
   const { facultyEmail, currentPassword, newPassword } = req.body;
@@ -55,6 +51,5 @@ router.post('/update-password', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 module.exports = router;

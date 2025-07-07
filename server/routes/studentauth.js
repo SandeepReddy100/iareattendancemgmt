@@ -2,20 +2,25 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/student');
 
-// POST /api/auth/login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const student = await Student.findOne({ email });
+    const rollno = username;
+    console.log('Looking for rollno:', rollno);
+
+    const student = await Student.findOne({
+      rollno: new RegExp(`^${rollno}$`, 'i')  // case-insensitive match
+    });
+
+    console.log('Student found:', student);
 
     if (!student) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid rollno or password' });
     }
 
-    // Plain-text password check
     if (student.password !== password) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: 'Invalid rollno or password' });
     }
 
     res.json({
@@ -32,8 +37,8 @@ router.post('/login', async (req, res) => {
     });
 
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error during login:', err);
+    res.status(500).json({ message: 'Please try again after some time' });
   }
 });
 

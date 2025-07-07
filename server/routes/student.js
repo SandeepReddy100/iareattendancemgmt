@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Student = require('../models/student');
-
-
+const getAttendanceModel = require('../utils/getAttendanceModel')
 // GET /api/student/:rollno - Get student by rollno
 router.get('/:rollno', async (req, res) => {
   try {
@@ -53,24 +52,38 @@ router.post('/update-password', async (req, res) => {
   }
 });
 
-// // GET /attendance/:rollno
-// router.get('/attendance/:rollno', async (req, res) => {
-//   const { rollno } = req.params;
+router.get("/attendance", async (req, res) => {
+  const { rollno, batch } = req.query;
 
-//   try {
-//     const record = await Attendance.findOne(
-//       { rollno },
-//       { rollno: 1, overallAttendance: 1, courseAttendance: 1, _id: 0 }
-//     );
+  if (!rollno || !batch) {
+    return res.status(400).json({ message: "rollno and batch are required" });
+  }
 
-//     if (!record) {
-//       return res.status(404).json({ message: `No attendance record found for rollno: ${rollno}` });
-//     }
+  try {
+    // Convert batch to lowercase and hyphenate spaces
+    const collectionName = `attendance_${batch.toLowerCase().replace(/\s+/g, "-")}`;
+    const AttendanceModel = getAttendanceModel(collectionName);
 
-//     res.json(record);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ message: 'Server error while fetching attendance' });
-//   }
-// });
+    // Use case-insensitive search for roll number
+    const student = await AttendanceModel.findOne({
+      rollno: new RegExp(`^${rollno}$`, 'i')
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    return res.json({
+      overallAttendance: student.overallAttendance,
+      courseAttendance: student.courseAttendance
+    });
+
+  } catch (err) {
+    console.error("Error fetching attendance:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+
 module.exports = router;

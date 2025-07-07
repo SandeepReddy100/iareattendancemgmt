@@ -3,11 +3,12 @@ const router = express.Router();
 const Faculty = require('../models/faculty')
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const faculty = await Faculty.findOne({ email });
-
+    const faculty = await Faculty.findOne({
+        facultyid: new RegExp(`^${username}$`, 'i')  // case-insensitive match
+    });
     if (!faculty) {
       return res.status(404).json({ message: 'Faculty not found' });
     }
@@ -18,12 +19,14 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json({
       message: 'Login successful',
-      name: faculty.name,
-      facultyid: faculty.facultyid,
-      email: faculty.email
+      faculty:{
+        name: faculty.name,
+        facultyid: faculty.facultyid,
+        email: faculty.email
+      },
     });
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: 'Please try again after some time', error: err.message });
   }
 });
 

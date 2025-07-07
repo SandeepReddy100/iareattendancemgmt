@@ -3,10 +3,12 @@ const router = express.Router();
 const Admin = require('../models/admin')
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findOne({
+         adminId: new RegExp(`^${username}$`, 'i')  // case-insensitive match
+     });
 
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
@@ -23,7 +25,7 @@ router.post('/login', async (req, res) => {
     });
 
   } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
+    res.status(500).json({ message: 'Please try again after some time', error: err.message });
   }
 });
 
