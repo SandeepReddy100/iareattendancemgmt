@@ -89,7 +89,6 @@ router.post('/mark-all', async (req, res) => {
   }
 });
 
-
 router.get("/attendance", async (req, res) => {
   const { rollno, batch } = req.query;
 
