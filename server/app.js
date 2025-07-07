@@ -6,7 +6,7 @@ const attendanceRoutes = require('./routes/attendance');
 const studentAuthRoutes = require('./routes/studentauth');
 const facultyAuth = require('./routes/facultyauth');
 const adminAuthRoutes = require('./routes/adminauth');
-const adminRoutes = require('./routes/admin'); // ✅ FIXED
+const adminRoutes = require('./routes/admin');
 const facultyRoutes = require('./routes/faculty')
 const cors = require('cors');
 dotenv.config();
@@ -25,14 +25,15 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 
 app.use('/api/admin',adminRoutes);
-app.use('/api/student', studentAuthRoutes);
-app.use('/api/faculty', facultyAuth)
-app.use('/api/admin', adminAuthRoutes);
-app.use('/api/students', studentRoutes);      
-app.use('/api/facultys', attendanceRoutes); 
+app.use('/api/student', studentRoutes);
 app.use('/api/faculty',facultyRoutes)
+app.use('/api/studentlogin', studentAuthRoutes);
+app.use('/api/facultylogin', facultyAuth)
+app.use('/api/adminlogin', adminAuthRoutes);
+app.use('/api/facultyop', attendanceRoutes); 
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
