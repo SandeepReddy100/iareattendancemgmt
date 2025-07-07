@@ -27,6 +27,7 @@
     --color-dark-varient: #a3bdcc;
     --color-light: rgba(0,0,0,0.4);
     --box-shadow: 0 2rem 3rem var(--color-light)
+    var(--color-primary):var(--color-white)
 }
 
 
@@ -342,6 +343,9 @@ main .subjects small{
     border-radius: 1rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+
+    min-height: 240px;
+    min-width: 160px;
 }
 
 .subjects > div:hover {

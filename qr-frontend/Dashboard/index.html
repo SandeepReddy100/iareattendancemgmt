@@ -71,10 +71,6 @@
     </aside>
 
     <main class="main-container responsive-layout">
-      <!-- <div class="student-qr-section"> -->
-        <!-- <h2 style="margin: 0; font-size: 24px; font-weight: 700;">StudentQr</h2> -->
-        <img id="qrImage" alt="Student-qr-display" />
-      <!-- </div> -->
 
       <!-- Attendance Section -->
       <div class="attendance-section">
@@ -94,6 +90,7 @@
             </div>
             <small class="text-muted">Last 24 Hours</small>
           </div>
+         
           <div class="mth">
             <span class="material-icons-sharp">functions</span>
             <h3>Competitive Programming</h3>
@@ -124,6 +121,27 @@
           </div>
         </div>
       </div>
+
+      <!-- card section -->
+      <div class="qr-card">
+        <div class="qr-card-header">
+          <div class="qr-card-text">
+            <h3 id="cardRoll">ROLL_NO</h3>
+            <p id="cardBatch">Batch: BATCH</p>
+          </div>
+          <div class="qr-card-photo">
+            <img id="cardPhoto" src="" alt="Profile Photo" />
+          </div>
+        </div>
+        <div class="qr-card-body">
+          <img id="qrImage" alt="QR Code" />
+          <p id="qrTimestamp">Generated at: --/--/---- --:--:--</p>
+        </div>
+        <div class="qr-card-footer">Powered by IARE</div>
+      </div>
+
+      <!-- </div> -->
+
     </main>
   </div>
   </footer>
@@ -133,29 +151,38 @@
     function updateProfileUI(student) {
       console.log("Updating profile UI with student:", student);
 
-      document.getElementById("profileName").textContent =
-        student.name || "N/A";
-      document.getElementById("profileRollNo").textContent =
-        student.rollno || "N/A";
-      document.getElementById("profileBranch").textContent =
-        student.branch || "N/A";
-      document.getElementById("profileBatch").textContent =
-        student.batch || "N/A";
-      document.getElementById("profileEmail").textContent =
-        student.email || "N/A";
+      const roll = student.rollno || "N/A";
+      const batch = student.batch || "N/A";
 
-      // Display QR code image directly
+      // Profile Details
+      document.getElementById("profileName").textContent = student.name || "N/A";
+      document.getElementById("profileRollNo").textContent = roll;
+      document.getElementById("profileBranch").textContent = student.branch || "N/A";
+      document.getElementById("profileBatch").textContent = batch;
+      document.getElementById("profileEmail").textContent = student.email || "N/A";
+
+      // Card Top Text
+      document.getElementById("cardRoll").textContent = `Roll No: ${roll}`;
+      document.getElementById("cardBatch").textContent = `Batch: ${batch}`;
+
+      // Profile Photo via URL (from rollno)
+      const photoUrl = `https://iare-data.s3.ap-south-1.amazonaws.com/uploads/STUDENTS/${roll}/${roll}.jpg`;
+      document.getElementById("cardPhoto").src = photoUrl;
+      document.getElementById("cardPhoto").alt = `${roll} Profile Photo`;
+
+      // QR Code Image
       if (student.qrLink) {
-        console.log("Displaying QR code from link:", student.qrLink);
         const qrImage = document.getElementById("qrImage");
-        const rollNo = document.getElementById("rollNo");
         qrImage.src = student.qrLink;
-        qrImage.alt = `${student.rollno} QR Code`;
-        // Remove hardcoded widths/heights and use responsive class styling instead
+        qrImage.alt = `${roll} QR Code`;
         qrImage.classList.add("qr-image");
       } else {
         console.warn("student.qrLink missing");
       }
+
+      // Timestamp
+      const timestamp = new Date().toLocaleString();
+      document.getElementById("qrTimestamp").textContent = `Generated at: ${timestamp}`;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
