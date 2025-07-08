@@ -3,6 +3,77 @@ const router = express.Router();
 const XLSX = require('xlsx');
 const Student = require('../models/student');
 const getAttendanceModel = require('../utils/getAttendanceModel');
+const Faculty = require("../models/faculty");
+
+router.patch('/mark-present', async (req, res) => {
+  try {
+    const { course, presenties, batch } = req.body;
+
+    console.log("PATCH /mark-present received:", { course, presenties, batch });
+
+    if (!course || !Array.isArray(presenties) || !batch) {
+      return res.status(400).json({ message: "Missing course, presenties, or batch" });
+    }
+
+    const Attendance = getAttendanceModel(batch);
+    const today = new Date().toISOString().slice(0, 10);
+    const courseKey = course.trim(); // optionally use .toUpperCase() if your DB keys are uppercase
+
+    const updated = [];
+
+    for (const rollno of presenties) {
+      const student = await Attendance.findOne({ rollno });
+
+      if (!student) continue;
+
+      const logIndex = student.dailyLogs.findIndex(
+        (log) =>
+          log.date === today &&
+          log.course === courseKey &&
+          log.status === "absent"
+      );
+
+      if (logIndex !== -1) {
+        // Update the status in dailyLogs
+        student.dailyLogs[logIndex].status = "present";
+
+        // Update overallAttendance
+        student.overallAttendance.presentDays =
+          (student.overallAttendance.presentDays || 0) + 1;
+
+        // Ensure courseAttendance object exists
+        if (!student.courseAttendance) student.courseAttendance = {};
+
+        if (!student.courseAttendance[courseKey]) {
+          student.courseAttendance[courseKey] = { totalDays: 0, presentDays: 1 };
+        } else {
+          student.courseAttendance[courseKey].presentDays =
+            (student.courseAttendance[courseKey].presentDays || 0) + 1;
+        }
+
+        // Mark nested field modified (Mongoose may skip deeply nested diffs without this)
+        student.markModified("dailyLogs");
+        student.markModified("courseAttendance");
+
+        student.lastUpdated = new Date();
+
+        await student.save();
+        updated.push(rollno);
+      }
+    }
+
+    res.status(200).json({
+      message: "Updated absentees to present",
+      updatedCount: updated.length,
+      updatedRollnos: updated
+    });
+
+  } catch (err) {
+    console.error("❌ Error in /mark-present:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 // POST /api/student
 router.post("/student", async (req, res) => {
@@ -257,6 +328,46 @@ router.delete("/:facultyid", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+
+
+router.get('/absentees', async (req, res) => {
+  try {
+    const { batch, date, course } = req.query;
+
+    if (!batch || !date || !course) {
+      return res.status(400).json({ message: "Missing batch, date, or course" });
+    }
+
+    let Attendance;
+    try {
+      Attendance = getAttendanceModel(batch); // Ensure model exists
+    } catch (err) {
+      return res.status(404).json({ message: `Batch collection not found: ${batch}` });
+    }
+
+    const absentees = await Attendance.find(
+      {
+        dailyLogs: {
+          $elemMatch: {
+            date: date,
+            course: course,
+            status: 'absent'
+          }
+        }
+      },
+      { rollno: 1, _id: 0 }
+    );
+
+    const rollnos = absentees.map(student => student.rollno);
+    res.status(200).json(rollnos);
+
+  } catch (err) {
+    console.error("Error fetching absentees:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 module.exports = router;
