@@ -66,8 +66,6 @@
       </div>
     </div>
 
-    
-
     <!-- Right Section - Login Form (60%) -->
     <div class="login-section">
       <div class="container">
@@ -176,7 +174,7 @@
       const role = roleInput ? roleInput.value : "";
       // const backendUrl = "http://localhost:5000"
       const backendUrl = "https://iareattendancemgmt.onrender.com";
-      
+      // const backendUrl = "https://iareattendancemgmt-production.up.railway.app/";
       // Clear previous messages
       messageBox.classList.remove("show", "success", "error");
       messageBox.textContent = "";
@@ -208,18 +206,21 @@
 
           // Store user data and redirect
           if (role === "student" && data.student?.rollno) {
+            localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("rollno", data.student.rollno);
             localStorage.setItem("profileData", JSON.stringify(data.student));
             setTimeout(() => {
               window.location.href = "Dashboard/index.html";
             }, 2500);
           } else if (role === "faculty") {
+            localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("facultyid", data.faculty.facultyid);
             localStorage.setItem("facultyData",JSON.stringify(data.faculty))
             setTimeout(() => {
               window.location.href = "FacultyPage/index.html";
             }, 2500);
           } else if (role === "admin") {
+            localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("adminEmail", data.adminId);
             setTimeout(() => {
               window.location.href = "AdminSection/index.html";
