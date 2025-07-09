@@ -14,7 +14,7 @@
 <body>
   <header>
     <div class="logo" title="University Management System">
-      <img src="iare logo.jpeg" alt="" />
+      <img src="IARE-LOGO.png" alt="" />
       <h1>IARE</h1>
     </div>
     <div class="navbar">
@@ -81,27 +81,30 @@
 
 
       <!-- card section -->
-      <div class="qr-card">
-        <div class="qr-card-header">
-          <div class="qr-card-text">
-            <h3 id="cardRoll">ROLL_NO</h3>
-            <p id="cardBatch">Batch: BATCH</p>
+      <div class="right-section">
+        <h1 class="digital-card-heading">Digital Card</h1>
+        <div class="qr-card">
+          <div class="qr-card-header">
+            <div class="qr-card-text">
+              <h3 id="cardRoll">ROLL_NO</h3>
+              <p id="cardBatch">Batch: BATCH</p>
+            </div>
+            <div class="qr-card-photo">
+              <img id="cardPhoto" src="" alt="Profile Photo" />
+            </div>
           </div>
-          <div class="qr-card-photo">
-            <img id="cardPhoto" src="" alt="Profile Photo" />
+          <div class="qr-card-body">
+            <img id="qrImage" alt="QR Code" />
+            <p id="qrTimestamp">Generated at: --/--/---- --:--:--</p>
           </div>
+          <div class="qr-card-footer">Powered by IARE</div>
         </div>
-        <div class="qr-card-body">
-          <img id="qrImage" alt="QR Code" />
-          <p id="qrTimestamp">Generated at: --/--/---- --:--:--</p>
-        </div>
-        <div class="qr-card-footer">Powered by IARE</div>
       </div>
 
       <!-- </div> -->
     </main>
     <!-- Spinner Overlay -->
-<div id="spinner-overlay" style="
+    <div id="spinner-overlay" style="
   position: fixed;
   top: 0;
   left: 0;
@@ -113,19 +116,19 @@
   justify-content: center;
   z-index: 9999;
 ">
-  <div class="spinner"></div>
-</div>
+      <div class="spinner"></div>
+    </div>
 
   </div>
   </footer>
   <script src="app.js"></script>
   <script src="timeTable.js"></script>
   <script>
- window.addEventListener("load", () => {
-    setTimeout(() => {
-      document.getElementById("spinner-overlay").style.display = "none";
-    }, 1000); // 1.5 seconds
-  });
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("spinner-overlay").style.display = "none";
+      }, 1000); // 1.5 seconds
+    });
     function updateProfileUI(student) {
       console.log("Updating profile UI with student:", student);
 
@@ -212,10 +215,10 @@
 
 
     document.addEventListener("DOMContentLoaded", () => {
-       if (localStorage.getItem("isLoggedIn") !== "true") {
-    // Redirect to login page if not logged in
+      if (localStorage.getItem("isLoggedIn") !== "true") {
+        // Redirect to login page if not logged in
         window.location.href = "../index.html";
-    }
+      }
       const rollno = localStorage.getItem("rollno");
       if (!rollno) {
         console.warn("No roll number found in localStorage.");
