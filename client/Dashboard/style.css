@@ -437,6 +437,20 @@ main .subjects small {
     display: block;
 }
 
+.digital-card-heading {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 1.5rem;
+  text-align: center; 
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* or flex-start if you want left-align */
+}
+
 main .timetable {
     margin-top: 2rem;
 }
@@ -782,3 +796,10 @@ main .timetable.active .closeBtn {
     gap: 2rem;
   }
 } 
+
+
+@media screen and (min-width: 1440px) {
+    main .subjects {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

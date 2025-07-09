@@ -1,6 +1,6 @@
+<!-- attendanceanalysis.html -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,31 +11,17 @@
       --color-primary: #00796B;
       --color-danger: #ff7782;
       --color-success: #41f1b6;
-      --color-warning: #ffbb55;
       --color-white: #fff;
-      --color-info: #7d8da1;
       --color-dark: #363949;
       --color-light: rgba(132, 139, 200, 0.18);
-      --color-dark-varient: #677483;
-      --color-background: #f6f6f9;
-
       --card-border-radius: 2rem;
-      --border-radius-1: 0.4rem;
-      --border-radius-2: 1.2rem;
-
       --card-padding: 1.8rem;
       --box-shadow: 0 2rem 3rem var(--color-light);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: var(--color-background);
+      background: var(--color-background);
       color: var(--color-dark);
       display: flex;
       flex-direction: column;
@@ -46,66 +32,45 @@
     .chart-container {
       width: 100%;
       max-width: 1000px;
-      background-color: var(--color-white);
+      background: var(--color-white);
       padding: var(--card-padding);
       border-radius: var(--card-border-radius);
       box-shadow: var(--box-shadow);
       margin-bottom: 2rem;
     }
 
-    canvas {
-      width: 100% !important;
-      height: auto !important;
-    }
-
     table {
       width: 100%;
-      max-width: 1000px;
       border-collapse: collapse;
-      background-color: var(--color-white);
+      background: var(--color-white);
       box-shadow: var(--box-shadow);
       border-radius: var(--card-border-radius);
       overflow: hidden;
     }
 
-    th,
-    td {
+    th, td {
       padding: 1rem;
       text-align: center;
       border-bottom: 1px solid var(--color-light);
     }
 
     th {
-      background-color: var(--color-primary);
+      background: var(--color-primary);
       color: var(--color-white);
-    }
-
-    tr:last-child td {
-      border-bottom: none;
     }
 
     tfoot td {
       font-weight: bold;
-      background-color: var(--color-light);
-    }
-
-    @media (max-width: 600px) {
-
-      .chart-container,
-      table {
-        padding: 1rem;
-        font-size: 0.9rem;
-      }
+      background: var(--color-light);
     }
   </style>
 </head>
 
 <body>
-  <h2 style="text-align: center; margin-bottom: 1rem; color: var(--color-primary);">Group Attendance Bar Chart</h2>
+  <h2 style="color: var(--color-primary); margin-bottom: 1rem;">Group Attendance Bar Chart</h2>
   <div class="chart-container">
     <canvas id="attendanceChart"></canvas>
   </div>
-  <h2 style="text-align: center; margin-bottom: 1rem; color: var(--color-primary);">Group Attendance Bar Chart</h2> 
 
   <table id="attendanceTable">
     <thead>
@@ -128,53 +93,36 @@
   </table>
 
   <script>
-    const allGroups = [
-      { name: "SKILLUP-1", present: 45, absent: 5 },
-      { name: "SKILLUP-2", present: 50, absent: 10 },
-       { name: "SKILLUP-3", present: 50, absent: 10 },
-      { name: "SKILLNEXT-1", present: 40, absent: 15 },
-      { name: "SKILLNEXT-2", present: 35, absent: 20 },
-      { name: "SKILLNEXT-3", present: 60, absent: 5 },
-      { name: "SKILLBRIDGE-1", present: 55, absent: 8 },
-      { name: "SKILLBRIDGE-2", present: 70, absent: 4 },
-      { name: "SKILLBRIDGE-3", present: 48, absent: 12 },
-      { name: "SKILLBRIDGE-4", present: 52, absent: 8 },
-      { name: "SKILLBRIDGE-5", present: 46, absent: 10 }
-    ];
+    const groupTotalCounts = {
+      "SKILLUP-1": 200,
+      "SKILLUP-2": 200,
+      "SKILLUP-3": 200,
+      "SKILLNEXT-1": 200,
+      "SKILLNEXT-2": 200,
+      "SKILLNEXT-3": 200,
+      "SKILLBRIDGE-1": 200,
+      "SKILLBRIDGE-2": 200,
+      "SKILLBRIDGE-3": 200,
+      "SKILLBRIDGE-4": 200,
+      "SKILLBRIDGE-5": 200
+    };
 
-    const todayKey = new Date().toISOString().split('T')[0]; // e.g., "2025-07-05"
-    let storedAttendance = JSON.parse(localStorage.getItem('attendanceData')) || {};
+    const todayKey = new Date().toISOString().split('T')[0];
+    const stored = JSON.parse(localStorage.getItem('attendanceData')) || {};
+    const dataToDisplay = stored[todayKey] || [];
 
-    // Clear old data if not from today
-    if (!storedAttendance[todayKey]) {
-      storedAttendance = { [todayKey]: [] };
-    }
-
-    // Read selected batch from localStorage
-    const batchSelected = (localStorage.getItem('selectedbatch') || '').replace(/"/g, '').toUpperCase();
-
-    // Find the selected group
-    const selectedGroup = allGroups.find(group => group.name.toUpperCase() === batchSelected);
-
-    // Check if group is already added for today
-    if (selectedGroup &&
-      !storedAttendance[todayKey].some(g => g.name.toUpperCase() === selectedGroup.name.toUpperCase())) {
-      storedAttendance[todayKey].push(selectedGroup);
-      localStorage.setItem('attendanceData', JSON.stringify(storedAttendance));
-    }
-
-    const dataToDisplay = storedAttendance[todayKey];
-
-    // Prepare data for the chart
     const labels = dataToDisplay.map(g => g.name);
     const presentData = dataToDisplay.map(g => g.present);
-    const absentData = dataToDisplay.map(g => g.absent);
+    const absentData = dataToDisplay.map(g => {
+      const total = groupTotalCounts[g.name] || 0;
+      return total - g.present;
+    });
 
     const ctx = document.getElementById('attendanceChart').getContext('2d');
-    const attendanceChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels,
         datasets: [
           {
             label: 'Present',
@@ -192,51 +140,27 @@
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 10,
-              color: 'var(--color-dark)'
-            }
-          },
-          x: {
-            ticks: {
-              color: 'var(--color-dark)'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            labels: {
-              color: 'var(--color-dark)'
-            }
-          },
-          tooltip: {
-            backgroundColor: 'var(--color-dark)',
-            titleColor: 'var(--color-white)',
-            bodyColor: 'var(--color-white)'
-          }
-        }
+        maintainAspectRatio: false
       }
     });
 
-    // Fill the table
     const tableBody = document.querySelector("#attendanceTable tbody");
     let totalPresent = 0, totalAbsent = 0;
 
-    dataToDisplay.forEach(group => {
-      const total = group.present + group.absent;
-      totalPresent += group.present;
-      totalAbsent += group.absent;
-      const row = `<tr>
-        <td>${group.name}</td>
-        <td>${group.present}</td>
-        <td>${group.absent}</td>
-        <td>${total}</td>
-      </tr>`;
-      tableBody.insertAdjacentHTML("beforeend", row);
+    dataToDisplay.forEach(g => {
+      const total = groupTotalCounts[g.name] || 0;
+      const absent = total - g.present;
+      totalPresent += g.present;
+      totalAbsent += absent;
+
+      tableBody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${g.name}</td>
+          <td>${g.present}</td>
+          <td>${absent}</td>
+          <td>${total}</td>
+        </tr>
+      `);
     });
 
     document.getElementById("totalPresent").textContent = totalPresent;
@@ -244,5 +168,4 @@
     document.getElementById("grandTotal").textContent = totalPresent + totalAbsent;
   </script>
 </body>
-
 </html>

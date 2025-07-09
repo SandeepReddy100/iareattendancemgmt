@@ -143,6 +143,11 @@ header .logo {
     display: flex;
     gap: .8rem;
     margin-right: auto;
+    /* margin-top: 3rem; */
+}
+
+header .logo h2{
+    margin-top: 0.8rem;
 }
 
 header .logo img {
