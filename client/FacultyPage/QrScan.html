@@ -1,8 +1,10 @@
+<!-- qr-scan.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Code Scanner</title>
   <link rel="icon" href="./IARE-LOGO.png" type="image/png">
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -55,18 +57,28 @@
       gap: 15px;
     }
 
-    
-    #reader {
-  width: 100%; /* 👈 Increase this */
-  max-width: 400px;
-  /* aspect-ratio: 3 / 4;  */
-  border-radius: 10px;
-  overflow: hidden;
-  object-fit: cover !important;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  align-self: center;
+    .info-box {
+  background-color: var(--color-light);
+  color: var(--color-dark);
+  padding: 10px 14px;
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      object-fit: cover !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      align-self: center;
+    }
 
     #result {
       font-size: 15px;
@@ -124,6 +136,7 @@
 <body>
   <h1>QR Code Scanner</h1>
   <div class="container">
+    <div id="batchCourseInfo" class="info-box"></div>
     <div class="card" id="selectedCourses"></div>
     <div id="reader"></div>
     <div id="result">Waiting for QR scan...</div>
@@ -133,35 +146,44 @@
 
   <script>
     const resultContainer = document.getElementById("result");
-    const selectedCoursesDiv = document.getElementById("selectedCourses");
     const scannedQRCodes = new Set();
     const scannedStudents = [];
     const html5QrCode = new Html5Qrcode("reader");
-    let lastScanTime = 0;
 
+    let lastScanTime = 0;
     const backendUrl = "https://iareattendancemgmt.onrender.com";
 
-    window.onload = function () {
+    window.onload = () => {
+
       const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      const batch = localStorage.getItem('selectedbatch')?.replace(/"/g, '');
+
+      // Display batch and courses
+      const infoBox = document.getElementById("batchCourseInfo");
+
+      if (courses && batch) {
+        infoBox.innerHTML = `
+    📘 <strong>Batch:</strong> ${batch}<br>
+    🕐 <strong>Courses:</strong> ${courses.period1}, ${courses.period2}, ${courses.period3}`;
+      }
+      
 
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 300, height: 250 } },
+        { fps: 10, qrbox: { width: 300, height: 265 } },
         onScanSuccess,
-        onScanFailure
-      ).catch(err => {
-        console.error("Camera start error:", err);
-      });
+        () => { }
+      ).catch(err => console.error("Camera start error:", err));
     };
 
-    function onScanSuccess(decodedText, decodedResult) {
+    function onScanSuccess(decodedText) {
       const lines = decodedText.split('\n');
       const rollLine = lines.find(line => line.includes('Roll No:'));
       const batchLine = lines.find(line => line.includes('Batch:'));
 
-      const currentTime = Date.now();
-      if (currentTime - lastScanTime < 2000) return;
-      lastScanTime = currentTime;
+      const now = Date.now();
+      if (now - lastScanTime < 2000) return;
+      lastScanTime = now;
 
       if (!rollLine || !batchLine) {
         resultContainer.innerText = "❌ Invalid QR format!";
@@ -173,7 +195,7 @@
       const batch = batchLine.split('Batch:')[1].trim();
 
       if (scannedQRCodes.has(rollno)) {
-        resultContainer.innerText = `⚠️ Attendance already marked for Roll No: ${rollno}`;
+        resultContainer.innerText = `⚠️ Already marked for: ${rollno}`;
         resultContainer.classList.add('already-scanned');
         return;
       }
@@ -181,12 +203,8 @@
       scannedQRCodes.add(rollno);
       scannedStudents.push({ rollno, batch });
 
-      resultContainer.innerText = `✅ Attendance marked for Roll No: ${rollno}`;
+      resultContainer.innerText = `✅ Marked for: ${rollno}`;
       resultContainer.classList.remove('already-scanned');
-    }
-
-    function onScanFailure(error) {
-      // Silent fail
     }
 
     document.getElementById("homeBtn").addEventListener("click", () => {
@@ -204,9 +222,8 @@
         return;
       }
 
-      const collectionName = `attendance_${batch.toLowerCase()}`;
       const payload = {
-        collectionName: collectionName,
+        collectionName: `attendance_${batch.toLowerCase()}`,
         date: new Date().toISOString().slice(0, 10),
         courseList: [courses.period1, courses.period2, courses.period3],
         presentArrays: scannedStudents
@@ -217,21 +234,35 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
-        .then(response => {
-          if (!response.ok) throw new Error("❌ Attendance marking failed!");
-          return response.json();
+        .then(res => {
+          if (!res.ok) throw new Error("❌ Failed to mark!");
+          return res.json();
         })
-        .then(data => {
-          alert("✅ Attendance marked successfully!");
-          localStorage.removeItem("scannedStudents");
+        .then(() => {
+          alert("✅ Marked successfully!");
+          resultContainer.innerText = "🎉 Attendance saved!";
+          html5QrCode.stop();
+
+          // Save present count to localStorage
+          const todayKey = new Date().toISOString().split('T')[0];
+          const groupName = batch.toUpperCase();
+          const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+          if (!attendanceData[todayKey]) attendanceData[todayKey] = [];
+
+          const presentCount = scannedQRCodes.size;
+          const idx = attendanceData[todayKey].findIndex(g => g.name === groupName);
+
+          const newEntry = { name: groupName, present: presentCount };
+          if (idx !== -1) attendanceData[todayKey][idx] = newEntry;
+          else attendanceData[todayKey].push(newEntry);
+
+          localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
           scannedQRCodes.clear();
           scannedStudents.length = 0;
-          resultContainer.innerText = "🎉 Attendance data sent!";
-          html5QrCode.stop().then(() => console.log("Camera stopped."));
         })
-        .catch(error => {
-          console.error("Error posting attendance:", error);
-          alert("❌ Failed to mark attendance. See console.");
+        .catch(err => {
+          console.error(err);
+          alert("❌ Error marking attendance!");
         })
         .finally(() => {
           homeBtn.disabled = false;
@@ -240,4 +271,5 @@
     });
   </script>
 </body>
+
 </html>
