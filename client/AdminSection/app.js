@@ -7,6 +7,11 @@ const backendUrl = "https://iareattendancemgmt.onrender.com";
 // profileBtn.onclick = function () {
 //   sideMenu.classList.toggle('active');
 // }
+
+
+
+
+
 window.onscroll = () => {
   sideMenu.classList.remove('active');
   if (window.scrollY > 0) { document.querySelector('header').classList.add('active'); }
@@ -23,7 +28,7 @@ document.getElementById('course-form').addEventListener('submit', async function
   localStorage.setItem('selectedbatch', JSON.stringify(batch));
 
   const date = new Date().toISOString().slice(0, 10); // today by default
-  const url = `${backendUrl}/api/admin/attendance/report/${collectionName}`;
+  const url = `${backendUrl}/api/admin/attendance/complete-report/${collectionName}`;
 
 
   fetch(url)

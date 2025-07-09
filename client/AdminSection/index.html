@@ -36,7 +36,7 @@
             </div>
             <a href="#">
                 <span class="material-icons-sharp" onclick="logout()">logout</span>
-                <h3 onclick="logout()">Logout</h3>    
+                <h3 onclick="logout()">Logout</h3>
             </a>
         </div>
         <div class="theme-toggler">
@@ -104,12 +104,22 @@
 
                 <div class="cg" onclick="window.location.href = 'batch.html'">
                     <span class="material-icons-sharp">dns</span>
-                    <h3>Attendance Analysis</h3>
+                    <h3>Batch-wise Attendance Report</h3>
                     <div class="icon-container1">
-                        <img src="https://img.icons8.com/ios-filled/50/000000/pie-chart.png"
-                            alt="Attendance Analysis Icon">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/report-card.png" alt="Report Card Icon" />
+
                     </div>
                 </div>
+
+                <div class="cg" onclick="getAttendanceReport()">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Download Attendance Summary</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Combo Chart Icon" />
+                    </div>
+                </div>
+
+
             </div>
     </div>
 
@@ -156,6 +166,50 @@
         </div> -->
     </div>
     <!-- <script src="timeTable.js"></script> -->
+  <script>
+async function getAttendanceReport() {
+  const batches = [
+    "skillup batch-1", "skillup batch-2", "skillup batch-3",
+    "skillnext batch-1", "skillnext batch-2", "skillnext batch-3",
+    "skillbridge batch-1", "skillbridge batch-2", "skillbridge batch-3","skillbridge batch-4", "skillbridge batch-5"
+  ];
+
+  const date = new Date().toISOString().slice(0, 10);
+
+  const params = new URLSearchParams();
+  batches.forEach(batch => params.append("batch", batch)); // NOT `"batch", `"skillup batch-1"``
+  params.append("date", date);
+  params.append("format", "excel");
+
+  // ✅ Final API URL
+  const backendUrl = "https://iareattendancemgmt.onrender.com";
+  const url = `${backendUrl}/api/admin/attendance-report?${params.toString()}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      const errorData = await response.json();
+      alert("Error: " + errorData.message);
+      return;
+    }
+
+    const blob = await response.blob();
+    const objectUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = objectUrl;
+    a.download = `attendance_summary_${date.replace(/-/g, "_")}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(objectUrl);
+  } catch (error) {
+    console.error("Download failed:", error);
+    alert("Failed to download attendance report.");
+  }
+}
+</script>
+
     <script src="app.js"></script>
 </body>
 
