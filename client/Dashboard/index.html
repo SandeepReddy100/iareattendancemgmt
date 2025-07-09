@@ -173,24 +173,39 @@
       function createCard(title, present, total, icon, colorClass = "") {
         const percent = total === 0 ? 0 : Math.round((present / total) * 100);
         const circumference = 210;
-        const offset = circumference - (percent / 100) * circumference;
+        let offset = circumference;
+
+        if (total > 0) {
+          offset = percent === 100 ? 0 : circumference - (percent / 100) * circumference;
+        }
 
         const div = document.createElement("div");
         div.className = `${colorClass}`;
+
         div.innerHTML = `
-      <span class="material-icons-sharp">${icon}</span>
-      <h3>${title}</h3>
-      <h2>${present}/${total}</h2>
-      <div class="progress">
-        <svg>
-          <circle cx="38" cy="38" r="36" style="stroke-dasharray: ${circumference}; stroke-dashoffset: ${offset};"></circle>
-        </svg>
-        <div class="number"><p>${percent}%</p></div>
-      </div>
-      <small class="text-muted">Last 24 Hours</small>
-    `;
+    <span class="material-icons-sharp">${icon}</span>
+    <h3>${title}</h3>
+    <h2>${present}/${total}</h2>
+    <div class="progress">
+      <svg>
+        ${total > 0
+            ? `<circle cx="38" cy="38" r="36"
+                style="
+                  stroke-dasharray: ${circumference}+2;
+                  stroke-dashoffset: ${offset};
+                ">
+              </circle>`
+            : `<!-- No circle rendered -->`
+          }
+      </svg>
+      <div class="number"><p>${percent}%</p></div>
+    </div>
+    <small class="text-muted">Last 24 Hours</small>
+  `;
+
         container.appendChild(div);
       }
+
 
       // Add overall attendance card
       createCard("Overall Attendance", overallAttendance.presentDays, overallAttendance.totalDays, "architecture", "eg");
@@ -200,6 +215,7 @@
         JFS: { name: "Java FullStack Development", icon: "computer", class: "cs" },
         CP: { name: "Competitive Programming", icon: "functions", class: "mth" },
         DBMS: { name: "Database Management", icon: "storage", class: "cg" },
+        AWS:{ name: "Amazon Web Services",icon: "computer", class: "cs"},
       };
 
       // Loop through each course and render

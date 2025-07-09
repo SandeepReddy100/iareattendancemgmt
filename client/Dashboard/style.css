@@ -730,7 +730,7 @@ main .timetable.active .closeBtn {
 
 @media screen and (max-width: 768px) {
     main .subjects svg {
-        max-width: 80px;
+        max-width: 79px;
     }
 }
 

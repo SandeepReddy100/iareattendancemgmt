@@ -35,7 +35,7 @@
       align-items: center;
       padding: 20px 10px;
       height: 100vh;
-      overflow: hidden;
+      /* overflow: hidden; */
     }
 
     h1 {
@@ -58,16 +58,16 @@
     }
 
     .info-box {
-  background-color: var(--color-light);
-  color: var(--color-dark);
-  padding: 10px 14px;
-  border: 1px solid var(--color-primary);
-  border-radius: 8px;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
-}
+      background-color: var(--color-light);
+      color: var(--color-dark);
+      padding: 10px 14px;
+      border: 1px solid var(--color-primary);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
 
 
     #reader {
@@ -140,6 +140,7 @@
     <div class="card" id="selectedCourses"></div>
     <div id="reader"></div>
     <div id="result">Waiting for QR scan...</div>
+    <div id="countDisplay" class="info-box">✅ Marked Students: 0</div>
     <button id="homeBtn">Finish</button>
   </div>
   <footer>© 2025 • Camera permission required</footer>
@@ -166,7 +167,7 @@
     📘 <strong>Batch:</strong> ${batch}<br>
     🕐 <strong>Courses:</strong> ${courses.period1}, ${courses.period2}, ${courses.period3}`;
       }
-      
+
 
       html5QrCode.start(
         { facingMode: "environment" },
@@ -176,36 +177,54 @@
       ).catch(err => console.error("Camera start error:", err));
     };
 
-    function onScanSuccess(decodedText) {
-      const lines = decodedText.split('\n');
-      const rollLine = lines.find(line => line.includes('Roll No:'));
-      const batchLine = lines.find(line => line.includes('Batch:'));
+   function onScanSuccess(decodedText) {
+  console.log("Scanned QR text:", decodedText);
 
-      const now = Date.now();
-      if (now - lastScanTime < 2000) return;
-      lastScanTime = now;
+  const rollMatch = decodedText.match(/Roll No:\s*(.*)/i);
+  const batchMatch = decodedText.match(/Batch:\s*(.*)/i);
 
-      if (!rollLine || !batchLine) {
-        resultContainer.innerText = "❌ Invalid QR format!";
-        resultContainer.classList.add('already-scanned');
-        return;
-      }
+  const rollno = rollMatch ? rollMatch[1].trim() : null;
+  let scannedBatch = batchMatch ? batchMatch[1].trim() : null;
 
-      const rollno = rollLine.split('Roll No:')[1].trim();
-      const batch = batchLine.split('Batch:')[1].trim();
+  if (scannedBatch) {
+    scannedBatch = scannedBatch
+      .replace(/batch[\s-]*/i, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+  }
 
-      if (scannedQRCodes.has(rollno)) {
-        resultContainer.innerText = `⚠️ Already marked for: ${rollno}`;
-        resultContainer.classList.add('already-scanned');
-        return;
-      }
+  let selectedBatch = localStorage.getItem('selectedbatch')?.replace(/"/g, '').trim().toLowerCase();
 
-      scannedQRCodes.add(rollno);
-      scannedStudents.push({ rollno, batch });
+  const now = Date.now();
+  if (now - lastScanTime < 2000) return;
+  lastScanTime = now;
 
-      resultContainer.innerText = `✅ Marked for: ${rollno}`;
-      resultContainer.classList.remove('already-scanned');
-    }
+  if (!rollno || !scannedBatch) {
+    console.log("Invalid QR format – rollno or batch missing");
+    resultContainer.innerText = "❌ Invalid QR format!";
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  if (scannedBatch !== selectedBatch) {
+    resultContainer.innerText = `⚠️ Please scan a QR from batch: ${selectedBatch}`;
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  if (scannedQRCodes.has(rollno)) {
+    resultContainer.innerText = `⚠️ Already marked for: ${rollno}`;
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  scannedQRCodes.add(rollno);
+  scannedStudents.push({ rollno, batch: selectedBatch });
+
+  resultContainer.innerText = `✅ Marked for: ${rollno}`;
+  document.getElementById("countDisplay").innerText = `✅ Marked Students: ${scannedQRCodes.size}`;
+  resultContainer.classList.remove('already-scanned');
+}
 
     document.getElementById("homeBtn").addEventListener("click", () => {
       const homeBtn = document.getElementById("homeBtn");
