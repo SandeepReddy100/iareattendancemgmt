@@ -1,18 +1,579 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const XLSX = require('xlsx');
-const Student = require('../models/student');
-const getAttendanceModel = require('../utils/getAttendanceModel');
+const XLSX = require("xlsx");
+const Student = require("../models/student");
+const getAttendanceModel = require("../utils/getAttendanceModel");
 const Faculty = require("../models/faculty");
+const ExcelJS = require("exceljs");
 
-router.patch('/mark-present', async (req, res) => {
+function getShortBatchName(fullBatchName) {
+  const parts = fullBatchName.toUpperCase().split(" ");
+  let code =
+    parts[0] === "SKILLUP"
+      ? "SU"
+      : parts[0] === "SKILLNEXT"
+      ? "SN"
+      : parts[0] === "SKILLBRIDGE"
+      ? "SB"
+      : "NA";
+
+  const number =
+    parts
+      .find((p) => p.includes("-"))
+      ?.split("-")
+      .pop() || "";
+
+  return `V-${code}-${number}`;
+}
+
+router.get("/attendance-report", async (req, res) => {
+  const { batch, date, format = "excel" } = req.query;
+
+  if (!batch || !date || format !== "excel") {
+    return res.status(400).json({
+      message: "batch, date, and format=excel are required",
+    });
+  }
+
+  const batches = Array.isArray(batch) ? batch : [batch];
+  const allSummaries = [];
+
+  try {
+    for (const b of batches) {
+      const collectionName = `attendance_${b
+        .toLowerCase()
+        .replace(/batch/gi, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-")}`;
+
+      const Attendance = getAttendanceModel(collectionName);
+      const students = await Attendance.find();
+
+      const branchData = {};
+
+      for (const student of students) {
+        const branch = student.branch || "UNKNOWN";
+        const shortBatch = getShortBatchName(student.batch);
+
+        if (!branchData[branch]) {
+          branchData[branch] = {
+            batch: shortBatch,
+            branch,
+            strength: 0,
+            presenties: 0,
+            absenties: 0,
+          };
+        }
+
+        const logsForDate = student.dailyLogs?.filter(
+          (log) => log.date === date
+        );
+
+        const wasPresent = logsForDate?.some(
+          (log) => log.status.toLowerCase() === "present"
+        );
+
+        branchData[branch].strength++;
+        if (wasPresent) {
+          branchData[branch].presenties++;
+        } else {
+          branchData[branch].absenties++;
+        }
+      }
+
+      allSummaries.push(...Object.values(branchData));
+    }
+
+    // Generate Excel
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet("PAT Attendance Summary");
+
+    // Format date to DD-MM-YYYY
+    const formatDateForDisplay = (dateString) => {
+      const dateObj = new Date(dateString);
+      if (isNaN(dateObj.getTime())) return dateString;
+
+      const day = String(dateObj.getDate()).padStart(2, "0");
+      const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const year = dateObj.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    const displayDate = formatDateForDisplay(date);
+
+    // Institute Header
+    const instituteRow = sheet.addRow([
+      "Institute of Aeronautical Engineering",
+      "",
+      "",
+      "",
+      "",
+    ]);
+    instituteRow.getCell(1).font = { bold: true, size: 14 };
+    instituteRow.getCell(1).alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    sheet.mergeCells("A1:E1");
+    instituteRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "E6E6FA" },
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // Summary Header
+    const summaryRow = sheet.addRow([
+      `PAT Attendance Summary - ${displayDate}`,
+      "",
+      "",
+      "",
+      "",
+    ]);
+    summaryRow.getCell(1).font = { bold: true, size: 12 };
+    summaryRow.getCell(1).alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    sheet.mergeCells("A2:E2");
+    summaryRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "F0F0F0" },
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // CDC Header
+    const cdcRow = sheet.addRow(["Career Development Center", "", "", "", ""]);
+    cdcRow.getCell(1).font = { bold: true, size: 11 };
+    cdcRow.getCell(1).alignment = { vertical: "middle", horizontal: "center" };
+    sheet.mergeCells("A3:E3");
+    cdcRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "F5F5F5" },
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // BTech Header
+    const btechRow = sheet.addRow([
+      "B.Tech V Semester Attendance Summary",
+      "",
+      "",
+      "",
+      "",
+    ]);
+    btechRow.getCell(1).font = { bold: true, size: 10 };
+    btechRow.getCell(1).alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+    sheet.mergeCells("A4:E4");
+    btechRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FAFAFA" },
+      };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // Empty Row
+    sheet.addRow([]);
+
+    // Table Header
+    const headerRow = sheet.addRow([
+      "BATCH",
+      "BRANCH",
+      "Total Strength",
+      "Presenties",
+      "Absenties",
+    ]);
+    headerRow.eachCell((cell) => {
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "ADD8E6" },
+      };
+      cell.font = { bold: true };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    sheet.columns = [
+      { width: 20 },
+      { width: 25 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
+    ];
+
+    // Data Rows
+    let totalPresent = 0;
+    let totalAbsent = 0;
+
+    allSummaries.forEach((item) => {
+      const row = sheet.addRow([
+        item.batch,
+        item.branch,
+        item.strength,
+        item.presenties,
+        item.absenties,
+      ]);
+
+      totalPresent += item.presenties;
+      totalAbsent += item.absenties;
+
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    // Totals Row
+    const totalRow = sheet.addRow(["TOTAL", "", "", totalPresent, totalAbsent]);
+    totalRow.font = { bold: true };
+    totalRow.eachCell((cell) => {
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=attendance_summary_${displayDate.replace(
+        /-/g,
+        "_"
+      )}.xlsx`
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Error generating report:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/attendance/complete-report/:collectionName", async (req, res) => {
+  try {
+    const collectionName = req.params.collectionName;
+    const reportDate = new Date().toISOString().slice(0, 10);
+
+    if (!collectionName) {
+      return res
+        .status(400)
+        .json({ message: "Missing collectionName parameter" });
+    }
+
+    const Attendance = getAttendanceModel(collectionName);
+    const attendanceRecords = await Attendance.find({});
+    const rollnosWithAttendance = attendanceRecords.map((a) => a.rollno);
+    const students = await Student.find({
+      rollno: { $in: rollnosWithAttendance },
+    });
+
+    const displayDate = (() => {
+      const d = new Date(reportDate);
+      return `${String(d.getDate()).padStart(2, "0")}-${String(
+        d.getMonth() + 1
+      ).padStart(2, "0")}-${d.getFullYear()}`;
+    })();
+
+    const shortBatchName = students[0]
+      ? getShortBatchName(students[0].batch)
+      : "V-NA-00";
+    const workbook = new ExcelJS.Workbook();
+
+    // 1️⃣ === Complete Report Sheet (All students) ===
+    const completeSheet = workbook.addWorksheet("Complete Report");
+
+    const styleHeaders = (sheet, title) => {
+      const headerRows = [
+        {
+          text: "Institute of Aeronautical Engineering",
+          color: "E6E6FA",
+          fontSize: 14,
+        },
+        {
+          text: `PAT Attendance Summary - ${displayDate}`,
+          color: "F0F0F0",
+          fontSize: 12,
+        },
+        { text: "Career Development Center", color: "F5F5F5", fontSize: 11 },
+        { text: title, color: "FAFAFA", fontSize: 10 },
+      ];
+
+      headerRows.forEach(({ text, color, fontSize }, idx) => {
+        const row = sheet.addRow([text, "", "", "", "", ""]);
+        sheet.mergeCells(`A${idx + 1}:F${idx + 1}`);
+        row.getCell(1).font = { bold: true, size: fontSize };
+        row.getCell(1).alignment = { vertical: "middle", horizontal: "center" };
+        row.eachCell((cell) => {
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: color },
+          };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
+
+      sheet.addRow([]);
+
+      const headerRow = sheet.addRow([
+        "S.No",
+        "Roll No",
+        "Name",
+        "Branch",
+        "Batch",
+        "Status",
+      ]);
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "ADD8E6" },
+        };
+        cell.font = { bold: true };
+        cell.alignment = { horizontal: "center", vertical: "middle" };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+
+      sheet.columns = [
+        { header: "S.No", key: "sno", width: 8 },
+        { header: "Roll No", key: "roll", width: 15 },
+        { header: "Name", key: "name", width: 32 },
+        { header: "Branch", key: "branch", width: 18 },
+        { header: "Batch", key: "batch", width: 20 },
+        { header: "Status", key: "status", width: 14 },
+      ];
+    };
+
+    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
+
+    completeSheet.addRow([]);
+
+    let serial = 1,
+      presentCount = 0,
+      absentCount = 0;
+
+    students.forEach((student) => {
+      const attendance = attendanceRecords.find(
+        (a) => a.rollno === student.rollno
+      );
+      const logs =
+        attendance?.dailyLogs?.filter((log) => log.date === reportDate) || [];
+      const isPresent = logs.some((log) => log.status === "present");
+      const shortName = getShortBatchName(student.batch);
+
+      isPresent ? presentCount++ : absentCount++;
+
+      const row = completeSheet.addRow([
+        serial++,
+        student.rollno,
+        student.name,
+        student.branch || "UNKNOWN",
+        shortName,
+        isPresent ? "Present" : "Absent",
+      ]);
+
+      row.eachCell((cell, colNumber) => {
+        cell.font = { name: "Calibri", size: 11 };
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: colNumber === 3 ? "left" : "center",
+        };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    });
+
+    completeSheet.addRow([]);
+    const totalRow = completeSheet.addRow([
+      "",
+      "",
+      "",
+      "Total",
+      `Present: ${presentCount}`,
+      `Absent: ${absentCount}`,
+    ]);
+    totalRow.eachCell((cell) => {
+      cell.font = { bold: true };
+      cell.border = {
+        top: { style: "thin" },
+        left: { style: "thin" },
+        bottom: { style: "thin" },
+        right: { style: "thin" },
+      };
+    });
+
+    // 2️⃣ === Separate Branch Sheets ===
+    const branchMap = {};
+
+    for (const student of students) {
+      const branch = student.branch || "UNKNOWN";
+      if (!branchMap[branch]) branchMap[branch] = [];
+
+      const attendance = attendanceRecords.find(
+        (a) => a.rollno === student.rollno
+      );
+      const logs =
+        attendance?.dailyLogs?.filter((log) => log.date === reportDate) || [];
+      const isPresent = logs.some((log) => log.status === "present");
+
+      branchMap[branch].push({ student, isPresent });
+    }
+
+    const sortedBranches = Object.keys(branchMap).sort();
+
+    for (const branch of sortedBranches) {
+      const data = branchMap[branch];
+      const sheetName = `${getShortBatchName(data[0].student.batch)}_${branch}`
+        .replace(/[\\\/\?\*\[\]]/g, "")
+        .slice(0, 31);
+      const branchSheet = workbook.addWorksheet(sheetName);
+
+      styleHeaders(branchSheet, `B.Tech V Semester - ${sheetName}`);
+      branchSheet.addRow([]);
+
+      let sr = 1,
+        branchPresent = 0,
+        branchAbsent = 0;
+
+      data.forEach(({ student, isPresent }) => {
+        const shortName = getShortBatchName(student.batch);
+        if (isPresent) branchPresent++;
+        else branchAbsent++;
+
+        const row = branchSheet.addRow([
+          sr++,
+          student.rollno,
+          student.name,
+          student.branch || "UNKNOWN",
+          shortName,
+          isPresent ? "Present" : "Absent",
+        ]);
+
+        row.eachCell((cell, colNumber) => {
+          cell.font = { name: "Calibri", size: 11 };
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: colNumber === 3 ? "left" : "center",
+          };
+          cell.border = {
+            top: { style: "thin" },
+            left: { style: "thin" },
+            bottom: { style: "thin" },
+            right: { style: "thin" },
+          };
+        });
+      });
+
+      branchSheet.addRow([]);
+      const totalRow = branchSheet.addRow([
+        "",
+        "",
+        "",
+        "Total",
+        `Present: ${branchPresent}`,
+        `Absent: ${branchAbsent}`,
+      ]);
+      totalRow.eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        };
+      });
+    }
+
+    const fileName = `${shortBatchName}_${displayDate}.xlsx`;
+
+    res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    console.error("Error generating attendance report:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// PATCH /mark-present
+router.patch("/mark-present", async (req, res) => {
   try {
     const { course, presenties, batch } = req.body;
 
     console.log("PATCH /mark-present received:", { course, presenties, batch });
 
     if (!course || !Array.isArray(presenties) || !batch) {
-      return res.status(400).json({ message: "Missing course, presenties, or batch" });
+      return res
+        .status(400)
+        .json({ message: "Missing course, presenties, or batch" });
     }
 
     const Attendance = getAttendanceModel(batch);
@@ -45,7 +606,10 @@ router.patch('/mark-present', async (req, res) => {
         if (!student.courseAttendance) student.courseAttendance = {};
 
         if (!student.courseAttendance[courseKey]) {
-          student.courseAttendance[courseKey] = { totalDays: 0, presentDays: 1 };
+          student.courseAttendance[courseKey] = {
+            totalDays: 0,
+            presentDays: 1,
+          };
         } else {
           student.courseAttendance[courseKey].presentDays =
             (student.courseAttendance[courseKey].presentDays || 0) + 1;
@@ -65,39 +629,33 @@ router.patch('/mark-present', async (req, res) => {
     res.status(200).json({
       message: "Updated absentees to present",
       updatedCount: updated.length,
-      updatedRollnos: updated
+      updatedRollnos: updated,
     });
-
   } catch (err) {
     console.error("❌ Error in /mark-present:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
-
 // POST /api/student
 router.post("/student", async (req, res) => {
-  const {
-    name,
-    rollno,
-    password,
-    branch,
-    batch,
-    email,
-    qrData,
-    qrLink
-  } = req.body;
+  const { name, rollno, password, branch, batch, email, qrData, qrLink } =
+    req.body;
 
   // Validate
   if (!name || !rollno || !password || !branch || !batch || !email) {
-    return res.status(400).json({ message: "All required fields must be provided" });
+    return res
+      .status(400)
+      .json({ message: "All required fields must be provided" });
   }
 
   try {
     const existingStudent = await Student.findOne({ rollno });
 
     if (existingStudent) {
-      return res.status(409).json({ message: "Student with this rollno already exists" });
+      return res
+        .status(409)
+        .json({ message: "Student with this rollno already exists" });
     }
 
     const newStudent = new Student({
@@ -108,12 +666,14 @@ router.post("/student", async (req, res) => {
       batch,
       email,
       qrData,
-      qrLink
+      qrLink,
     });
 
     await newStudent.save();
 
-    res.status(201).json({ message: "Student added successfully", student: newStudent });
+    res
+      .status(201)
+      .json({ message: "Student added successfully", student: newStudent });
   } catch (error) {
     console.error("Error inserting student:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -141,7 +701,7 @@ router.patch("/student/:rollno", async (req, res) => {
 
     res.json({
       message: "Student updated successfully",
-      student: updatedStudent
+      student: updatedStudent,
     });
   } catch (error) {
     console.error("Error updating student:", error);
@@ -164,76 +724,13 @@ router.delete("/students/:rollno", async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
-    return res.json({ message: "Student deleted successfully", deletedStudent });
+    return res.json({
+      message: "Student deleted successfully",
+      deletedStudent,
+    });
   } catch (error) {
     console.error("Error deleting student:", error);
     return res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-router.get('/attendance/report/:collectionName', async (req, res) => {
-  try {
-    const collectionName = req.params.collectionName;
-
-    if (!collectionName) {
-      return res.status(400).json({ message: 'Missing collectionName parameter' });
-    }
-
-    const reportDate = new Date().toISOString().slice(0, 10);
-    const Attendance = getAttendanceModel(collectionName);
-
-    // Find only students who have an attendance record in this specific collection
-    const attendanceRecords = await Attendance.find({});
-    const rollnosWithAttendance = attendanceRecords.map(a => a.rollno);
-
-    // Get student details only for those roll numbers
-    const students = await Student.find({ rollno: { $in: rollnosWithAttendance } });
-
-    let serial = 1;
-    const rows = [];
-
-    for (const student of students) {
-      const attendance = attendanceRecords.find(a => a.rollno === student.rollno);
-      const logsForDate = attendance?.dailyLogs?.filter(log => log.date === reportDate) || [];
-      const isPresent = logsForDate.some(log => log.status === 'present');
-
-      rows.push({
-        'S.No': serial++,
-        'Roll No': student.rollno,
-        'Name': student.name,
-        'Branch': student.branch,
-        'Batch': student.batch,
-        'Status': isPresent ? 'Present' : 'Absent'
-      });
-    }
-
-    // Sort: Absent first, then Present
-    rows.sort((a, b) => a.Status === 'Absent' ? -1 : b.Status === 'Absent' ? 1 : 0);
-
-    // Create worksheet and set column widths
-    const worksheet = XLSX.utils.json_to_sheet(rows);
-    worksheet['!cols'] = [
-      { wch: 6 },   // S.No
-      { wch: 12 },  // Roll No
-      { wch: 35 },  // Name
-      { wch: 15 },  // Branch
-      { wch: 20 },  // Batch
-      { wch: 12 },  // Status
-    ];
-
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Attendance Report');
-
-    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-
-    res.setHeader('Content-Disposition', `attachment; filename=attendance_report_${reportDate}.xlsx`);
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-
-    return res.send(buffer);
-
-  } catch (err) {
-    console.error('Error generating attendance report:', err);
-    return res.status(500).json({ message: 'Server error' });
   }
 });
 
@@ -246,7 +743,9 @@ router.get("/admin", async (req, res) => {
   }
 
   try {
-    const admin = await Admin.findOne({ adminId: new RegExp(`^${adminId}$`, 'i') });
+    const admin = await Admin.findOne({
+      adminId: new RegExp(`^${adminId}$`, "i"),
+    });
 
     if (!admin) {
       return res.status(404).json({ message: "Admin not found." });
@@ -254,17 +753,14 @@ router.get("/admin", async (req, res) => {
 
     return res.json({
       adminId: admin.adminId,
-      email: admin.email
+      email: admin.email,
       // password excluded intentionally for security
     });
-
   } catch (error) {
     console.error("Error fetching admin:", error);
     return res.status(500).json({ message: "Internal server error." });
   }
 });
-
-
 
 // Create a new faculty
 router.post("/addnewfaculty", async (req, res) => {
@@ -276,12 +772,15 @@ router.post("/addnewfaculty", async (req, res) => {
 
   try {
     const existing = await Faculty.findOne({ facultyid });
-    if (existing) return res.status(409).json({ message: "Faculty already exists" });
+    if (existing)
+      return res.status(409).json({ message: "Faculty already exists" });
 
     const newFaculty = new Faculty({ name, facultyid, passwordfa, email });
     const savedFaculty = await newFaculty.save();
 
-    res.status(201).json({ message: "Faculty added successfully", faculty: savedFaculty });
+    res
+      .status(201)
+      .json({ message: "Faculty added successfully", faculty: savedFaculty });
   } catch (err) {
     console.error("Add Faculty Error:", err);
     res.status(500).json({ message: "Internal server error" });
@@ -304,7 +803,10 @@ router.patch("/:facultyid", async (req, res) => {
       return res.status(404).json({ message: "Faculty not found" });
     }
 
-    res.json({ message: "Faculty updated successfully", faculty: updatedFaculty });
+    res.json({
+      message: "Faculty updated successfully",
+      faculty: updatedFaculty,
+    });
   } catch (err) {
     console.error("Update Faculty Error:", err);
     res.status(500).json({ message: "Internal server error" });
@@ -329,21 +831,24 @@ router.delete("/:facultyid", async (req, res) => {
   }
 });
 
-
-
-router.get('/absentees', async (req, res) => {
+// get absentees
+router.get("/absentees", async (req, res) => {
   try {
     const { batch, date, course } = req.query;
 
     if (!batch || !date || !course) {
-      return res.status(400).json({ message: "Missing batch, date, or course" });
+      return res
+        .status(400)
+        .json({ message: "Missing batch, date, or course" });
     }
 
     let Attendance;
     try {
       Attendance = getAttendanceModel(batch); // Ensure model exists
     } catch (err) {
-      return res.status(404).json({ message: `Batch collection not found: ${batch}` });
+      return res
+        .status(404)
+        .json({ message: `Batch collection not found: ${batch}` });
     }
 
     const absentees = await Attendance.find(
@@ -352,22 +857,19 @@ router.get('/absentees', async (req, res) => {
           $elemMatch: {
             date: date,
             course: course,
-            status: 'absent'
-          }
-        }
+            status: "absent",
+          },
+        },
       },
       { rollno: 1, _id: 0 }
     );
 
-    const rollnos = absentees.map(student => student.rollno);
+    const rollnos = absentees.map((student) => student.rollno);
     res.status(200).json(rollnos);
-
   } catch (err) {
     console.error("Error fetching absentees:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 module.exports = router;

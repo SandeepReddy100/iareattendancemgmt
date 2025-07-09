@@ -12,10 +12,13 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "mongoose": "^8.15.0",
     "multer": "^2.0.0",
+    "node-fetch": "^2.7.0",
     "nodemon": "^3.1.10",
+    "pdfkit": "^0.17.1",
     "qr-attendance-system": "file:",
     "xlsx": "^0.18.5"
   },
