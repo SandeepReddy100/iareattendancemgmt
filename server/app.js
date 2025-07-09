@@ -7,7 +7,7 @@ const studentAuthRoutes = require('./routes/studentauth');
 const facultyAuth = require('./routes/facultyauth');
 const adminAuthRoutes = require('./routes/adminauth');
 const adminRoutes = require('./routes/admin');
-const facultyRoutes = require('./routes/faculty')
+const facultyRoutes = require('./routes/faculty');
 const cors = require('cors');
 dotenv.config();
 const app = express();
