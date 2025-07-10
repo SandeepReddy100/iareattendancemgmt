@@ -301,260 +301,147 @@ router.get("/attendance-report", async (req, res) => {
 router.get("/attendance/complete-report/:collectionName", async (req, res) => {
   try {
     const collectionName = req.params.collectionName;
-    const reportDate = new Date().toISOString().slice(0, 10);
-
     if (!collectionName) {
-      return res
-        .status(400)
-        .json({ message: "Missing collectionName parameter" });
+      return res.status(400).json({ message: "Missing collectionName parameter" });
     }
+
+    const reportDate = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    const displayDate = new Date().toLocaleDateString("en-GB").split("/").join("-"); // DD-MM-YYYY
 
     const Attendance = getAttendanceModel(collectionName);
     const attendanceRecords = await Attendance.find({});
-    const rollnosWithAttendance = attendanceRecords.map((a) => a.rollno);
-    const students = await Student.find({
-      rollno: { $in: rollnosWithAttendance },
-    });
+    
+    // Get batch name from attendance collection or fallback
+    const sampleAttendance = attendanceRecords[0];
+    const sampleStudent = sampleAttendance
+      ? await Student.findOne({ rollno: sampleAttendance.rollno })
+      : null;
+      
+    const batchName = sampleStudent?.batch || "UNKNOWN BATCH";
+    const shortBatchName = getShortBatchName(batchName);
 
-    const displayDate = (() => {
-      const d = new Date(reportDate);
-      return `${String(d.getDate()).padStart(2, "0")}-${String(
-        d.getMonth() + 1
-      ).padStart(2, "0")}-${d.getFullYear()}`;
-    })();
+    // 🔁 Fetch all students in the same batch (instead of filtering by rollnos)
+    const students = await Student.find({ batch: batchName });
 
-    const shortBatchName = students[0]
-      ? getShortBatchName(students[0].batch)
-      : "V-NA-00";
     const workbook = new ExcelJS.Workbook();
 
-    // 1️⃣ === Complete Report Sheet (All students) ===
-    const completeSheet = workbook.addWorksheet("Complete Report");
-
+    // ✨ Header Styling
     const styleHeaders = (sheet, title) => {
       const headerRows = [
-        {
-          text: "Institute of Aeronautical Engineering",
-          color: "E6E6FA",
-          fontSize: 14,
-        },
-        {
-          text: `PAT Attendance Summary - ${displayDate}`,
-          color: "F0F0F0",
-          fontSize: 12,
-        },
-        { text: "Career Development Center", color: "F5F5F5", fontSize: 11 },
-        { text: title, color: "FAFAFA", fontSize: 10 },
+        ["Institute of Aeronautical Engineering", "E6E6FA", 14],
+        [`PAT Attendance Summary - ${displayDate}`, "F0F0F0", 12],
+        ["Career Development Center", "F5F5F5", 11],
+        [title, "FAFAFA", 10],
       ];
 
-      headerRows.forEach(({ text, color, fontSize }, idx) => {
+      headerRows.forEach(([text, color, size], i) => {
         const row = sheet.addRow([text, "", "", "", "", ""]);
-        sheet.mergeCells(`A${idx + 1}:F${idx + 1}`);
-        row.getCell(1).font = { bold: true, size: fontSize };
-        row.getCell(1).alignment = { vertical: "middle", horizontal: "center" };
-        row.eachCell((cell) => {
-          cell.fill = {
-            type: "pattern",
-            pattern: "solid",
-            fgColor: { argb: color },
-          };
+        sheet.mergeCells(`A${i + 1}:F${i + 1}`);
+        row.getCell(1).font = { bold: true, size };
+        row.getCell(1).alignment = { horizontal: "center", vertical: "middle" };
+        row.eachCell(cell => {
+          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: color } };
           cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
+            top: { style: "thin" }, left: { style: "thin" },
+            bottom: { style: "thin" }, right: { style: "thin" },
           };
         });
       });
 
-      sheet.addRow([]);
-
-      const headerRow = sheet.addRow([
-        "S.No",
-        "Roll No",
-        "Name",
-        "Branch",
-        "Batch",
-        "Status",
-      ]);
-      headerRow.eachCell((cell) => {
-        cell.fill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "ADD8E6" },
-        };
+      sheet.addRow();
+      const headerRow = sheet.addRow(["S.No", "Roll No", "Name", "Branch", "Batch", "Status"]);
+      headerRow.eachCell(cell => {
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "ADD8E6" } };
         cell.font = { bold: true };
         cell.alignment = { horizontal: "center", vertical: "middle" };
         cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
+          top: { style: "thin" }, left: { style: "thin" },
+          bottom: { style: "thin" }, right: { style: "thin" },
         };
       });
 
       sheet.columns = [
-        { header: "S.No", key: "sno", width: 8 },
-        { header: "Roll No", key: "roll", width: 15 },
-        { header: "Name", key: "name", width: 32 },
-        { header: "Branch", key: "branch", width: 18 },
-        { header: "Batch", key: "batch", width: 20 },
-        { header: "Status", key: "status", width: 14 },
+        { key: "sno", width: 8 },
+        { key: "roll", width: 15 },
+        { key: "name", width: 32 },
+        { key: "branch", width: 18 },
+        { key: "batch", width: 20 },
+        { key: "status", width: 14 },
       ];
     };
 
-    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
-
-    completeSheet.addRow([]);
-
-    let serial = 1,
-      presentCount = 0,
-      absentCount = 0;
-
-    students.forEach((student) => {
-      const attendance = attendanceRecords.find(
-        (a) => a.rollno === student.rollno
-      );
-      const logs =
-        attendance?.dailyLogs?.filter((log) => log.date === reportDate) || [];
-      const isPresent = logs.some((log) => log.status === "present");
-      const shortName = getShortBatchName(student.batch);
-
-      isPresent ? presentCount++ : absentCount++;
-
-      const row = completeSheet.addRow([
-        serial++,
-        student.rollno,
-        student.name,
-        student.branch || "UNKNOWN",
-        shortName,
-        isPresent ? "Present" : "Absent",
-      ]);
-
-      row.eachCell((cell, colNumber) => {
-        cell.font = { name: "Calibri", size: 11 };
-        cell.alignment = {
-          vertical: "middle",
-          horizontal: colNumber === 3 ? "left" : "center",
-        };
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-      });
-    });
-
-    completeSheet.addRow([]);
-    const totalRow = completeSheet.addRow([
-      "",
-      "",
-      "",
-      "Total",
-      `Present: ${presentCount}`,
-      `Absent: ${absentCount}`,
-    ]);
-    totalRow.eachCell((cell) => {
-      cell.font = { bold: true };
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      };
-    });
-
-    // 2️⃣ === Separate Branch Sheets ===
-    const branchMap = {};
-
-    for (const student of students) {
-      const branch = student.branch || "UNKNOWN";
-      if (!branchMap[branch]) branchMap[branch] = [];
-
-      const attendance = attendanceRecords.find(
-        (a) => a.rollno === student.rollno
-      );
-      const logs =
-        attendance?.dailyLogs?.filter((log) => log.date === reportDate) || [];
-      const isPresent = logs.some((log) => log.status === "present");
-
-      branchMap[branch].push({ student, isPresent });
-    }
-
-    const sortedBranches = Object.keys(branchMap).sort();
-
-    for (const branch of sortedBranches) {
-      const data = branchMap[branch];
-      const sheetName = `${getShortBatchName(data[0].student.batch)}_${branch}`
-        .replace(/[\\\/\?\*\[\]]/g, "")
-        .slice(0, 31);
-      const branchSheet = workbook.addWorksheet(sheetName);
-
-      styleHeaders(branchSheet, `B.Tech V Semester - ${sheetName}`);
-      branchSheet.addRow([]);
-
-      let sr = 1,
-        branchPresent = 0,
-        branchAbsent = 0;
+    // 🧾 Student Row Population
+    const addStudentRows = (sheet, data) => {
+      let sr = 1;
+      let present = 0, absent = 0;
 
       data.forEach(({ student, isPresent }) => {
-        const shortName = getShortBatchName(student.batch);
-        if (isPresent) branchPresent++;
-        else branchAbsent++;
+        if (isPresent) present++;
+        else absent++;
 
-        const row = branchSheet.addRow([
+        const row = sheet.addRow([
           sr++,
           student.rollno,
           student.name,
           student.branch || "UNKNOWN",
-          shortName,
+          getShortBatchName(student.batch),
           isPresent ? "Present" : "Absent",
         ]);
 
-        row.eachCell((cell, colNumber) => {
+        row.eachCell((cell, col) => {
           cell.font = { name: "Calibri", size: 11 };
-          cell.alignment = {
-            vertical: "middle",
-            horizontal: colNumber === 3 ? "left" : "center",
-          };
+          cell.alignment = { vertical: "middle", horizontal: col === 3 ? "left" : "center" };
           cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
+            top: { style: "thin" }, left: { style: "thin" },
+            bottom: { style: "thin" }, right: { style: "thin" },
           };
         });
       });
 
-      branchSheet.addRow([]);
-      const totalRow = branchSheet.addRow([
-        "",
-        "",
-        "",
-        "Total",
-        `Present: ${branchPresent}`,
-        `Absent: ${branchAbsent}`,
-      ]);
-      totalRow.eachCell((cell) => {
+      sheet.addRow();
+      const totalRow = sheet.addRow(["", "", "", "Total", `Present: ${present}`, `Absent: ${absent}`]);
+      totalRow.eachCell(cell => {
         cell.font = { bold: true };
         cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
+          top: { style: "thin" }, left: { style: "thin" },
+          bottom: { style: "thin" }, right: { style: "thin" },
         };
       });
+    };
+
+    // 🧾 Sheet 1: Complete Report
+    const completeSheet = workbook.addWorksheet("Complete Report");
+    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
+
+    const completeData = students.map(student => {
+      const attendance = attendanceRecords.find(a => a.rollno === student.rollno);
+      const logs = attendance?.dailyLogs?.filter(log => log.date === reportDate) || [];
+      const isPresent = logs.some(log => log.status === "present");
+      return { student, isPresent };
+    });
+
+    addStudentRows(completeSheet, completeData);
+
+    // 🧾 Sheet 2+: Branch-wise
+    const branchMap = {};
+    completeData.forEach(entry => {
+      const branch = entry.student.branch || "UNKNOWN";
+      if (!branchMap[branch]) branchMap[branch] = [];
+      branchMap[branch].push(entry);
+    });
+
+    const branches = Object.keys(branchMap).sort();
+    for (const branch of branches) {
+      const sheetName = `${shortBatchName}_${branch}`.replace(/[\\\/\?\*\[\]]/g, "").slice(0, 31);
+      const sheet = workbook.addWorksheet(sheetName);
+      styleHeaders(sheet, `B.Tech V Semester - ${sheetName}`);
+      addStudentRows(sheet, branchMap[branch]);
     }
 
+    // 📤 Send the Excel file
     const fileName = `${shortBatchName}_${displayDate}.xlsx`;
-
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
-
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     await workbook.xlsx.write(res);
     res.end();
   } catch (err) {
@@ -562,6 +449,7 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 // PATCH /mark-present
 router.patch("/mark-present", async (req, res) => {
