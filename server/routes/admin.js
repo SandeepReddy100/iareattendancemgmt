@@ -297,7 +297,6 @@ router.get("/attendance-report", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 router.get("/attendance/complete-report/:collectionName", async (req, res) => {
   try {
     const collectionName = req.params.collectionName;
@@ -310,22 +309,20 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
 
     const Attendance = getAttendanceModel(collectionName);
     const attendanceRecords = await Attendance.find({});
-    
-    // Get batch name from attendance collection or fallback
+
+    // Get batch name from a sample student
     const sampleAttendance = attendanceRecords[0];
     const sampleStudent = sampleAttendance
       ? await Student.findOne({ rollno: sampleAttendance.rollno })
       : null;
-      
+
     const batchName = sampleStudent?.batch || "UNKNOWN BATCH";
     const shortBatchName = getShortBatchName(batchName);
 
-    // 🔁 Fetch all students in the same batch (instead of filtering by rollnos)
     const students = await Student.find({ batch: batchName });
-
     const workbook = new ExcelJS.Workbook();
 
-    // ✨ Header Styling
+    // Styling header rows
     const styleHeaders = (sheet, title) => {
       const headerRows = [
         ["Institute of Aeronautical Engineering", "E6E6FA", 14],
@@ -370,7 +367,7 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
       ];
     };
 
-    // 🧾 Student Row Population
+    // Add student rows to sheet
     const addStudentRows = (sheet, data) => {
       let sr = 1;
       let present = 0, absent = 0;
@@ -409,10 +406,7 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
       });
     };
 
-    // 🧾 Sheet 1: Complete Report
-    const completeSheet = workbook.addWorksheet("Complete Report");
-    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
-
+    // Final structured attendance data
     const completeData = students.map(student => {
       const attendance = attendanceRecords.find(a => a.rollno === student.rollno);
       const logs = attendance?.dailyLogs?.filter(log => log.date === reportDate) || [];
@@ -420,9 +414,12 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
       return { student, isPresent };
     });
 
+    // Sheet 1 - Complete Report (both present and absent)
+    const completeSheet = workbook.addWorksheet("Complete Report");
+    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
     addStudentRows(completeSheet, completeData);
 
-    // 🧾 Sheet 2+: Branch-wise
+    // Create branch-wise absent-only sheets
     const branchMap = {};
     completeData.forEach(entry => {
       const branch = entry.student.branch || "UNKNOWN";
@@ -430,15 +427,17 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
       branchMap[branch].push(entry);
     });
 
-    const branches = Object.keys(branchMap).sort();
-    for (const branch of branches) {
+    for (const branch of Object.keys(branchMap).sort()) {
+      const absentees = branchMap[branch].filter(entry => !entry.isPresent);
+      if (absentees.length === 0) continue; // skip if no absentees
+
       const sheetName = `${shortBatchName}_${branch}`.replace(/[\\\/\?\*\[\]]/g, "").slice(0, 31);
       const sheet = workbook.addWorksheet(sheetName);
       styleHeaders(sheet, `B.Tech V Semester - ${sheetName}`);
-      addStudentRows(sheet, branchMap[branch]);
+      addStudentRows(sheet, absentees);
     }
 
-    // 📤 Send the Excel file
+    // Send the Excel file
     const fileName = `${shortBatchName}_${displayDate}.xlsx`;
     res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -449,7 +448,6 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 // PATCH /mark-present
 router.patch("/mark-present", async (req, res) => {
