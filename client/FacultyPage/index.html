@@ -85,20 +85,6 @@
                     <small class="text-muted">Last 24 Hours</small>
                 </div>
 
-                <!-- <div class="mth">
-                    <span class="material-icons-sharp">functions</span>
-                    <h3>overall Absenties</h3>
-                    <h2>27/29</h2>
-                    <div class="progress">
-                        <svg>
-                            <circle cx="38" cy="38" r="36"></circle>
-                        </svg>
-                        <div class="number">
-                            <p>93%</p>
-                        </div>
-                    </div>
-                    <small class="text-muted">Last 24 Hours</small>
-                </div> -->
 
                 <!-- Make this whole box clickable with styling preserved -->
                 <div class="cs clickable-box" onclick="window.location.href='CourseSelection.html'">
@@ -118,6 +104,18 @@
                             style="font-size: 48px;  background-color: var(--color-primary);">campaign</span>
                     </div>
                 </div>
+
+                <div class="cg clickable-box" onclick="window.location.href = 'batch.html'">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Batch-wise Attendance Report</h3>
+                    <div class="icon-container">
+                        <span class="material-icons-sharp" style="font-size: 48px; background-color: var(--color-primary);">analytics</span>
+                    </div>
+
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+
+                
 
             </div>
 
@@ -164,60 +162,60 @@
     </div>
     <script src="timeTable.js"></script>
     <script src="app.js"></script>
-     <script>
-    function updateFacultyUI(faculty) {
-        console.log("Updating faculty UI with:", faculty);
+    <script>
+        function updateFacultyUI(faculty) {
+            console.log("Updating faculty UI with:", faculty);
 
-        document.getElementById("facultyName").textContent =
-            faculty.name || "N/A";
-        document.getElementById("facultyID").textContent =
-            faculty.facultyid || "N/A";
-        document.getElementById("facultyEmail").textContent =
-            faculty.email || "N/A";
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const facultyid = localStorage.getItem("facultyid");
-        if (!facultyid) {
-            console.warn("No faculty id found in localStorage. Please login.");
-            return;
+            document.getElementById("facultyName").textContent =
+                faculty.name || "N/A";
+            document.getElementById("facultyID").textContent =
+                faculty.facultyid || "N/A";
+            document.getElementById("facultyEmail").textContent =
+                faculty.email || "N/A";
         }
 
-        const cachedFacultyRaw = localStorage.getItem("facultyData");
-        if (cachedFacultyRaw) {
-            try {
-                const cachedFaculty = JSON.parse(cachedFacultyRaw);
-                updateFacultyUI(cachedFaculty);
-
-                const cacheTime = localStorage.getItem("facultyDataTimestamp");
-                if (cacheTime && Date.now() - parseInt(cacheTime) < 3600000) {
-                    console.log("Using cached faculty data, skipping API fetch.");
-                    return;
-                }
-            } catch (err) {
-                console.error("Error parsing cached faculty data:", err);
-                localStorage.removeItem("facultyData");
-                localStorage.removeItem("facultyDataTimestamp");
+        document.addEventListener("DOMContentLoaded", () => {
+            const facultyid = localStorage.getItem("facultyid");
+            if (!facultyid) {
+                console.warn("No faculty id found in localStorage. Please login.");
+                return;
             }
-        }
 
-        // Optional: Uncomment if you want to re-fetch updated data
-        // fetch(`http://localhost:5000/api/faculty/${encodeURIComponent(facultyid)}`)
-        //     .then((res) => {
-        //         if (!res.ok) throw new Error("Failed to fetch faculty profile");
-        //         return res.json();
-        //     })
-        //     .then((data) => {
-        //         const faculty = data.faculty || data;
-        //         localStorage.setItem("facultyData", JSON.stringify(faculty));
-        //         localStorage.setItem("facultyDataTimestamp", Date.now().toString());
-        //         updateFacultyUI(faculty);
-        //     })
-        //     .catch((err) => {
-        //         console.error("Error fetching faculty profile:", err);
-        //     });
-    });
-</script>
+            const cachedFacultyRaw = localStorage.getItem("facultyData");
+            if (cachedFacultyRaw) {
+                try {
+                    const cachedFaculty = JSON.parse(cachedFacultyRaw);
+                    updateFacultyUI(cachedFaculty);
+
+                    const cacheTime = localStorage.getItem("facultyDataTimestamp");
+                    if (cacheTime && Date.now() - parseInt(cacheTime) < 3600000) {
+                        console.log("Using cached faculty data, skipping API fetch.");
+                        return;
+                    }
+                } catch (err) {
+                    console.error("Error parsing cached faculty data:", err);
+                    localStorage.removeItem("facultyData");
+                    localStorage.removeItem("facultyDataTimestamp");
+                }
+            }
+
+            // Optional: Uncomment if you want to re-fetch updated data
+            // fetch(`http://localhost:5000/api/faculty/${encodeURIComponent(facultyid)}`)
+            //     .then((res) => {
+            //         if (!res.ok) throw new Error("Failed to fetch faculty profile");
+            //         return res.json();
+            //     })
+            //     .then((data) => {
+            //         const faculty = data.faculty || data;
+            //         localStorage.setItem("facultyData", JSON.stringify(faculty));
+            //         localStorage.setItem("facultyDataTimestamp", Date.now().toString());
+            //         updateFacultyUI(faculty);
+            //     })
+            //     .catch((err) => {
+            //         console.error("Error fetching faculty profile:", err);
+            //     });
+        });
+    </script>
 </body>
 
 </html>

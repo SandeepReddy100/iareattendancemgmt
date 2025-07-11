@@ -159,6 +159,23 @@
         qrImage.classList.add("qr-image");
       }
 
+      //For Tampering Prevention
+
+      const img = document.getElementById('qrImage');
+      const originalSrc = student.qrLink;
+      let tamperDetected = false;
+
+      setInterval(() => {
+        if (!tamperDetected && img.src !== originalSrc) {
+          tamperDetected = true; // Prevent multiple alerts
+          alert("Tampering detected!");
+          location.reload(); // Reload once
+        }
+      }, 1000);
+
+
+
+
       // Timestamp
       const timestamp = new Date().toLocaleString();
       document.getElementById("qrTimestamp").textContent = `Generated at: ${timestamp}`;
@@ -176,8 +193,10 @@
         let offset = circumference;
 
         if (total > 0) {
-          offset = percent === 100 ? 0 : circumference - (percent / 100) * circumference;
+          // Avoid 0 offset glitch by slightly offsetting 100%
+          offset = percent === 100 ? 0.01 : circumference - (percent / 100) * circumference;
         }
+
 
         const div = document.createElement("div");
         div.className = `${colorClass}`;
@@ -187,19 +206,19 @@
     <h3>${title}</h3>
     <h2>${present}/${total}</h2>
     <div class="progress">
-      <svg>
-        ${total > 0
-            ? `<circle cx="38" cy="38" r="36"
-                style="
-                  stroke-dasharray: ${circumference}+2;
-                  stroke-dashoffset: ${offset};
-                ">
-              </circle>`
-            : `<!-- No circle rendered -->`
+  <svg>
+    ${(total === 0 || percent === 0)
+            ? `<!-- No circle rendered -->`
+            : `<circle cx="38" cy="38" r="36"
+            style="
+              stroke-dasharray: ${circumference};
+              stroke-dashoffset: ${offset};
+            ">
+        </circle>`
           }
-      </svg>
-      <div class="number"><p>${percent}%</p></div>
-    </div>
+  </svg>
+  <div class="number"><p>${percent}%</p></div>
+</div>
     <small class="text-muted">Last 24 Hours</small>
   `;
 
@@ -215,7 +234,7 @@
         JFS: { name: "Java FullStack Development", icon: "computer", class: "cs" },
         CP: { name: "Competitive Programming", icon: "functions", class: "mth" },
         DBMS: { name: "Database Management", icon: "storage", class: "cg" },
-        AWS:{ name: "Amazon Web Services",icon: "computer", class: "cs"},
+        AWS: { name: "Amazon Web Services", icon: "computer", class: "cs" },
       };
 
       // Loop through each course and render
@@ -370,6 +389,8 @@
       { time: '10-11 AM', roomNumber: '34-604', subject: 'DBMS130', type: 'Lecture' },
       { time: '01-02 PM', roomNumber: '33-309', subject: 'MTH166', type: 'Lecture' }
     ];
+
+
 
   </script>
 </body>

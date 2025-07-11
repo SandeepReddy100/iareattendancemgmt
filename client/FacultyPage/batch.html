@@ -94,29 +94,27 @@
 <body>
     <header>
         <div class="logo">
-            <img src="IARE-LOGO.png" alt="">
+            <img src="IARE-LOGO.png" alt="iare_logo">
             <h2>IARE</h2>
         </div>
 
 
-        <div class="theme-toggler">
+        <!-- <div class="theme-toggler">
             <span class="material-icons-sharp active">light_mode</span>
             <span class="material-icons-sharp">dark_mode</span>
-        </div>
+        </div> -->
     </header>
 
     <div class="change-password-container">
         <form id="course-form">
-            <h2>Select Courses</h2>
-            <p class="text-muted">Choose a course for each period below.</p>
-
+            <h2>Select Batch</h2>
+            <p class="text-muted">Choose any one batch</p>
             <div class="box">
                 <p class="text-muted">Select Batch</p>
                 <select name="batch" required>
                     <option value="" disabled selected>Select Batch</option>
                     <option value="SKILLUP-1">SKILLUP BATCH-1</option>
                     <option value="SKILLUP-2">SKILLUP BATCH-2</option>
-                    <option value="SKILLUP-3">SKILLUP BATCH-3</option>
                     <option value="SKILLNEXT-1">SKILLNEXT BATCH-1</option>
                     <option value="SKILLNEXT-2">SKILLNEXT BATCH-2</option>
                     <option value="SKILLNEXT-3">SKILLNEXT BATCH-3</option>
@@ -124,45 +122,16 @@
                     <option value="SKILLBRIDGE-2">SKILLBRIDGE BATCH-2</option>
                     <option value="SKILLBRIDGE-3">SKILLBRIDGE BATCH-3</option>
                     <option value="SKILLBRIDGE-4">SKILLBRIDGE BATCH-4</option>
-                    <option value="SKILLBRIDGE-5">SKILLBRIDGE BATCH-4</option>
+                    <option value="SKILLBRIDGE-5">SKILLBRIDGE BATCH-5</option>
+
                 </select>
             </div>
-            <div class="box">
-                <p class="text-muted">1st Period</p>
-                <select name="period1" required>
-                    <option value="" disabled selected>Select Course</option>
-                    <option value="CP">Competitive Programming</option>
-                    <option value="JFS">Java Full Stack</option>
-                    <option value="DBMS">DBMS</option>
-                </select>
-            </div>
-
-            <!-- <div class="box">
-                <p class="text-muted">2nd Period</p>
-                <select name="period2" required>
-                    <option value="" disabled selected>Select Course</option>
-                    <option value="CP">Competitive Programming</option>
-                    <option value="JFS">Java Full Stack</option>
-                    <option value="DBMS">DBMS</option>
-                </select>
-            </div>
-
-            <div class="box">
-                <p class="text-muted">3rd Period</p>
-                <select name="period3" required>
-                    <option value="" disabled selected>Select Course</option>
-                    <option value="CP">Competitive Programming</option>
-                    <option value="JFS">Java Full Stack</option>
-                    <option value="DBMS">DBMS</option>
-                </select>
-            </div> -->
-
             <div class="button">
                 <input type="submit" value="Submit" class="btn">
-                <a href="index.html" class="text-muted">Cancel</a>
+                <a href="FacultyPage/index.html" class="text-muted">Cancel</a>
             </div>
         </form>
-        <div id="qr-reader" style="width: 300px; display: none; margin-top: 20px;"></div>
+        <!-- <div id="qr-reader" style="width: 300px; display: none; margin-top: 20px;"></div> -->
 
     </div>
 
@@ -171,33 +140,5 @@
 </body>
 
 <script src="app.js"></script>
-<script>
-    document.getElementById('course-form').addEventListener('submit', function (e) {
-        e.preventDefault(); // Stop form from submitting
-
-        // Get selected course values
-        const Batch = document.querySelector('select[name="batch"]').value;
-        const period1 = document.querySelector('select[name="period1"]').value;
-        // const period2 = document.querySelector('select[name="period2"]').value;
-        // const period3 = document.querySelector('select[name="period3"]').value;
-
-        // Create object
-        const selectedCourses = {
-            period1
-            
-        };
-        
-        // Save to localStorage
-        localStorage.setItem('selectedbatch', JSON.stringify(Batch));
-        localStorage.setItem('selectedCourses', JSON.stringify(selectedCourses));
-
-        // Log to console
-        console.log('Saved to localStorage:', localStorage.getItem("selectedbatch"));
-        console.log('Saved to localStorage:', selectedCourses);
-
-        // Redirect to QR scan page (make sure the path is correct)
-        window.location.href = 'QrScan.html';
-    });
-</script>
 
 </html>
