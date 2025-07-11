@@ -9,6 +9,8 @@
   <link rel="shortcut icon" href="./images/logo.png" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+
+  
 </head>
 
 <body>
@@ -71,37 +73,46 @@
     </aside>
 
 
-    <main class="main-container responsive-layout">
-      <div class="attendance-section">
-        <h1>Attendance</h1>
-        <div class="subjects" id="attendanceCardsContainer">
-          <!-- Cards will be generated here dynamically -->
+    <main class="main-container">
+      <div class="container1 responsive-layout">
+        <div class="attendance-section">
+          <h1>Attendance</h1>
+          <div class="subjects" id="attendanceCardsContainer">
+            <!-- Cards will be generated here dynamically -->
+          </div>
+        </div>
+
+
+        <!-- card section -->
+        <div class="right-section">
+          <h1 class="digital-card-heading">Digital Card</h1>
+          <div class="qr-card">
+            <div class="qr-card-header">
+              <div class="qr-card-text">
+                <h3 id="cardRoll">ROLL_NO</h3>
+                <p id="cardBatch">Batch: BATCH</p>
+              </div>
+              <div class="qr-card-photo">
+                <img id="cardPhoto" src="" alt="Profile Photo" />
+              </div>
+            </div>
+            <div class="qr-card-body">
+              <img id="qrImage" alt="QR Code" />
+              <p id="qrTimestamp">Generated at: --/--/---- --:--:--</p>
+            </div>
+            <div class="qr-card-footer">Powered by IARE</div>
+          </div>
         </div>
       </div>
 
-
-      <!-- card section -->
-      <div class="right-section">
-        <h1 class="digital-card-heading">Digital Card</h1>
-        <div class="qr-card">
-          <div class="qr-card-header">
-            <div class="qr-card-text">
-              <h3 id="cardRoll">ROLL_NO</h3>
-              <p id="cardBatch">Batch: BATCH</p>
-            </div>
-            <div class="qr-card-photo">
-              <img id="cardPhoto" src="" alt="Profile Photo" />
-            </div>
+      <div class="container2">
+        <section class="today-timetable">
+          <h2><span class="material-icons-sharp">event</span> Today's Timetable</h2>
+          <div class="periods" id="timetableContainer">
+            <!-- Dynamic periods will be injected here -->
           </div>
-          <div class="qr-card-body">
-            <img id="qrImage" alt="QR Code" />
-            <p id="qrTimestamp">Generated at: --/--/---- --:--:--</p>
-          </div>
-          <div class="qr-card-footer">Powered by IARE</div>
-        </div>
+        </section>
       </div>
-
-      <!-- </div> -->
     </main>
     <!-- Spinner Overlay -->
     <div id="spinner-overlay" style="
@@ -123,276 +134,8 @@
   </footer>
   <script src="app.js"></script>
   <script src="timeTable.js"></script>
-  <script>
-    window.addEventListener("load", () => {
-      setTimeout(() => {
-        document.getElementById("spinner-overlay").style.display = "none";
-      }, 1000); // 1.5 seconds
-    });
-    function updateProfileUI(student) {
-      console.log("Updating profile UI with student:", student);
+ 
 
-      const roll = student.rollno || "N/A";
-      const batch = student.batch || "N/A";
-
-      // Profile Details
-      document.getElementById("profileName").textContent = student.name || "N/A";
-      document.getElementById("profileRollNo").textContent = roll;
-      document.getElementById("profileBranch").textContent = student.branch || "N/A";
-      document.getElementById("profileBatch").textContent = batch;
-      document.getElementById("profileEmail").textContent = student.email || "N/A";
-
-      // Card Top Text
-      document.getElementById("cardRoll").textContent = `Roll No: ${roll}`;
-      document.getElementById("cardBatch").textContent = `Batch: ${batch}`;
-
-      // Profile Photo
-      const photoUrl = `https://iare-data.s3.ap-south-1.amazonaws.com/uploads/STUDENTS/${roll}/${roll}.jpg`;
-      document.getElementById("cardPhoto").src = photoUrl;
-      document.getElementById("cardPhoto").alt = `${roll} Profile Photo`;
-
-      // QR Code
-      if (student.qrLink) {
-        const qrImage = document.getElementById("qrImage");
-        qrImage.src = student.qrLink;
-        qrImage.alt = `${roll} QR Code`;
-        qrImage.classList.add("qr-image");
-      }
-
-      //For Tampering Prevention
-
-      const img = document.getElementById('qrImage');
-      const originalSrc = student.qrLink;
-      let tamperDetected = false;
-
-      setInterval(() => {
-        if (!tamperDetected && img.src !== originalSrc) {
-          tamperDetected = true; // Prevent multiple alerts
-          alert("Tampering detected!");
-          location.reload(); // Reload once
-        }
-      }, 1000);
-
-
-
-
-      // Timestamp
-      const timestamp = new Date().toLocaleString();
-      document.getElementById("qrTimestamp").textContent = `Generated at: ${timestamp}`;
-    }
-
-    function updateAttendanceUI(attendanceData) {
-      const { overallAttendance, courseAttendance } = attendanceData;
-      const container = document.getElementById("attendanceCardsContainer");
-      container.innerHTML = ""; // Clear any previous cards
-
-      // Helper to create a card
-      function createCard(title, present, total, icon, colorClass = "") {
-        const percent = total === 0 ? 0 : Math.round((present / total) * 100);
-        const circumference = 210;
-        let offset = circumference;
-
-        if (total > 0) {
-          // Avoid 0 offset glitch by slightly offsetting 100%
-          offset = percent === 100 ? 0.01 : circumference - (percent / 100) * circumference;
-        }
-
-
-        const div = document.createElement("div");
-        div.className = `${colorClass}`;
-
-        div.innerHTML = `
-    <span class="material-icons-sharp">${icon}</span>
-    <h3>${title}</h3>
-    <h2>${present}/${total}</h2>
-    <div class="progress">
-  <svg>
-    ${(total === 0 || percent === 0)
-            ? `<!-- No circle rendered -->`
-            : `<circle cx="38" cy="38" r="36"
-            style="
-              stroke-dasharray: ${circumference};
-              stroke-dashoffset: ${offset};
-            ">
-        </circle>`
-          }
-  </svg>
-  <div class="number"><p>${percent}%</p></div>
-</div>
-    <small class="text-muted">Last 24 Hours</small>
-  `;
-
-        container.appendChild(div);
-      }
-
-
-      // Add overall attendance card
-      createCard("Overall Attendance", overallAttendance.presentDays, overallAttendance.totalDays, "architecture", "eg");
-
-      // Map for icon and color class
-      const courseMeta = {
-        JFS: { name: "Java FullStack Development", icon: "computer", class: "cs" },
-        CP: { name: "Competitive Programming", icon: "functions", class: "mth" },
-        DBMS: { name: "Database Management", icon: "storage", class: "cg" },
-        AWS: { name: "Amazon Web Services", icon: "computer", class: "cs" },
-      };
-
-      // Loop through each course and render
-      Object.entries(courseAttendance).forEach(([key, { presentDays, totalDays }]) => {
-        const meta = courseMeta[key] || {
-          name: key,
-          icon: "school",
-          class: "net"
-        };
-        createCard(meta.name, presentDays, totalDays, meta.icon, meta.class);
-      });
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("isLoggedIn") !== "true") {
-        // Redirect to login page if not logged in
-        window.location.href = "../index.html";
-      }
-      const rollno = localStorage.getItem("rollno");
-      if (!rollno) {
-        console.warn("No roll number found in localStorage.");
-        return;
-      }
-
-      // Profile fetch and cache
-      const cachedProfileRaw = localStorage.getItem("profileData");
-      let batch = null;
-
-      if (cachedProfileRaw) {
-        try {
-          const cachedProfile = JSON.parse(cachedProfileRaw);
-          updateProfileUI(cachedProfile);
-          batch = cachedProfile.batch || "";
-
-          const cacheTime = localStorage.getItem("profileDataTimestamp");
-          if (cacheTime && Date.now() - parseInt(cacheTime) < 3600000) {
-            console.log("Using cached profile.");
-          } else {
-            fetch(`${backendUrl}/api/student/${encodeURIComponent(rollno)}`)
-              .then(res => res.json())
-              .then(data => {
-                const student = data.student || data;
-                localStorage.setItem("profileData", JSON.stringify(student));
-                localStorage.setItem("profileDataTimestamp", Date.now().toString());
-                updateProfileUI(student);
-                batch = student.batch || "";
-              })
-              .catch(err => {
-                console.error("Profile fetch error:", err);
-              });
-          }
-        } catch (err) {
-          console.error("Invalid cached profile:", err);
-        }
-      }
-
-      if (!batch) {
-        console.warn("Batch missing, cannot fetch attendance.");
-        return;
-      }
-      const formattedBatch = batch
-        .replace(/BATCH/gi, "")
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "")
-        .toLowerCase();
-      fetch(`${backendUrl}/api/facultyop/attendance?rollno=${encodeURIComponent(rollno)}&batch=${encodeURIComponent(formattedBatch)}`)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch attendance");
-          return res.json();
-        })
-        .then((data) => {
-          updateAttendanceUI(data);
-        })
-        .catch((err) => {
-          console.error("Attendance fetch error:", err);
-        });
-
-    });
-  </script>
-  <script>
-    const days = [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const today = new Date().getDay();
-    let currentDayIndex = today;
-
-    function renderTimetable(dayIndex) {
-      const timetableBody = document.getElementById("timetable-body");
-      if (!timetableBody) return;
-
-      timetableBody.innerHTML = "";
-      const dayData = days[dayIndex];
-
-      dayData.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-                <td>${row.time}</td>
-                <td>${row.roomNumber}</td>
-                <td>${row.subject}</td>
-                <td>${row.type}</td>
-            `;
-        timetableBody.appendChild(tr);
-      });
-
-      document.querySelector(".timetable h2").textContent = `${dayNames[dayIndex]}'s Timetable`;
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      renderTimetable(currentDayIndex);
-
-      document.getElementById("prevDay")?.addEventListener("click", () => {
-        currentDayIndex = (currentDayIndex - 1 + 7) % 7;
-        renderTimetable(currentDayIndex);
-      });
-
-      document.getElementById("nextDay")?.addEventListener("click", () => {
-        currentDayIndex = (currentDayIndex + 1) % 7;
-        renderTimetable(currentDayIndex);
-      });
-    });
-
-    // Timetable Data
-    const Sunday = [{ time: 'Sunday', roomNumber: 'Holiday', subject: 'No class Available', type: '' }];
-    const Monday = [
-      { time: '09-10 AM', roomNumber: '38-718', subject: 'DBMS130', type: 'Lecture' },
-      { time: '10-11 AM', roomNumber: '38-718', subject: 'MTH166', type: 'Tutorial' },
-      { time: '12-01 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
-    ];
-    const Tuesday = [
-      { time: '09-10 AM', roomNumber: '27-304Y', subject: 'MTH166', type: 'Tutorial' },
-      { time: '11-12 AM', roomNumber: '28-107', subject: 'CS849', type: 'Lecture' },
-      { time: '12-01 PM', roomNumber: '28-107', subject: 'CS849', type: 'Lecture' },
-      { time: '02-03 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
-    ];
-    const Wednesday = [
-      { time: '10-11 AM', roomNumber: '33-309', subject: 'DBMS130', type: 'Lecture' },
-      { time: '11-12 AM', roomNumber: '38-719', subject: 'CS200', type: 'Lecture' }
-    ];
-    const Thursday = [
-      { time: '11-12 AM', roomNumber: '33-309', subject: 'MTH166', type: 'Lecture' },
-      { time: '01-02 PM', roomNumber: '38-719', subject: 'CS849', type: 'Lecture' },
-      { time: '02-03 PM', roomNumber: '38-718', subject: 'NS200', type: 'Lecture' }
-    ];
-    const Friday = [
-      { time: '10-11 AM', roomNumber: '33-309', subject: 'MEC103', type: 'Lecture' },
-      { time: '11-12 AM', roomNumber: '33-309', subject: 'MEC103', type: 'Lecture' },
-      { time: '02-03 PM', roomNumber: '33-601', subject: 'CS849', type: 'Tutorial' }
-    ];
-    const Saturday = [
-      { time: '09-10 AM', roomNumber: '34-604', subject: 'DBMS130', type: 'Tutorial' },
-      { time: '10-11 AM', roomNumber: '34-604', subject: 'DBMS130', type: 'Lecture' },
-      { time: '01-02 PM', roomNumber: '33-309', subject: 'MTH166', type: 'Lecture' }
-    ];
-
-
-
-  </script>
 </body>
 
 </html>
