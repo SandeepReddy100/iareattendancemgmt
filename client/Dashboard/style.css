@@ -198,32 +198,7 @@ header #profile-btn {
     cursor: pointer;
 }
 
-header .theme-toggler {
-    background: var(--color-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 1.6rem;
-    width: 4.2rem;
-    cursor: pointer;
-    border-radius: var(--border-radius-1);
-    margin-right: 2rem;
-}
 
-header .theme-toggler span {
-    font-size: 1.2rem;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-header .theme-toggler span.active {
-    background-color: var(--color-primary);
-    color: white;
-    border-radius: var(--border-radius-1);
-}
 
 /* Profile section  */
 aside .profile {
@@ -262,72 +237,6 @@ aside .profile .about {
 }
 
 /* Home Section  */
-
-.qr-card {
-    width: 300px;
-    background: #00796B;
-    border-radius: 12px;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    overflow: hidden;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-}
-
-.qr-card-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    background-color: #00796B;
-}
-
-.qr-card-text h3 {
-    margin: 2.3rem 0 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.qr-card-text p {
-    margin: 0.3rem 0 0;
-    font-size: 0.9rem;
-    color: #cceee9;
-}
-
-.qr-card-photo img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #fff;
-}
-
-.qr-card-body {
-    background: white;
-    color: black;
-    padding: 0.5rem;
-    text-align: center;
-}
-
-.qr-card-body img {
-    width: 200px;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    margin-top: 1rem !important;
-    margin-bottom: 0.5rem;
-    margin-left: 2rem;
-}
-
-.qr-card-body p {
-    font-size: 0.8rem;
-    margin: 0;
-}
-
-.qr-card-footer {
-    background-color: #005f55;
-    text-align: center;
-    padding: 0.5rem;
-    font-size: 0.75rem;
-    color: #e0f2f1;
-}
 
 main {
     position: relative;
@@ -405,30 +314,7 @@ main .subjects svg circle {
 }
 
 
-/* main .subjects .eg svg circle {
-    stroke-dashoffset: 25;
-    stroke-dasharray: 210;
-}
 
-main .subjects .mth svg circle {
-    stroke-dashoffset: 7;
-    stroke-dasharray: 210;
-}
-
-main .subjects .cs svg circle {
-    stroke-dashoffset: 35;
-    stroke-dasharray: 210;
-}
-
-main .subjects .cg svg circle {
-    stroke-dashoffset: 0;
-    stroke-dasharray: 210;
-}
-
-main .subjects .net svg circle {
-    stroke-dashoffset: 5;
-    stroke-dasharray: 210;
-} */
 
 main .subjects .progress .number {
     position: absolute;
@@ -454,118 +340,167 @@ main .subjects small {
   text-align: center; 
 }
 
-.right-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* or flex-start if you want left-align */
+.qr-card {
+    width: 300px;
+    background: #00796B;
+    border-radius: 12px;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
-main .timetable {
-    margin-top: 2rem;
-}
-
-main .timetable h2 {
-    margin-bottom: .8rem;
-}
-
-main .timetable table {
-    background-color: var(--color-white);
-    width: 100%;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-    text-align: center;
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
-}
-
-main .timetable span {
-    display: none;
-}
-
-main .timetable table:hover {
-    box-shadow: none;
-}
-
-main table tbody td {
-    height: 2.8rem;
-    border-bottom: 1px solid var(--color-light);
-    color: var(--color-dark-varient);
-}
-
-main table tbody tr:last-child td {
-    border: none;
-}
-
-main .timetable.active {
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
+.qr-card-header {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-main .timetable.active h2 {
-    color: var(--color-dark);
-}
-
-main .timetable.active table {
-    width: 90%;
-    max-width: 1000px;
-    position: relative;
-}
-
-main .timetable.active span {
-    display: block;
-    font-size: 2rem;
-    color: var(--color-dark);
-    cursor: pointer;
-}
-
-.timetable div {
-    position: relative;
-    width: 50%;
-    display: flex;
-    align-items: center;
     justify-content: space-between;
+    padding: 1rem;
+    background-color: #00796B;
 }
 
-main .timetable.active .closeBtn {
-    position: absolute;
-    top: 5%;
-    right: 5%;
+.qr-card-text h3 {
+    margin: 2.3rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
-
-.right {
-    margin-top: 2.2rem;
-    padding-left: 1.5rem;
+.qr-card-text p {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    color: #cceee9;
 }
 
-.right .announcements h2 {
-    margin-bottom: .8rem;
+.qr-card-photo img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
 }
 
-.right .announcements .updates {
-    background-color: var(--color-white);
-    padding: var(--card-padding);
-    border-radius: var(--card-border-radius);
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
+.qr-card-body {
+    background: white;
+    color: black;
+    padding: 0.5rem;
+    text-align: center;
 }
 
-.right .announcements .updates:hover {
-    box-shadow: none;
+.qr-card-body img {
+    width: 200px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    margin-top: 1rem !important;
+    margin-bottom: 0.5rem;
+    margin-left: 2rem;
 }
 
-.right .announcements .updates .message {
-    gap: 1rem;
-    line-height: 1.5;
-    padding: .5rem 0;
+.qr-card-body p {
+    font-size: 0.8rem;
+    margin: 0;
 }
+
+.qr-card-footer {
+    background-color: #005f55;
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    color: #e0f2f1;
+}
+.container2 .today-timetable {
+      max-width: 800px;
+      background: var(--color-white);
+      padding: 2rem;
+      border-radius: var(--card-border-radius);
+      box-shadow: var(--box-shadow);
+      margin-top: 2rem;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .container2 .today-timetable h2 {
+      margin-bottom: 1.7rem;
+      font-size: 1.6rem;
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .container2 .today-timetable .periods {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .container2 .today-timetable .period {
+      background: linear-gradient(145deg, #ffffff, #e6e6e6);
+      padding: 1.2rem 1.5rem;
+      border-left: 6px solid var(--color-primary);
+      border-radius: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .container2 .today-timetable .period:hover {
+      transform: translateY(-4px);
+    }
+
+    .container2 .today-timetable .period .left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .container2 .today-timetable .period .left .material-icons-sharp {
+      font-size: 2rem;
+      color: var(--color-primary);
+      background: #e0f2f1;
+      border-radius: 50%;
+      padding: 0.5rem;
+    }
+
+    .container2 .today-timetable .period .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container2 .today-timetable .period .subject {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--color-dark);
+    }
+
+    .container2 .today-timetable .period .room {
+      font-size: 0.9rem;
+      color: var(--color-dark-varient);
+    }
+
+    .container2 .today-timetable .period .time {
+      font-weight: bold;
+      color: var(--color-info);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .container2 .today-timetable .no-classes {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      color: var(--color-dark-varient);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
 
 /* MEDIA QUERIES  */
@@ -604,11 +539,7 @@ main .timetable.active .closeBtn {
         gap: 1;
     }
 
-    main .timetable {
-        width: 150%;
-        position: absolute;
-        padding: 4rem 0 0 0;
-    }
+   
 }
 
 
@@ -668,17 +599,6 @@ main .timetable.active .closeBtn {
         padding: 0 2rem;
     }
 
-    main .timetable {
-        position: relative;
-        margin: 3rem 0 0 0;
-        width: 100%;
-    }
-
-    main .timetable table {
-        width: 100%;
-        margin: 0;
-    }
-
     .right {
         width: 100%;
         padding: 2rem;
@@ -692,7 +612,7 @@ main .timetable.active .closeBtn {
 
 .responsive-layout {
     display: flex;
-    flex-direction: column;
+    flex-direction: column ;
     gap: 5rem;
     align-items: center;
     justify-content: center;
@@ -794,6 +714,10 @@ main .timetable.active .closeBtn {
 
     .qr-card-footer {
         font-size: 1.4rem;
+    }
+
+    .container2 {
+        width: 100%;
     }
 }
 

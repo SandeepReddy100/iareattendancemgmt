@@ -4,9 +4,11 @@ const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
 const backendUrl = "https://iareattendancemgmt.onrender.com";
-// // profileBtn.onclick = function() {
-// //     sideMenu.classList.toggle('active');
-// // }
+
+profileBtn.onclick = function () {
+  sideMenu.classList.toggle('active');
+}
+
 window.onscroll = () => {
     sideMenu.classList.remove('active');
     if(window.scrollY > 0){document.querySelector('header').classList.add('active');}

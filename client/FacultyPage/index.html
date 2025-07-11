@@ -11,6 +11,104 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet">
 
+
+    <style>
+        .today-timetable {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--box-shadow);
+            margin-top: 2rem;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .today-timetable h2 {
+            margin-bottom: 1.2rem;
+            font-size: 1.6rem;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .periods {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .period {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            padding: 1.2rem 1.5rem;
+            border-left: 6px solid var(--color-primary);
+            border-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .period:hover {
+            transform: translateY(-4px);
+        }
+
+        .period .left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .period .left .material-icons-sharp {
+            font-size: 2rem;
+            color: var(--color-primary);
+            background: #e0f2f1;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+
+        .period .info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .period .subject {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--color-dark);
+        }
+
+        .period .room {
+            font-size: 0.9rem;
+            color: var(--color-dark-varient);
+        }
+
+        .period .time {
+            font-weight: bold;
+            color: var(--color-info);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .no-classes {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.1rem;
+            color: var(--color-dark-varient);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -41,16 +139,17 @@
                 <h3 onclick="logout()">Logout</h3>
             </a>
         </div>
-        <div class="theme-toggler">
+        <!-- <div class="theme-toggler">
             <span class="material-icons-sharp active">light_mode</span>
             <span class="material-icons-sharp">dark_mode</span>
-        </div>
+        </div> -->
 
     </header>
     <div class="container">
         <aside>
             <div class="profile">
                 <div class="top">
+                    <h2>Faculty Profile</h2>
                 </div>
                 <div class="about">
                     <h5><span class="material-icons-sharp">person_outline</span>
@@ -77,7 +176,7 @@
 
                 <div class="eg clickable-box" onclick="window.location.href='Attendance_Analysis.html'">
                     <span class="material-icons-sharp">architecture</span>
-                    <h3>Attendance Analasis</h3>
+                    <h3>Attendance Analysis</h3>
                     <div class="icon-container">
                         <span class="material-icons-sharp" style="font-size: 48px;">analytics</span>
                     </div>
@@ -89,7 +188,7 @@
                 <!-- Make this whole box clickable with styling preserved -->
                 <div class="cs clickable-box" onclick="window.location.href='CourseSelection.html'">
                     <span class="material-icons-sharp">computer</span>
-                    <h3>Scan StudentQr</h3>
+                    <h3>Scan StudentQR</h3>
                     <div class="icon-container">
                         <span class="material-icons-sharp"
                             style="font-size: 48px; background-color: var(--color-primary);">qr_code</span>
@@ -109,35 +208,23 @@
                     <span class="material-icons-sharp">dns</span>
                     <h3>Batch-wise Attendance Report</h3>
                     <div class="icon-container">
-                        <span class="material-icons-sharp" style="font-size: 48px; background-color: var(--color-primary);">analytics</span>
+                        <span class="material-icons-sharp"
+                            style="font-size: 48px; background-color: var(--color-primary);">analytics</span>
                     </div>
 
                     <small class="text-muted">Last 24 Hours</small>
                 </div>
 
-                
+
 
             </div>
 
-            <div class="timetable" id="timetable">
-                <div>
-                    <span id="prevDay">&lt;</span>
-                    <h2>Today's Timetable</h2>
-                    <span id="nextDay">&gt;</span>
+            <section class="today-timetable">
+                <h2><span class="material-icons-sharp">event</span> Today's Timetable</h2>
+                <div class="periods" id="timetableContainer">
+                    <!-- Dynamic periods will be injected here -->
                 </div>
-                <span class="closeBtn" onclick="timeTableAll()">X</span>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Room No.</th>
-                            <th>Subject</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            </section>
         </main>
 
         <!-- <div class="right">
@@ -199,22 +286,273 @@
                 }
             }
 
-            // Optional: Uncomment if you want to re-fetch updated data
-            // fetch(`http://localhost:5000/api/faculty/${encodeURIComponent(facultyid)}`)
-            //     .then((res) => {
-            //         if (!res.ok) throw new Error("Failed to fetch faculty profile");
-            //         return res.json();
-            //     })
-            //     .then((data) => {
-            //         const faculty = data.faculty || data;
-            //         localStorage.setItem("facultyData", JSON.stringify(faculty));
-            //         localStorage.setItem("facultyDataTimestamp", Date.now().toString());
-            //         updateFacultyUI(faculty);
-            //     })
-            //     .catch((err) => {
-            //         console.error("Error fetching faculty profile:", err);
-            //     });
+
         });
+    </script>
+
+    <script>
+        const batchWiseTimetable = {
+            "SKILLUP-1": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5102" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5102" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5102" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5102" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "AWS", room: "5102" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "JSF", room: "5102" }
+                ]
+            },
+            "SKILLUP-2": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "AWS", room: "5106" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5106" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5106" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5106" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5106" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "CP", room: "5106" }
+                ]
+            },
+            "SKILLUP-3": {
+                Monday: [
+                    { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5104" }
+                ],
+                Tuesday: [
+                    { time: "1:15PM - 3:50PM", subject: "AWS", room: "5104" }
+                ],
+                Wednesday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5104" }
+                ],
+                Thursday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5104" }
+                ],
+                Friday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5104" }
+                ],
+                Saturday: [
+                   { time: "9:30AM - 12:15PM", subject: "JFS", room: "5104" }
+                ]
+            },
+            "SKILLNEXT-1": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5204" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5204" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5204" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5204" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5204" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "JFS", room: "5204" }
+                ]
+            },
+            "SKILLNEXT-2": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5104" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5104" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5104" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5104" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5104" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "CP", room: "5104" }
+                ]
+            },
+             "SKILLNEXT-3": {
+                Monday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5102" }
+                ],
+                Tuesday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5102" }
+                ],
+                Wednesday: [
+                    { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5102" }
+                ],
+                Thursday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5102" }
+                ],
+                Friday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5102" }
+                ],
+                Saturday: [
+                   { time: "9:30AM - 12:15PM", subject: "CP", room: "5102" }
+                ]
+            },
+             "SKILLBRIDGE-1": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5101" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5101" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5101" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5101" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5101" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5101" }
+                ]
+            },
+            "SKILLBRIDGE-2": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5005" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5005" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5005" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5005" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5005" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "JFS", room: "5005" }
+                ]
+            },
+            "SKILLBRIDGE-3": {
+                Monday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5201" }
+                ],
+                Tuesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5201" }
+                ],
+                Wednesday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5201" }
+                ],
+                Thursday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5201" }
+                ],
+                Friday: [
+                    { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5201" }
+                ],
+                Saturday: [
+                   { time: "1:15PM - 3:50PM", subject: "CP", room: "5201" }
+                ]
+            },
+            "SKILLBRIDGE-4": {
+                Monday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5101" }
+                ],
+                Tuesday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5101" }
+                ],
+                Wednesday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5101" }
+                ],
+                Thursday: [
+                    { time: "9:30AM - 12:15PM", subject: "JFS", room: "5101" }
+                ],
+                Friday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5101" }
+                ],
+                Saturday: [
+                   { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5101" }
+                ]
+            },
+            "SKILLBRIDGE-5": {
+                Monday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5106" }
+                ],
+                Tuesday: [
+                    { time: "1:15PM - 3:50PM", subject: "CP", room: "5106" }
+                ],
+                Wednesday: [
+                    { time: "1:15PM - 3:50PM", subject: "JFS", room: "5106" }
+                ],
+                Thursday: [
+                    { time: "9:30AM - 12:15PM", subject: "CP", room: "5106" }
+                ],
+                Friday: [
+                    { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5106" }
+                ],
+                Saturday: [
+                   { time: "9:30AM - 12:15PM", subject: "JFS", room: "5106" }
+                ]
+            }
+            
+        };
+
+
+        function renderTodayTimetable() {
+            const container = document.getElementById("timetableContainer");
+            const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
+
+            const facultyDataRaw = localStorage.getItem("facultyData");
+            let batch = "";
+            if (facultyDataRaw) {
+                try {
+                    const facultyData = JSON.parse(facultyDataRaw);
+                    batch = facultyData.batch || "";
+                } catch (e) {
+                    console.warn("Failed to parse facultyData from localStorage.");
+                }
+            }
+
+            const todaySchedule = (batchWiseTimetable[batch] && batchWiseTimetable[batch][today]) || [];
+
+            if (todaySchedule.length === 0) {
+                container.innerHTML = '<p class="no-classes">🎉 No classes scheduled for today!</p>';
+                return;
+            }
+
+            container.innerHTML = todaySchedule.map(slot => `
+      <div class="period">
+        <div class="left">
+          <span class="material-icons-sharp">schedule</span>
+          <div class="info">
+            <div class="subject">${slot.subject}</div>
+            <div class="room">Room: ${slot.room}</div>
+          </div>
+        </div>
+        <div class="time">${slot.time}</div>
+      </div>
+    `).join("");
+        }
+
+        document.addEventListener("DOMContentLoaded", renderTodayTimetable);
     </script>
 </body>
 
