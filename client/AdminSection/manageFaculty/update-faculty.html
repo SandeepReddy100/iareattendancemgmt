@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Update Faculty</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #00796B;
+  --color-danger: #ff5252;
+  --color-warning: #ffbb55;
+  --color-success: #41f1b6;
+  --color-white: #ffffff;
+  --color-info: #7d8da1;
+  --color-dark: #2d2d2d;
+  --color-light: rgba(132, 139, 200, 0.18);
+
+  --border-radius-1: 0.4rem;
+  --border-radius-2: 1.2rem;
+
+  --card-padding: 1.8rem;
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #f6f6f9;
+  color: var(--color-dark);
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.container {
+  padding: 2rem;
+  width: 100%;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.subjects > div {
+  background-color: var(--color-white);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-2);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subjects > div:hover {
+  transform: translateY(-5px);
+  box-shadow: none;
+}
+
+.subjects h3 {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: var(--color-dark);
+}
+
+.icon-container1 {
+  width: 80px;
+  height: 80px;
+  margin: 1rem auto 0;
+  border: 5px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-container1 img {
+  width: 40px;
+  height: 40px;
+  filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
+}
+
+/* FORM STYLING */
+form {
+  max-width: 400px;
+  margin: 2rem auto;
+  background-color: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--border-radius-2);
+  box-shadow: var(--box-shadow);
+}
+
+form h2 {
+  margin-bottom: 0.5rem;
+  color: var(--color-primary);
+}
+
+form p {
+  margin-bottom: 1rem;
+  color: var(--color-info);
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-light);
+  border-radius: var(--border-radius-1);
+  font-size: 1rem;
+}
+
+form .btn {
+  display: inline-block;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: var(--border-radius-1);
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+form .btn:hover {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+form .text-muted {
+  color: var(--color-info);
+}
+
+form .cancel-link {
+  margin-left: 1rem;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header h2 {
+    font-size: 1.2rem;
+  }
+
+  .subjects {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .icon-container1 {
+    width: 60px;
+    height: 60px;
+  }
+
+  .icon-container1 img {
+    width: 30px;
+    height: 30px;
+  }
+
+  form {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+   <header>
+        <div class="logo" title="University Management System">
+            <img src="/client/AdminSection/image.png" alt="">
+            <h1>IARE</h1>
+        </div>
+       
+
+    </header>
+  <div class="change-password-container">
+    <form id="updateFacultyForm">
+      <h2>Update Faculty</h2>
+      <div class="box">
+        <input type="text" id="facultyid" placeholder="Faculty ID (Required)" required />
+      </div>
+      <div class="box">
+        <input type="text" id="name" placeholder="New Name (optional)" />
+      </div>
+      <div class="box">
+        <input type="email" id="email" placeholder="New Email (optional)" />
+      </div>
+      <div class="box">
+        <input type="password" id="passwordfa" placeholder="New Password (optional)" />
+      </div>
+      <input type="submit" value="Update" class="btn">
+        <a href="/client/AdminSection/index.html" class="text-muted cancel-link">Cancel</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("updateFacultyForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const facultyid = document.getElementById("facultyid").value;
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const passwordfa = document.getElementById("passwordfa").value;
+
+  const updates = {};
+  if (name) updates.name = name;
+  if (email) updates.email = email;
+  if (passwordfa) updates.passwordfa = passwordfa;
+
+  try {
+      const backendUrl = "https://iareattendancemgmt.onrender.com";
+    const res = await fetch(`${backendUrl}/api/admin/${facultyid}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updates),
+    });
+
+    const data = await res.json();
+    alert(data.message || "Faculty updated.");
+  } catch (err) {
+    console.error(err);
+    alert("Error updating faculty.");
+  }
+});
+
+  </script>
+</body>
+</html>

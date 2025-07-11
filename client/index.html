@@ -221,7 +221,7 @@
             }, 2500);
           } else if (role === "admin") {
             localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("adminEmail", data.adminId);
+            localStorage.setItem("adminId", data.adminId);
             setTimeout(() => {
               window.location.href = "AdminSection/index.html";
             }, 2500);

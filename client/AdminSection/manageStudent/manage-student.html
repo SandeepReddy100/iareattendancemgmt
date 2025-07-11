@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Students</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-primary: #00796B;
+  --color-danger: #ff5252;
+  --color-warning: #ffbb55;
+  --color-success: #41f1b6;
+  --color-white: #ffffff;
+  --color-info: #7d8da1;
+  --color-dark: #2d2d2d;
+  --color-light: rgba(132, 139, 200, 0.18);
+
+  --border-radius-1: 0.4rem;
+  --border-radius-2: 1.2rem;
+
+  --card-padding: 1.8rem;
+  --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #f6f6f9;
+  color: var(--color-dark);
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo img {
+  width: 3rem;
+  height: 3rem;
+}
+
+.container {
+  padding: 2rem;
+  width: 100%;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
+}
+
+.subjects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.subjects > div {
+  background-color: var(--color-white);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-2);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subjects > div:hover {
+  transform: translateY(-5px);
+  box-shadow: none;
+}
+
+.subjects h3 {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: var(--color-dark);
+}
+
+.icon-container1 {
+  width: 80px;
+  height: 80px;
+  margin: 1rem auto 0;
+  border: 5px solid var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-container1 img {
+  width: 40px;
+  height: 40px;
+  filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  header h2 {
+    font-size: 1.2rem;
+  }
+
+  .subjects {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .icon-container1 {
+    width: 60px;
+    height: 60px;
+  }
+
+  .icon-container1 img {
+    width: 30px;
+    height: 30px;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo" title="University Management System">
+            <img src="/client/AdminSection/image.png" alt="">
+      <h1>IARE</h1>
+    </div>
+  </header>
+
+  <div class="container">
+    <main>
+      <h1>Manage Students</h1>
+      <div class="subjects">
+
+        <div class="cs clickable-box" onclick="window.location.href='add-student.html'">
+          <span class="material-icons-sharp">person_add</span>
+          <h3>Add Student</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/4CAF50/add-user-group-man-man.png" alt="Add Student" />
+          </div>
+        </div>
+
+        <div class="cg clickable-box" onclick="window.location.href='update-student.html'">
+          <span class="material-icons-sharp">edit</span>
+          <h3>Update Student</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/FFC107/available-updates.png" alt="Update Student" />
+          </div>
+        </div>
+
+        <div class="mth clickable-box" onclick="window.location.href='delete-student.html'">
+          <span class="material-icons-sharp">delete</span>
+          <h3>Delete Student</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/FF5252/delete-user-male.png" alt="Delete Student" />
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</body>
+</html>

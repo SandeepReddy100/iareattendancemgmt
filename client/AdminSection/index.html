@@ -1,47 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard</title>
-    <link rel="shortcut icon" href="./images/logo.png">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="shortcut icon" href="./images/logo.png">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <header>
-        <div class="logo" title="University Management System">
-            <img src="image.png" alt="">
-            <h1>IARE</h1>
-        </div>
-        <div class="navbar">
-            <a href="index.html" class="active">
-                <span class="material-icons-sharp">home</span>
-                <h3>Home</h3>
-            </a>
-            <!-- <a href="timeTable.html" onclick="timeTableAll()">
-                <span class="material-icons-sharp">today</span>
-                <h3>Time Table</h3>
-            </a> -->
+  <header>
+    <div class="logo" title="University Management System">
+      <img src="/client/AdminSection/image.png" alt="">
+      <h1>IARE</h1>
+    </div>
+    <div class="navbar">
+      <a href="index.html" class="active">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+      <div id="profile-btn">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <a href="#">
+        <span class="material-icons-sharp" onclick="logout()">logout</span>
+        <h3 onclick="logout()">Logout</h3>
+      </a>
+    </div>
+    <div class="theme-toggler">
+      <span class="material-icons-sharp active">light_mode</span>
+      <span class="material-icons-sharp">dark_mode</span>
+    </div>
+  </header>
 
-            <!-- <a href="password.html">
-                <span class="material-icons-sharp">password</span>
-                <h3>Change Password</h3>
-            </a> -->
-            <div id="profile-btn">
-                <span class="material-icons-sharp">person</span>
-            </div>
-            <a href="#">
-                <span class="material-icons-sharp" onclick="logout()">logout</span>
-                <h3 onclick="logout()">Logout</h3>
-            </a>
+  <div class="container">
+    <aside>
+      <div class="profile">
+        <div class="top">
+          <h2>Admin Profile</h2>
         </div>
-        <div class="theme-toggler">
-            <span class="material-icons-sharp active">light_mode</span>
-            <span class="material-icons-sharp">dark_mode</span>
+        <div class="about">
+          <h5><span class="material-icons-sharp">person_outline</span> NAME</h5>
+          <p id="adminName"></p>
+
+          <h5><span class="material-icons-sharp">confirmation_number</span> ID </h5>
+          <p id="adminId"></p>
+
+          <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
+          <p id="adminEmail"></p>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <h1>Dashboard</h1>
+      <div class="subjects">
+        <div class="eg clickable-box" onclick="window.location.href='manageStudent/manage-student.html'">
+          <span class="material-icons-sharp">groups</span>
+          <h3>Manage Students</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/000000/student-male.png" alt="Manage Students Icon">
+          </div>
+        </div>
+        <div class="mth clickable-box" onclick="window.location.href='manageFaculty/manage-faculty.html'">
+          <span class="material-icons-sharp">groups</span>
+          <h3>Manage Faculty</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png" alt="Manage Faculty Icon" />
+          </div>
         </div>
 
     </header>
@@ -121,96 +148,104 @@
 
 
             </div>
-    </div>
+          </div>
 
-
-    <!-- <div class="timetable" id="timetable">
-        <div>
-            <span id="prevDay">&lt;</span>
-            <h2>Today's Timetable</h2>
-            <span id="nextDay">&gt;</span>
+        <div class="cg" onclick="updateAttendance()">
+          <span class="material-icons-sharp">how_to_reg</span>
+          <h3>Update Attendance</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/4CAF50/task-completed.png" alt="Update Attendance Icon" />
+          </div>
         </div>
-        <span class="closeBtn" onclick="timeTableAll()">X</span>
-        <table>
-            <thead>
-                <tr>
-                    <th>Time</th>
-                    <th>Room No.</th>
-                    <th>Subject</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div> -->
+
+        <div class="cg" onclick="window.location.href = 'batch.html'">
+          <span class="material-icons-sharp">dns</span>
+          <h3>Batch-wise Attendance Report</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/000000/report-card.png" alt="Report Card Icon" />
+          </div>
+        </div>
+
+        <div class="cg" onclick="getAttendanceReport()">
+          <span class="material-icons-sharp">dns</span>
+          <h3>Download Attendance Summary</h3>
+          <div class="icon-container1">
+            <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Combo Chart Icon" />
+          </div>
+        </div>
+      </div>
     </main>
+  </div>
 
-    <!-- <div class="right">
-            <div class="announcements">
-                <h2>Announcements</h2>
-                <div class="updates">
-                    <div class="message">
-                        <p> <b>Academic</b> Summer training internship with Live Projects.</p>
-                        <small class="text-muted">2 Minutes Ago</small>
-                    </div>
-                    <div class="message">
-                        <p> <b>Co-curricular</b> Global internship oportunity by Student organization.</p>
-                        <small class="text-muted">10 Minutes Ago</small>
-                    </div>
-                    <div class="message">
-                        <p> <b>Examination</b> Instructions for Mid Term Examination.</p>
-                        <small class="text-muted">Yesterday</small>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-    </div>
-    <!-- <script src="timeTable.js"></script> -->
   <script>
-async function getAttendanceReport() {
-  const batches = [
-    "skillup batch-1", "skillup batch-2", "skillup batch-3",
-    "skillnext batch-1", "skillnext batch-2", "skillnext batch-3",
-    "skillbridge batch-1", "skillbridge batch-2", "skillbridge batch-3","skillbridge batch-4", "skillbridge batch-5"
-  ];
+    document.addEventListener("DOMContentLoaded", async () => {
+      const adminId = localStorage.getItem('adminId'); // From login
+      const backendUrl = "https://iareattendancemgmt.onrender.com";
 
-  const date = new Date().toISOString().slice(0, 10);
+      try {
+        const res = await fetch(`${backendUrl}/api/admin/admin?adminId=${adminId}`);
+        if (!res.ok) throw new Error("Failed to fetch admin profile");
 
-  const params = new URLSearchParams();
-  batches.forEach(batch => params.append("batch", batch)); // NOT `"batch", `"skillup batch-1"``
-  params.append("date", date);
-  params.append("format", "excel");
+        const profile = await res.json();
 
-  // ✅ Final API URL
-  const backendUrl = "https://iareattendancemgmt.onrender.com";
-  const url = `${backendUrl}/api/admin/attendance-report?${params.toString()}`;
+        // Update DOM
+        document.getElementById("adminName").textContent = profile.name || "N/A";
+        document.getElementById("adminId").textContent = profile.adminId || "N/A";
+        document.getElementById("adminEmail").textContent = profile.email || "N/A";
+      } catch (err) {
+        console.error("Error loading admin profile:", err);
+        document.getElementById("adminName").textContent = "Unable to load";
+      }
+    });
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert("Error: " + errorData.message);
-      return;
+    function updateAttendance() {
+      window.open("update-attendance.html", "_blank");
     }
 
-    const blob = await response.blob();
-    const objectUrl = window.URL.createObjectURL(blob);
+    async function getAttendanceReport() {
+      const backendUrl = "";
+      const batches = [
+        "skillup batch-1", "skillup batch-2", "skillup batch-3",
+        "skillnext batch-1", "skillnext batch-2", "skillnext batch-3",
+        "skillbridge batch-1", "skillbridge batch-2", "skillbridge batch-3", "skillbridge batch-4", "skillbridge batch-5"
+      ];
 
-    const a = document.createElement("a");
-    a.href = objectUrl;
-    a.download = `attendance_summary_${date.replace(/-/g, "_")}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    window.URL.revokeObjectURL(objectUrl);
-  } catch (error) {
-    console.error("Download failed:", error);
-    alert("Failed to download attendance report.");
-  }
-}
-</script>
+      const date = new Date().toISOString().slice(0, 10);
+      const params = new URLSearchParams();
+      batches.forEach(batch => params.append("batch", batch));
+      params.append("date", date);
+      params.append("format", "excel");
 
-    <script src="app.js"></script>
+      try {
+        const response = await fetch(`${backendUrl}/api/admin/attendance-report?${params.toString()}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          alert("Error: " + errorData.message);
+          return;
+        }
+
+        const blob = await response.blob();
+        const objectUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = objectUrl;
+        a.download = `attendance_summary_${date.replace(/-/g, "_")}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(objectUrl);
+      } catch (error) {
+        console.error("Download failed:", error);
+        alert("Failed to download attendance report.");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("adminId");
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <script src="app.js"></script>
 </body>
-
 </html>
