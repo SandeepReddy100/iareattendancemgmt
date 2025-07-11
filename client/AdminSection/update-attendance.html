@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update Attendance</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #00796b;
+        --secondary: #00574b;
+        --light: #ccc;
+        --white: #fff;
+        --dark: #333;
+        --bg: #f9f9f9;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --radius: 10px;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg);
+      }
+
+      header {
+        background-color: var(--white);
+        padding: 1rem 2rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header .logo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      header .logo h1 {
+        color: var(--primary);
+        font-size: 1.4rem;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        margin-left: 1rem;
+      }
+
+      form {
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        max-width: 960px;
+        margin: 2rem auto;
+      }
+
+      .box {
+        margin-bottom: 1.5rem;
+      }
+
+      .box label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      select,
+      input[type="date"] {
+        width: 100%;
+        padding: 0.75rem;
+        font-size: 1rem;
+        border-radius: var(--radius);
+        border: 1px solid var(--light);
+      }
+
+      .radio-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .radio-group input {
+        display: none;
+      }
+
+      .radio-group label {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--light);
+        border-radius: var(--radius);
+        background-color: var(--bg);
+        cursor: pointer;
+      }
+
+      .radio-group input:checked + label {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      #absentees-container {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border: 1px solid var(--light);
+        border-radius: var(--radius);
+        background-color: #fff;
+        display: none;
+      }
+
+      .absentees-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .absentee-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background-color: #f3fefc;
+        border: 1px solid var(--primary);
+        padding: 0.75rem 1rem;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .absentee-item label {
+        font-weight: bold;
+        font-size: 1rem;
+      }
+
+      /* Spinner styles */
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border: 4px solid #e0e0e0;
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 2rem auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        form {
+          margin: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <h1>IARE</h1>
+      </div>
+      <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </header>
+
+    <main>
+      <form id="absentee-form">
+        <h2>Update Attendance</h2>
+        <div class="box">
+          <label for="batch">Batch</label>
+          <select name="batch" required>
+            <option value="" disabled selected>Select Batch</option>
+            <option value="attendance_skillup-1">SkillUp Batch-1</option>
+            <option value="attendance_skillup-2">SkillUp Batch-2</option>
+            <option value="attendance_skillup-3">SkillUp Batch-3</option>
+            <option value="attendance_skillnext-1">SkillNext Batch-1</option>
+            <option value="attendance_skillnext-2">SkillNext Batch-2</option>
+            <option value="attendance_skillnext-3">SkillNext Batch-3</option>
+            <option value="attendance_skillbridge-1">
+              SkillBridge Batch-1
+            </option>
+            <option value="attendance_skillbridge-2">
+              SkillBridge Batch-2
+            </option>
+            <option value="attendance_skillbridge-3">
+              SkillBridge Batch-3
+            </option>
+            <option value="attendance_skillbridge-4">
+              SkillBridge Batch-4
+            </option>
+            <option value="attendance_skillbridge-5">
+              SkillBridge Batch-5
+            </option>
+          </select>
+        </div>
+
+        <div class="box">
+          <label>Course</label>
+          <div class="radio-group">
+            <input type="radio" name="course" id="cp" value="CP" required />
+            <label for="cp">CP</label>
+
+            <input type="radio" name="course" id="jfs" value="JFS" />
+            <label for="jfs">JFS</label>
+
+            <input type="radio" name="course" id="dbms" value="DBMS" />
+            <label for="dbms">DBMS</label>
+
+            <input type="radio" name="course" id="aws" value="AWS" />
+            <label for="aws">AWS</label>
+          </div>
+        </div>
+
+        <div class="box">
+          <label for="date">Date</label>
+          <input type="date" name="date" id="dateField" required />
+        </div>
+
+        <input type="submit" class="btn" value="Get Absentees" />
+
+        <div id="absentees-container">
+          <h3>📋 Absentees List</h3>
+          <p>Select students to mark them present:</p>
+          <div id="absentees-result" class="absentees-list"></div>
+        </div>
+      </form>
+    </main>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("dateField").value = new Date()
+          .toISOString()
+          .split("T")[0];
+      });
+
+      document
+        .getElementById("absentee-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const batch = this.batch.value;
+          const date = this.date.value;
+          const course = this.course.value;
+          const resultBox = document.getElementById("absentees-result");
+          const container = document.getElementById("absentees-container");
+
+          resultBox.innerHTML = '<div class="spinner"></div>';
+          container.style.display = "block";
+
+          // Simulate loading delay (2.5s minimum)
+          await new Promise((resolve) => setTimeout(resolve, 2500));
+
+          try {
+            const backendUrl = "https://iareattendancemgmt.onrender.com";
+            const res = await fetch(
+              `${backendUrl}/api/admin/absentees?batch=${batch}&date=${date}&course=${course}`
+            );
+            const data = await res.json();
+
+            if (!Array.isArray(data) || data.length === 0) {
+              resultBox.innerHTML = `<p style="color:gray;">No absentees found for the selected date/course.</p>`;
+            } else {
+              const sorted = data.sort((a, b) => a.localeCompare(b));
+              resultBox.innerHTML =
+                sorted
+                  .map(
+                    (roll, i) => `
+            <div class="absentee-item">
+              <input type="checkbox" name="presenties" value="${roll}" id="roll-${i}" />
+              <label for="roll-${i}">${roll}</label>
+            </div>
+          `
+                  )
+                  .join("") +
+                `
+            <div style="margin-top: 1.5rem;">
+              <button type="button" class="btn" onclick="submitMarkedPresent()">Mark Selected as Present</button>
+            </div>
+          `;
+            }
+
+            container.scrollIntoView({ behavior: "smooth" });
+          } catch (err) {
+            console.error(err);
+            resultBox.innerHTML = `<p style="color:red;">Server error. Please try again.</p>`;
+          }
+        });
+
+      async function submitMarkedPresent() {
+        const checkboxes = document.querySelectorAll(
+          'input[name="presenties"]:checked'
+        );
+        const selectedRollnos = Array.from(checkboxes).map((cb) => cb.value);
+        const batch = document.querySelector('select[name="batch"]').value;
+        const course = document.querySelector(
+          'input[name="course"]:checked'
+        ).value;
+
+        if (!selectedRollnos.length) {
+          alert("Please select at least one student to mark present.");
+          return;
+        }
+
+        try {
+          const backendUrl = "https://iareattendancemgmt.onrender.com";
+          const res = await fetch(`${backendUrl}/api/admin/mark-present-bulk`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              course,
+              batch,
+              presenties: selectedRollnos,
+            }),
+          });
+
+          const result = await res.json();
+          const updatedCount = result.updatedCount || 0;
+
+          document.getElementById("absentees-result").innerHTML = `
+          <div style="background:#e0f7fa; padding:1rem; border-radius:10px; border:1px solid var(--primary);">
+            <h3 style="color: var(--primary);">✅ Attendance Marked</h3>
+            <p><strong>${updatedCount}</strong> students marked as present:</p>
+            <p style="font-weight:bold;">${selectedRollnos.join(", ")}</p>
+            <button class="btn" onclick="window.location.href='index.html'">OK</button>
+          </div>
+        `;
+        } catch (err) {
+          console.error(err);
+          alert("Failed to mark attendance.");
+        }
+      }
+
+      function logout() {
+        window.location.href = "login.html";
+      }
+    </script>
+  </body>
+</html>

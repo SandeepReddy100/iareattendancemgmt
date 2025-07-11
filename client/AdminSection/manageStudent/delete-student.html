@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Delete Student</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --color-primary: #00796B;
+      --color-danger: #ff5252;
+      --color-warning: #ffbb55;
+      --color-success: #41f1b6;
+      --color-white: #ffffff;
+      --color-info: #7d8da1;
+      --color-dark: #2d2d2d;
+      --color-light: rgba(132, 139, 200, 0.18);
+
+      --border-radius-1: 0.4rem;
+      --border-radius-2: 1.2rem;
+
+      --card-padding: 1.8rem;
+      --box-shadow: 0 2rem 3rem var(--color-light);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      list-style: none;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f6f6f9;
+      color: var(--color-dark);
+      overflow-x: hidden;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: var(--color-white);
+      box-shadow: var(--box-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo img {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--color-primary);
+    }
+
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background-color: var(--color-white);
+      padding: 2rem;
+      border-radius: var(--border-radius-2);
+      box-shadow: var(--box-shadow);
+    }
+
+    form h2 {
+      margin-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
+
+    form input {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-light);
+      border-radius: var(--border-radius-1);
+      font-size: 1rem;
+    }
+
+    .btn {
+      background-color: var(--color-danger);
+      color: var(--color-white);
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: var(--border-radius-1);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: transparent;
+      color: var(--color-danger);
+      border: 2px solid var(--color-danger);
+    }
+
+    .cancel-link {
+      margin-left: 1rem;
+      color: var(--color-danger);
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+
+      header h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="/client/AdminSection/image.png" alt="">
+      <h1>IARE</h1>
+    </div>
+  </header>
+
+  <div class="change-password-container">
+    <form id="deleteStudentForm">
+      <h2>Delete Student</h2>
+      <div class="box">
+        <input type="text" id="rollno" placeholder="Roll Number to Delete" required />
+      </div>
+      <input type="submit" value="Delete" class="btn">
+      <a href="/client/AdminSection/index.html" class="cancel-link">Cancel</a>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("deleteStudentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const rollno = document.getElementById("rollno").value.trim();
+      if (!rollno) {
+        alert("Please enter a Roll Number.");
+        return;
+      }
+
+      const confirmDelete = confirm(`Are you sure you want to delete student with Roll No: ${rollno}?`);
+      if (!confirmDelete) return;
+
+      try {
+        const backendUrl = "https://iareattendancemgmt.onrender.com";
+        const res = await fetch(`${backendUrl}/api/admin/student/${rollno}`, {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+        alert(data.message || "Student deleted.");
+      } catch (err) {
+        console.error(err);
+        alert("Error deleting student.");
+      }
+    });
+  </script>
+</body>
+</html>
