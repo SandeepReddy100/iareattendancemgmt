@@ -4,6 +4,7 @@ const XLSX = require("xlsx");
 const Student = require("../models/student");
 const getAttendanceModel = require("../utils/getAttendanceModel");
 const Faculty = require("../models/faculty");
+const Admin = require("../models/admin")
 const ExcelJS = require("exceljs");
 
 function getShortBatchName(fullBatchName) {
@@ -450,30 +451,39 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
   }
 });
 
-// PATCH /mark-present
-router.patch("/mark-present", async (req, res) => {
+
+// PATCH /mark-present (Bulk Operation Version)
+router.patch("/mark-present-bulk", async (req, res) => {
   try {
     const { course, presenties, batch } = req.body;
-
-    console.log("PATCH /mark-present received:", { course, presenties, batch });
-
+    
     if (!course || !Array.isArray(presenties) || !batch) {
-      return res
-        .status(400)
-        .json({ message: "Missing course, presenties, or batch" });
+      return res.status(400).json({ message: "Missing course, presenties, or batch" });
     }
 
     const Attendance = getAttendanceModel(batch);
     const today = new Date().toISOString().slice(0, 10);
-    const courseKey = course.trim(); // optionally use .toUpperCase() if your DB keys are uppercase
+    const courseKey = course.trim();
 
-    const updated = [];
+    // Build bulk operations
+    const bulkOps = [];
+    
+    // First, find all students with absent logs for today
+    const studentsWithAbsentLogs = await Attendance.find({
+      rollno: { $in: presenties },
+      dailyLogs: {
+        $elemMatch: {
+          date: today,
+          course: courseKey,
+          status: "absent"
+        }
+      }
+    });
 
-    for (const rollno of presenties) {
-      const student = await Attendance.findOne({ rollno });
+    console.log(`📝 Found ${studentsWithAbsentLogs.length} students with absent logs`);
 
-      if (!student) continue;
-
+    for (const student of studentsWithAbsentLogs) {
+      // Find the specific log index
       const logIndex = student.dailyLogs.findIndex(
         (log) =>
           log.date === today &&
@@ -482,48 +492,57 @@ router.patch("/mark-present", async (req, res) => {
       );
 
       if (logIndex !== -1) {
-        // Update the status in dailyLogs
-        student.dailyLogs[logIndex].status = "present";
-
-        // Update overallAttendance
-        student.overallAttendance.presentDays =
-          (student.overallAttendance.presentDays || 0) + 1;
-
-        // Ensure courseAttendance object exists
-        if (!student.courseAttendance) student.courseAttendance = {};
-
-        if (!student.courseAttendance[courseKey]) {
-          student.courseAttendance[courseKey] = {
-            totalDays: 0,
-            presentDays: 1,
-          };
-        } else {
-          student.courseAttendance[courseKey].presentDays =
-            (student.courseAttendance[courseKey].presentDays || 0) + 1;
-        }
-
-        // Mark nested field modified (Mongoose may skip deeply nested diffs without this)
-        student.markModified("dailyLogs");
-        student.markModified("courseAttendance");
-
-        student.lastUpdated = new Date();
-
-        await student.save();
-        updated.push(rollno);
+        bulkOps.push({
+          updateOne: {
+            filter: {
+              rollno: student.rollno,
+              [`dailyLogs.${logIndex}.date`]: today,
+              [`dailyLogs.${logIndex}.course`]: courseKey,
+              [`dailyLogs.${logIndex}.status`]: "absent"
+            },
+            update: {
+              $set: {
+                [`dailyLogs.${logIndex}.status`]: "present",
+                lastUpdated: new Date()
+              },
+              $inc: {
+                "overallAttendance.presentDays": 1,
+                [`courseAttendance.${courseKey}.presentDays`]: 1
+              }
+            }
+          }
+        });
       }
     }
 
+    if (bulkOps.length === 0) {
+      return res.status(404).json({
+        message: "No absent logs found for the specified students and course today",
+        updatedCount: 0
+      });
+    }
+
+    // Execute bulk operations
+    const result = await Attendance.bulkWrite(bulkOps, { ordered: false });
+
+    console.log(`📊 Bulk operation result:`, result);
+
     res.status(200).json({
-      message: "Updated absentees to present",
-      updatedCount: updated.length,
-      updatedRollnos: updated,
+      message: "Bulk mark present operation completed",
+      updatedCount: result.modifiedCount,
+      matchedCount: result.matchedCount,
+      totalRequested: presenties.length,
+      foundAbsentLogs: studentsWithAbsentLogs.length
     });
+
   } catch (err) {
-    console.error("❌ Error in /mark-present:", err);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("❌ Error in /mark-present-bulk:", err);
+    res.status(500).json({ 
+      message: "Internal server error",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 });
-
 // POST /api/student
 router.post("/student", async (req, res) => {
   const { name, rollno, password, branch, batch, email, qrData, qrLink } =
@@ -641,6 +660,7 @@ router.get("/admin", async (req, res) => {
     return res.json({
       adminId: admin.adminId,
       email: admin.email,
+      name : admin.name,
       // password excluded intentionally for security
     });
   } catch (error) {
