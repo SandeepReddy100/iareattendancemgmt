@@ -6,11 +6,11 @@ const Faculty = require('../models/faculty');
 router.get('/:facultyid', async (req, res) => {
   try {
     const { facultyid } = req.params;
-    console.log('Looking for faculty with email:', email);
+    console.log('Looking for faculty with ID:', facultyid);
 
     const faculty = await Faculty.findOne(
       { facultyid },
-      'name facultyid email'
+      'name facultyid email batches_assigned'
     );
 
     if (!faculty) {
@@ -19,6 +19,7 @@ router.get('/:facultyid', async (req, res) => {
     }
     res.json(faculty);
   } catch (err) {
+    console.error('Error fetching faculty:', err);
     res.status(500).json({ message: 'Please try again after some time' });
   }
 });
