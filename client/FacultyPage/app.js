@@ -4,138 +4,63 @@ const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
 const backendUrl = "https://iareattendancemgmt.onrender.com";
-profileBtn.onclick = function() {
-    sideMenu.classList.toggle('active');
+
+profileBtn.onclick = function () {
+  sideMenu.classList.toggle('active');
 }
+
 window.onscroll = () => {
     sideMenu.classList.remove('active');
     if(window.scrollY > 0){document.querySelector('header').classList.add('active');}
     else{document.querySelector('header').classList.remove('active');}
 }
 
-themeToggler.onclick = function() {
-    document.body.classList.toggle('dark-theme');
-    themeToggler.querySelector('span:nth-child(1)').classList.toggle('active')
-    themeToggler.querySelector('span:nth-child(2)').classList.toggle('active')
-}
-
-let setData = (day) =>{
-    document.querySelector('table tbody').innerHTML = ' '; //To clear out previous table data;  
-    let daylist = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-    document.querySelector('.timetable div h2').innerHTML = daylist[day];
-    switch(day){
-        case(0): day = Sunday; break;
-        case(1): day = Monday; break;
-        case(2): day = Tuesday; break;
-        case(3): day = Wednesday; break;
-        case(4): day = Thursday; break;
-        case(5): day = Friday; break;
-        case(6): day = Saturday; break;
-    }
-
-    day.forEach(sub => {
-        const tr = document.createElement('tr');
-        const trContent = `
-                            <td>${sub.time}</td>
-                            <td>${sub.roomNumber}</td>
-                            <td>${sub.subject}</td>
-                            <td>${sub.type}</td>
-                        `
-        tr.innerHTML = trContent;
-        document.querySelector('table tbody').appendChild(tr)                        
-    });
-}
-
-let now = new Date();
-let today = now.getDay(); // Will return the present day in numerical value; 
-let day = today; //To prevent the today value from changing;
-
-function timeTableAll(){
-    document.getElementById('timetable').classList.toggle('active');
-    setData(today);
-    document.querySelector('.timetable div h2').innerHTML = "Today's Timetable";
-}
-nextDay.onclick = function() {
-    day<=5 ? day++ : day=0;  // If else one liner
-    setData(day);
-}
-prevDay.onclick = function() {
-    day>=1 ? day-- : day=6;    
-    setData(day);
-}
-
-setData(day); //To set the data in the table on loading window.
-document.querySelector('.timetable div h2').innerHTML = "Today's Timetable"; //To prevent overwriting the heading on loading;
 
 
-// Course Values Sending To Backend
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("course-form");
+document.getElementById('course-form').addEventListener('submit', async function (e) {
+  e.preventDefault(); // Stop form from submitting
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault(); // Prevent form reload
+  const batch = document.querySelector('select[name="batch"]').value;
+   
+  const collectionName = `attendance_${batch.toLowerCase()}`;
 
-    // Get selected values
-    const period1 = form.elements["period1"].value;
-    const period2 = form.elements["period2"].value;
-    const period3 = form.elements["period3"].value;
+  // Save to localStorage
+  localStorage.setItem('selectedbatch', JSON.stringify(batch));
 
-    const data = {
-      period1,
-      period2,
-      period3
-    };
+  const date = new Date().toISOString().slice(0, 10); // today by default
+  const url = `${backendUrl}/api/admin/attendance/complete-report/${collectionName}`;
 
-    // Send data to backend
-  //   fetch("/submit-courses", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify(data)
-  //   })
-  //     .then(response => {
-  //       if (!response.ok) throw new Error("Network response failed");
-  //       return response.json();
-  //     })
-  //     .then(result => {
-  //       alert("Courses submitted successfully!");
-  //       startQRScanner();
-  //     })
-  //     .catch(error => {
-  //       console.error("Error submitting courses:", error);
-  //       alert("Failed to submit courses");
-  //     });
-  });
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to download file.");
+      }
+      return response.blob();
+    })
+   .then(blob => {
+  const a = document.createElement('a');
+  const objectUrl = window.URL.createObjectURL(blob);
+  a.href = objectUrl;
+  a.download = `attendance-${date}.xlsx`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(objectUrl);
+
+  // Only redirect after download starts
+  window.location.href = 'index.html';
+})
+
+
+  // Redirect to QR scan page
 });
 
-// Qr startQRScanner
-
-// QR Scanner Function
-function startQRScanner() {
-  const qrContainer = document.getElementById("qr-reader");
-  qrContainer.style.display = "block";
-
-  const qrScanner = new Html5Qrcode("qr-reader");
-
-  qrScanner.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    qrMessage => {
-      alert(`Scanned QR: ${qrMessage}`);
-      qrScanner.stop();
-    },
-    error => {
-      console.warn("QR Error", error);
-    }
-  ).catch(err => {
-    console.error("Failed to start scanner", err);
 
 
 
-  });
-}
+
 
 function logout() {
   localStorage.clear();

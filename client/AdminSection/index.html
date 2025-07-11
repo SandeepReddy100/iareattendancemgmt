@@ -63,7 +63,6 @@
             <img src="https://img.icons8.com/ios-filled/50/000000/student-male.png" alt="Manage Students Icon">
           </div>
         </div>
-
         <div class="mth clickable-box" onclick="window.location.href='manageFaculty/manage-faculty.html'">
           <span class="material-icons-sharp">groups</span>
           <h3>Manage Faculty</h3>
@@ -71,6 +70,85 @@
             <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png" alt="Manage Faculty Icon" />
           </div>
         </div>
+
+    </header>
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                    <h2>Admin Profile</h2>
+                </div>
+                <div class="about">
+                    <h5><span class="material-icons-sharp">person_outline</span> NAME</h5>
+                    <p id="studentName">Dr. B Padmaja</p>
+
+                    <h5><span class="material-icons-sharp">confirmation_number</span> ID </h5>
+                    <p id="studentRoll">IARE10209</p>
+
+                    <h5><span class="material-icons-sharp">groups</span>ASSIGNED BATCH</h5>
+                    <p id="studentBatch">SKILL UP & SKILL NEXT</p>
+
+                    <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
+                    <p id="studentEmail">faculty@iare.ac.in</p>
+                </div>
+            </div>
+        </aside>
+        <main>
+            <h1>Dashboard</h1>
+            <div class="subjects">
+
+                <div class="eg">
+                    <span class="material-icons-sharp">groups</span>
+                    <h3>Manage Students</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/student-male.png"
+                            alt="Manage Students Icon">
+                    </div>
+
+                    <!-- <small class="text-muted">Last 24 Hours</small>  -->
+                </div>
+
+                <div class="mth">
+                    <span class="material-icons-sharp">groups</span>
+                    <h3>Manage Faculty</h3>
+                    <!-- <h2>27/29</h2> -->
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png" alt="Manage Faculty Icon">
+                    </div>
+
+                    <!-- <small class="text-muted">Last 24 Hours</small> -->
+                </div>
+
+                <!-- Make this whole box clickable with styling preserved -->
+                <div class="cs clickable-box" onclick="window.location.href='MarkAttendence.html'">
+                    <span class="material-icons-sharp">how_to_reg</span>
+                    <h3>Manage Attendance</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/attendance-mark.png"
+                            alt="Mark Attendance Icon">
+                    </div>
+                </div>
+
+                <div class="cg clickable-box" onclick="window.location.href = 'batch.html'">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Batch-wise Attendance Report</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/report-card.png" alt="Report Card Icon" />
+
+                    </div>
+                </div>
+
+                <div class="cg clickable-box" onclick="getAttendanceReport()">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Download Attendance Summary</h3>
+                    <div class="icon-container1">
+                        <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Combo Chart Icon" />
+                    </div>
+                </div>
+
+
+            </div>
+          </div>
 
         <div class="cg" onclick="updateAttendance()">
           <span class="material-icons-sharp">how_to_reg</span>

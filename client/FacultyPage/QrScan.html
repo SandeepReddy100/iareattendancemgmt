@@ -127,7 +127,7 @@
       }
 
       #reader {
-        width: 100%;
+        /* width: %; */
       }
     }
   </style>
@@ -165,13 +165,13 @@
       if (courses && batch) {
         infoBox.innerHTML = `
     📘 <strong>Batch:</strong> ${batch}<br>
-    🕐 <strong>Courses:</strong> ${courses.period1}, ${courses.period2}, ${courses.period3}`;
+    🕐 <strong>Courses:</strong> ${courses.period1}`;
       }
 
 
       html5QrCode.start(
         { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 300, height: 265 } },
+        { fps: 10, qrbox: { width: 300, height: 260 } },
         onScanSuccess,
         () => { }
       ).catch(err => console.error("Camera start error:", err));
@@ -244,7 +244,7 @@
       const payload = {
         collectionName: `attendance_${batch.toLowerCase()}`,
         date: new Date().toISOString().slice(0, 10),
-        courseList: [courses.period1, courses.period2, courses.period3],
+        course: courses.period1,
         presentArrays: scannedStudents
       };
 
