@@ -297,6 +297,7 @@ router.get("/attendance-report", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 router.get("/attendance/complete-report/:collectionName", async (req, res) => {
   try {
     const collectionName = req.params.collectionName;
