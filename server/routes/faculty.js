@@ -53,5 +53,44 @@ router.post('/update-password', async (req, res) => {
   }
 });
 
+// POST /api/announcements
+router.post("/announcements", async (req, res) => {
+  try {
+    const { postedby, title, subtitle, content, batches } = req.body;
+
+    // Basic validation
+    if (
+      !postedby ||
+      !title ||
+      !subtitle ||
+      !content ||
+      !Array.isArray(batches) ||
+      batches.length === 0
+    ) {
+      return res.status(400).json({ message: "All fields are required and batches must be a non-empty array." });
+    }
+
+    // Create and save announcement
+    const newAnnouncement = new Announcement({
+      postedby,
+      title,
+      subtitle,
+      content,
+      batches,
+      createdAt: new Date(), // optional, auto-set by schema too
+    });
+
+    const saved = await newAnnouncement.save();
+    res.status(201).json({
+      message: "Announcement posted successfully",
+      announcementId: saved._id,
+    });
+
+  } catch (error) {
+    console.error("Error posting announcement:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 
 module.exports = router;

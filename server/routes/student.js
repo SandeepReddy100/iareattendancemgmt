@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Student = require('../models/student');
 const getAttendanceModel = require('../utils/getAttendanceModel')
+const Announcement = require("../models/Announcement");
+
 // GET /api/student/:rollno - Get student by rollno
 router.get('/:rollno', async (req, res) => {
   try {
@@ -49,6 +51,30 @@ router.post('/update-password', async (req, res) => {
   } catch (err) {
     console.error('Error updating password:', err);
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// GET /api/announcements/:batch
+router.get("/announcements/:batch", async (req, res) => {
+  try {
+    const studentBatch = req.params.batch;
+
+    if (!studentBatch) {
+      return res.status(400).json({ message: "Batch parameter is required." });
+    }
+
+    const announcements = await Announcement.find(
+      { batches: studentBatch },
+      "title subtitle content" // Only these fields
+    )
+      .sort({ createdAt: -1 }) // Latest first
+      .limit(3); // Top 3 only
+
+    res.status(200).json({ announcements });
+  } catch (error) {
+    console.error("Error fetching announcements:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 
