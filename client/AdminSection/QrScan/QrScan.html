@@ -1,0 +1,295 @@
+<!-- qr-scan.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Scanner</title>
+  <link rel="icon" href="./IARE-LOGO.png" type="image/png">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    :root {
+      --color-primary: #00796B;
+      --color-danger: #ff7782;
+      --color-success: #41f1b6;
+      --color-white: #fff;
+      --color-dark: #2c3e50;
+      --color-light: rgba(132, 139, 200, 0.08);
+      --color-dark-variant: #677483;
+      --color-background: #f6f6f9;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--color-background);
+      color: var(--color-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 10px;
+      height: 100vh;
+      /* overflow: hidden; */
+    }
+
+    h1 {
+      color: var(--color-primary);
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: var(--color-white);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .info-box {
+      background-color: var(--color-light);
+      color: var(--color-dark);
+      padding: 10px 14px;
+      border: 1px solid var(--color-primary);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      object-fit: cover !important;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+      align-self: center;
+    }
+
+    #result {
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-primary);
+      background-color: var(--color-light);
+      padding: 10px 14px;
+      border: 1px solid var(--color-success);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    #result.already-scanned {
+      color: var(--color-danger);
+      border-color: var(--color-danger);
+    }
+
+    #homeBtn {
+      align-self: center;
+      padding: 10px 20px;
+      font-size: 15px;
+      font-weight: bold;
+      color: var(--color-white);
+      background: linear-gradient(135deg, var(--color-primary), var(--color-dark-variant));
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #homeBtn:hover {
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 10px;
+      color: var(--color-dark-variant);
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 12px;
+      }
+
+      #reader {
+        /* width: %; */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>QR Code Scanner</h1>
+  <div class="container">
+    <div id="batchCourseInfo" class="info-box"></div>
+    <div class="card" id="selectedCourses"></div>
+    <div id="reader"></div>
+    <div id="result">Waiting for QR scan...</div>
+    <div id="countDisplay" class="info-box">✅ Marked Students: 0</div>
+    <button id="homeBtn">Finish</button>
+  </div>
+  <footer>© 2025 • Camera permission required</footer>
+
+  <script>
+    const resultContainer = document.getElementById("result");
+    const scannedQRCodes = new Set();
+    const scannedStudents = [];
+    const html5QrCode = new Html5Qrcode("reader");
+
+    let lastScanTime = 0;
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
+
+    window.onload = () => {
+
+      const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      const batch = localStorage.getItem('selectedbatch')?.replace(/"/g, '');
+
+      // Display batch and courses
+      const infoBox = document.getElementById("batchCourseInfo");
+
+      if (courses && batch) {
+        infoBox.innerHTML = `
+    📘 <strong>Batch:</strong> ${batch}<br>
+    🕐 <strong>Courses:</strong> ${courses.period1}`;
+      }
+
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: { width: 300, height: 260 } },
+        onScanSuccess,
+        () => { }
+      ).catch(err => console.error("Camera start error:", err));
+    };
+
+   function onScanSuccess(decodedText) {
+  console.log("Scanned QR text:", decodedText);
+
+  const rollMatch = decodedText.match(/Roll No:\s*(.*)/i);
+  const batchMatch = decodedText.match(/Batch:\s*(.*)/i);
+
+  const rollno = rollMatch ? rollMatch[1].trim() : null;
+  let scannedBatch = batchMatch ? batchMatch[1].trim() : null;
+
+  if (scannedBatch) {
+    scannedBatch = scannedBatch
+      .replace(/batch[\s-]*/i, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+  }
+
+  let selectedBatch = localStorage.getItem('selectedbatch')?.replace(/"/g, '').trim().toLowerCase();
+
+  const now = Date.now();
+  if (now - lastScanTime < 2000) return;
+  lastScanTime = now;
+
+  if (!rollno || !scannedBatch) {
+    console.log("Invalid QR format – rollno or batch missing");
+    resultContainer.innerText = "❌ Invalid QR format!";
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  if (scannedBatch !== selectedBatch) {
+    resultContainer.innerText = `⚠️ Please scan a QR from batch: ${selectedBatch}`;
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  if (scannedQRCodes.has(rollno)) {
+    resultContainer.innerText = `⚠️ Already marked for: ${rollno}`;
+    resultContainer.classList.add('already-scanned');
+    return;
+  }
+
+  scannedQRCodes.add(rollno);
+  scannedStudents.push({ rollno, batch: selectedBatch });
+
+  resultContainer.innerText = `✅ Marked for: ${rollno}`;
+  document.getElementById("countDisplay").innerText = `✅ Marked Students: ${scannedQRCodes.size}`;
+  resultContainer.classList.remove('already-scanned');
+}
+
+    document.getElementById("homeBtn").addEventListener("click", () => {
+      const homeBtn = document.getElementById("homeBtn");
+      homeBtn.disabled = true;
+      homeBtn.textContent = "Processing...";
+
+      const courses = JSON.parse(localStorage.getItem('selectedCourses'));
+      const batch = JSON.parse(localStorage.getItem('selectedbatch'));
+
+      if (!courses || scannedStudents.length === 0) {
+        homeBtn.disabled = false;
+        homeBtn.textContent = "Finish";
+        window.location.href = "../";
+        return;
+      }
+
+      const payload = {
+        collectionName: `attendance_${batch.toLowerCase()}`,
+        date: new Date().toISOString().slice(0, 10),
+        course: courses.period1,
+        presentArrays: scannedStudents
+      };
+
+      fetch(`${backendUrl}/api/facultyop/mark-all`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("❌ Failed to mark!");
+          return res.json();
+        })
+        .then(() => {
+          alert("✅ Marked successfully!");
+          resultContainer.innerText = "🎉 Attendance saved!";
+          html5QrCode.stop();
+
+          // Save present count to localStorage
+          const todayKey = new Date().toISOString().split('T')[0];
+          const groupName = batch.toUpperCase();
+          const attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || {};
+          if (!attendanceData[todayKey]) attendanceData[todayKey] = [];
+
+          const presentCount = scannedQRCodes.size;
+          const idx = attendanceData[todayKey].findIndex(g => g.name === groupName);
+
+          const newEntry = { name: groupName, present: presentCount };
+          if (idx !== -1) attendanceData[todayKey][idx] = newEntry;
+          else attendanceData[todayKey].push(newEntry);
+
+          localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+          scannedQRCodes.clear();
+          scannedStudents.length = 0;
+        })
+        .catch(err => {
+          console.error(err);
+          alert("❌ Error marking attendance!");
+        })
+        .finally(() => {
+          homeBtn.disabled = false;
+          homeBtn.textContent = "Finish";
+        });
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+
+</html>

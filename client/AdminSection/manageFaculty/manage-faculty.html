@@ -4,219 +4,304 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Manage Faculty</title>
+  <link rel="stylesheet" href="../style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-:root {
-  --color-primary: #00796B;
-  --color-danger: #ff5252;
-  --color-warning: #ffbb55;
-  --color-success: #41f1b6;
-  --color-white: #ffffff;
-  --color-info: #7d8da1;
-  --color-dark: #2d2d2d;
-  --color-light: rgba(132, 139, 200, 0.18);
+    :root {
+      --color-primary: #00796B;
+      --color-danger: #ff5252;
+      --color-warning: #ffbb55;
+      --color-success: #41f1b6;
+      --color-white: #ffffff;
+      --color-info: #7d8da1;
+      --color-dark: #2d2d2d;
+      --color-light: rgba(132, 139, 200, 0.18);
 
-  --border-radius-1: 0.4rem;
-  --border-radius-2: 1.2rem;
+      --border-radius-1: 0.4rem;
+      --border-radius-2: 1.2rem;
 
-  --card-padding: 1.8rem;
-  --box-shadow: 0 2rem 3rem var(--color-light);
-}
+      --card-padding: 1.8rem;
+      --box-shadow: 0 2rem 3rem var(--color-light);
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  text-decoration: none;
-  list-style: none;
-  font-family: 'Poppins', sans-serif;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      list-style: none;
+      font-family: 'Poppins', sans-serif;
+    }
 
-body {
-  background-color: #f6f6f9;
-  color: var(--color-dark);
-  overflow-x: hidden;
-}
+    body {
+      background-color: #f6f6f9;
+      color: var(--color-dark);
+      overflow-x: hidden;
+    }
 
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: var(--color-white);
-  box-shadow: var(--box-shadow);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 3rem;
+      color: var(--color-info);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background-color: var(--color-white);
+      box-shadow: var(--box-shadow);
+      z-index: 1000;
+    }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+    header .logo {
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      margin-right: auto;
+    }
 
-.logo img {
-  width: 3rem;
-  height: 3rem;
-}
+    header .logo img {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
 
-.container {
-  padding: 2rem;
-  width: 100%;
-}
+    header .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 3rem;
+    }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
-  color: var(--color-primary);
-}
+    header .navbar a {
+      display: flex;
+      margin-left: 2rem;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      height: 3.7rem;
+      transition: all 300ms ease;
+      padding: 0 2rem;
+      color: var(--color-dark);
+    }
 
-.subjects {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 2rem;
-}
+    header .navbar a:hover {
+      padding-top: 1.5rem;
+    }
 
-.subjects > div {
-  background-color: var(--color-white);
-  padding: 1.5rem;
-  border-radius: var(--border-radius-2);
-  box-shadow: var(--box-shadow);
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
+    header .navbar a.active {
+      background: var(--color-light);
+      color: var(--color-primary);
+    }
 
-.subjects > div:hover {
-  transform: translateY(-5px);
-  box-shadow: none;
-}
+    header .navbar a.active::before {
+      content: "";
+      background-color: var(--color-primary);
+      position: absolute;
+      height: 5px;
+      width: 100%;
+      left: 0;
+      top: 0;
+    }
 
-.subjects h3 {
-  margin-top: 1rem;
-  font-size: 1.1rem;
-  color: var(--color-dark);
-}
+    header #profile-btn {
+      display: none;
+      font-size: 2rem;
+      margin: 0.5rem 2rem 0 0;
+      cursor: pointer;
+    }
 
-.icon-container1 {
-  width: 80px;
-  height: 80px;
-  margin: 1rem auto 0;
-  border: 5px solid var(--color-primary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    header .theme-toggler {
+      background: var(--color-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 1.6rem;
+      width: 4.2rem;
+      cursor: pointer;
+      border-radius: var(--border-radius-1);
+      margin-right: 2rem;
+    }
 
-.icon-container1 img {
-  width: 40px;
-  height: 40px;
-  filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
-}
+    header .theme-toggler span {
+      font-size: 1.2rem;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-/* FORM STYLING */
-form {
-  max-width: 400px;
-  margin: 2rem auto;
-  background-color: var(--color-white);
-  padding: 2rem;
-  border-radius: var(--border-radius-2);
-  box-shadow: var(--box-shadow);
-}
+    header .theme-toggler span.active {
+      background-color: var(--color-primary);
+      color: white;
+      border-radius: var(--border-radius-1);
+    }
 
-form h2 {
-  margin-bottom: 0.5rem;
-  color: var(--color-primary);
-}
+    .container {
+      padding: 2rem;
+      width: 100%;
+    }
 
-form p {
-  margin-bottom: 1rem;
-  color: var(--color-info);
-}
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--color-dark);
+    }
 
-form input,
-form select {
-  width: 100%;
-  padding: 0.6rem;
-  margin-bottom: 1rem;
-  border: 1px solid var(--color-light);
-  border-radius: var(--border-radius-1);
-  font-size: 1rem;
-}
+    .subjects {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+    }
 
-form .btn {
-  display: inline-block;
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: var(--border-radius-1);
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background-color 0.3s ease;
-}
+    .subjects > div {
+      background-color: var(--color-white);
+      padding: 1.5rem;
+      border-radius: var(--border-radius-2);
+      box-shadow: var(--box-shadow);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-form .btn:hover {
-  background-color: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-}
+    .subjects > div:hover {
+      transform: translateY(-5px);
+      box-shadow: none;
+    }
 
-form .text-muted {
-  color: var(--color-info);
-}
+    .subjects h3 {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      color: var(--color-dark);
+    }
 
-form .cancel-link {
-  margin-left: 1rem;
-  color: var(--color-danger);
-  font-weight: 500;
-}
+    .icon-container1 {
+      width: 80px;
+      height: 80px;
+      margin: 1rem auto 0;
+      border: 5px solid var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-.text-center {
-  text-align: center;
-}
+    .icon-container1 img {
+      width: 40px;
+      height: 40px;
+      filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
+    }
 
-/* Responsive */
-@media (max-width: 600px) {
-  header h2 {
-    font-size: 1.2rem;
-  }
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background-color: var(--color-white);
+      padding: 2rem;
+      border-radius: var(--border-radius-2);
+      box-shadow: var(--box-shadow);
+    }
 
-  .subjects {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
+    form h2 {
+      margin-bottom: 0.5rem;
+      color: var(--color-primary);
+    }
 
-  .icon-container1 {
-    width: 60px;
-    height: 60px;
-  }
+    form p {
+      margin-bottom: 1rem;
+      color: var(--color-info);
+    }
 
-  .icon-container1 img {
-    width: 30px;
-    height: 30px;
-  }
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-light);
+      border-radius: var(--border-radius-1);
+      font-size: 1rem;
+    }
 
-  form {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-}
+    form .btn {
+      display: inline-block;
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: var(--border-radius-1);
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background-color 0.3s ease;
+    }
 
+    form .btn:hover {
+      background-color: transparent;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    form .cancel-link {
+      margin-left: 1rem;
+      color: var(--color-danger);
+      font-weight: 500;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 0 1rem;
+      }
+
+      .subjects {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .icon-container1 {
+        width: 60px;
+        height: 60px;
+      }
+
+      .icon-container1 img {
+        width: 30px;
+        height: 30px;
+      }
+
+      form {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
   </style>
 </head>
 <body>
-   <header>
-        <div class="logo" title="University Management System">
-            <img src="/client/AdminSection/image.png" alt="">
-            <h1>IARE</h1>
-        </div>
+  <header>
+    <div class="logo" title="University Management System">
+      <img src="../image.png" alt="IARE Logo" />
+      <h1>IARE</h1>
+    </div>
 
-    </header>
+    <div class="navbar">
+      <a href="../" class="active" title="Home">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+      <div id="profile-btn" title="Profile">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <a href="/iareattendancemgmt/client/index.html" title="Logout" id="logoutBtn">
+        <span class="material-icons-sharp">logout</span>
+        <h3>Logout</h3>
+      </a>
+    </div>
+
+  </header>
+
   <div class="container">
     <main>
       <h1>Manage Faculty</h1>

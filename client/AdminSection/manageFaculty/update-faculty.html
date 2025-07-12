@@ -252,7 +252,7 @@ form .cancel-link {
   if (passwordfa) updates.passwordfa = passwordfa;
 
   try {
-      const backendUrl = "https://iareattendancemgmt.onrender.com";
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
     const res = await fetch(`${backendUrl}/api/admin/${facultyid}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

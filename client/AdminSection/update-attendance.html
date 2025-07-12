@@ -1,360 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Update Attendance</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --primary: #00796b;
-        --secondary: #00574b;
-        --light: #ccc;
-        --white: #fff;
-        --dark: #333;
-        --bg: #f9f9f9;
-        --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        --radius: 10px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Attendance</title>
 
-      body {
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        background-color: var(--bg);
-      }
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  
+  <!-- Your Preferred Style -->
+  <link rel="stylesheet" href="./style.css">
+<style>
+  :root {
+    --color-white: #ffffff;
+    --color-dark: #333;
+    --color-dark-varient: #666;
+    --color-background: #f9f9f9;
+    --color-primary: #00796B;
+    --color-light: #ccc;
+    --border-radius-1: 6px;
+    --border-radius-2: 10px;
+    --box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
 
-      header {
-        background-color: var(--white);
-        padding: 1rem 2rem;
-        box-shadow: var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+  /* Header Styles */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--color-white);
+    z-index: 1000;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow);
+  }
 
-      header .logo {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
+  header .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
 
-      header .logo h1 {
-        color: var(--primary);
-        font-size: 1.4rem;
-      }
+  header .logo img {
+    height: 40px;
+  }
 
-      .navbar a {
-        text-decoration: none;
-        color: var(--dark);
-        font-weight: 500;
-        margin-left: 1rem;
-      }
+  header .navbar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
 
-      form {
-        background-color: var(--white);
-        padding: 2rem;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        max-width: 960px;
-        margin: 2rem auto;
-      }
+  header .navbar a,
+  header .navbar #profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-dark);
+    text-decoration: none;
+    font-weight: 500;
+  }
 
-      .box {
-        margin-bottom: 1.5rem;
-      }
+  header .navbar a:hover,
+  header .navbar #profile-btn:hover {
+    color: var(--color-primary);
+    cursor: pointer;
+  }
 
-      .box label {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
-      }
+  /* Main Content Adjust for Fixed Header */
+  main {
+    padding-top: 120px; /* Adjust as needed to avoid overlapping header */
+  }
 
-      select,
-      input[type="date"] {
-        width: 100%;
-        padding: 0.75rem;
-        font-size: 1rem;
-        border-radius: var(--radius);
-        border: 1px solid var(--light);
-      }
+  /* Form Styles */
+  form {
+    background: var(--color-white);
+    padding: 2rem;
+    border-radius: var(--border-radius-2);
+    box-shadow: var(--box-shadow);
+    max-width: 800px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 
-      .radio-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
+  form h2 {
+    color: var(--color-primary);
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
 
-      .radio-group input {
-        display: none;
-      }
+  form .text-muted {
+    color: var(--color-dark-varient);
+  }
 
-      .radio-group label {
-        padding: 0.5rem 1rem;
-        border: 1px solid var(--light);
-        border-radius: var(--radius);
-        background-color: var(--bg);
-        cursor: pointer;
-      }
+  form .box {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
 
-      .radio-group input:checked + label {
-        background-color: var(--primary);
-        color: white;
-        border-color: var(--primary);
-      }
+  form label {
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    color: var(--color-dark);
+  }
 
-      .btn {
-        padding: 0.75rem 1.5rem;
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        border-radius: var(--radius);
-        cursor: pointer;
-        font-weight: bold;
-      }
+  form input[type="date"],
+  form select {
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: var(--border-radius-1);
+    border: 1px solid var(--color-light);
+    background-color: var(--color-background);
+    color: var(--color-dark);
+    outline: none;
+    margin-bottom: 0.3rem;
+  }
 
-      #absentees-container {
-        margin-top: 2rem;
-        padding: 1.5rem;
-        border: 1px solid var(--light);
-        border-radius: var(--radius);
-        background-color: #fff;
-        display: none;
-      }
+  form input[type="date"]:focus,
+  form select:focus {
+    border-color: var(--color-primary);
+  }
 
-      .absentees-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 1rem;
-        margin-top: 1rem;
-      }
+  /* Radio Buttons as Toggle Buttons */
+  .radio-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
 
-      .absentee-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background-color: #f3fefc;
-        border: 1px solid var(--primary);
-        padding: 0.75rem 1rem;
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-      }
+  .radio-group input[type="radio"] {
+    display: none;
+  }
 
-      .absentee-item label {
-        font-weight: bold;
-        font-size: 1rem;
-      }
+  .radio-group label {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--color-light);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    background-color: var(--color-background);
+    transition: all 0.3s ease;
+  }
 
-      /* Spinner styles */
-      .spinner {
-        width: 36px;
-        height: 36px;
-        border: 4px solid #e0e0e0;
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 2rem auto;
-      }
+  .radio-group input[type="radio"]:checked + label {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+  }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
+  /* Submit Button */
+  form .btn {
+    align-self: flex-start;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius-1);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-      @media (max-width: 768px) {
-        form {
-          margin: 1rem;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <div class="logo">
-        <h1>IARE</h1>
+  form .btn:hover {
+    background-color: var(--color-dark-varient);
+  }
+
+  /* Absentees Container */
+  #absentees-container {
+    background-color: var(--color-background);
+    padding: 1.5rem;
+    border: 1px solid var(--color-light);
+    border-radius: var(--border-radius-2);
+    margin-top: 1rem;
+  }
+
+  .absentees-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .absentee-item {
+    background-color: var(--color-white);
+    padding: 1rem;
+    border-radius: var(--border-radius-1);
+    border: 1px solid var(--color-light);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .absentee-item input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    form {
+      padding: 1.5rem;
+      margin: 1rem;
+    }
+
+    .radio-group {
+      flex-direction: column;
+    }
+
+    .absentee-item {
+      width: 100%;
+    }
+
+    header .navbar {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img src="./image.png" alt="IARE Logo">
+      <h1>IARE</h1>
+    </div>
+    <div class="navbar">
+      <a href="./">
+        <span class="material-icons-sharp">home</span><h3>Home</h3>
+      </a>
+      <a href="/iareattendancemgmt/client/index.html" id="logoutBtn">
+        <span class="material-icons-sharp">logout</span><h3>Logout</h3>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <form id="absentee-form">
+      <h2>Update Attendance</h2>
+      <p class="text-muted">Select Batch, Date, and Course to view absentees.</p>
+
+      <div class="box">
+        <label for="batch">Batch</label>
+        <select name="batch" required>
+          <option value="" disabled selected>Select Batch</option>
+          <option value="attendance_skillup-1">SKILLUP BATCH-1</option>
+          <option value="attendance_skillup-2">SKILLUP BATCH-2</option>
+          <option value="attendance_skillup-3">SKILLUP BATCH-3</option>
+          <option value="attendance_skillnext-1">SKILLNEXT BATCH-1</option>
+          <option value="attendance_skillnext-2">SKILLNEXT BATCH-2</option>
+          <option value="attendance_skillnext-3">SKILLNEXT BATCH-3</option>
+          <option value="attendance_skillbridge-1">SKILLBRIDGE BATCH-1</option>
+          <option value="attendance_skillbridge-2">SKILLBRIDGE BATCH-2</option>
+          <option value="attendance_skillbridge-3">SKILLBRIDGE BATCH-3</option>
+          <option value="attendance_skillbridge-4">SKILLBRIDGE BATCH-4</option>
+          <option value="attendance_skillbridge-5">SKILLBRIDGE BATCH-5</option>
+        </select>
       </div>
-      <div class="navbar">
-        <a href="index.html">Home</a>
-        <a href="#" onclick="logout()">Logout</a>
+
+      <div class="box">
+        <label>Course</label>
+        <div class="radio-group">
+          <input type="radio" name="course" id="cp" value="CP" required />
+          <label for="cp">CP</label>
+          <input type="radio" name="course" id="jfs" value="JFS" />
+          <label for="jfs">JFS</label>
+          <input type="radio" name="course" id="dbms" value="DBMS" />
+          <label for="dbms">DBMS</label>
+          <input type="radio" name="course" id="aws" value="AWS" />
+          <label for="aws">AWS</label>
+        </div>
       </div>
-    </header>
 
-    <main>
-      <form id="absentee-form">
-        <h2>Update Attendance</h2>
-        <div class="box">
-          <label for="batch">Batch</label>
-          <select name="batch" required>
-            <option value="" disabled selected>Select Batch</option>
-            <option value="attendance_skillup-1">SkillUp Batch-1</option>
-            <option value="attendance_skillup-2">SkillUp Batch-2</option>
-            <option value="attendance_skillup-3">SkillUp Batch-3</option>
-            <option value="attendance_skillnext-1">SkillNext Batch-1</option>
-            <option value="attendance_skillnext-2">SkillNext Batch-2</option>
-            <option value="attendance_skillnext-3">SkillNext Batch-3</option>
-            <option value="attendance_skillbridge-1">
-              SkillBridge Batch-1
-            </option>
-            <option value="attendance_skillbridge-2">
-              SkillBridge Batch-2
-            </option>
-            <option value="attendance_skillbridge-3">
-              SkillBridge Batch-3
-            </option>
-            <option value="attendance_skillbridge-4">
-              SkillBridge Batch-4
-            </option>
-            <option value="attendance_skillbridge-5">
-              SkillBridge Batch-5
-            </option>
-          </select>
-        </div>
+      <div class="box">
+        <label for="date">Date</label>
+        <input type="date" name="date" id="dateField" required />
+      </div>
 
-        <div class="box">
-          <label>Course</label>
-          <div class="radio-group">
-            <input type="radio" name="course" id="cp" value="CP" required />
-            <label for="cp">CP</label>
+      <input type="submit" value="Get Absentees" class="btn" />
 
-            <input type="radio" name="course" id="jfs" value="JFS" />
-            <label for="jfs">JFS</label>
+      <div id="absentees-container">
+        <h3>📋 Absentees List</h3>
+        <p style="font-size: 0.95rem;">Below are students marked absent. Select any to mark them present.</p>
+        <div id="absentees-result" class="absentees-list"></div>
+      </div>
+    </form>
+  </main>
 
-            <input type="radio" name="course" id="dbms" value="DBMS" />
-            <label for="dbms">DBMS</label>
+  <script>
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
 
-            <input type="radio" name="course" id="aws" value="AWS" />
-            <label for="aws">AWS</label>
-          </div>
-        </div>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("dateField").value = new Date().toISOString().split("T")[0];
+    });
 
-        <div class="box">
-          <label for="date">Date</label>
-          <input type="date" name="date" id="dateField" required />
-        </div>
+    document.getElementById("absentee-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const batch = form.batch.value.trim();
+      const date = form.date.value;
+      const course = form.course.value;
+      const container = document.getElementById("absentees-container");
+      const resultBox = document.getElementById("absentees-result");
 
-        <input type="submit" class="btn" value="Get Absentees" />
+      resultBox.innerHTML = "<p>Loading...</p>";
+      container.style.display = "block";
 
-        <div id="absentees-container">
-          <h3>📋 Absentees List</h3>
-          <p>Select students to mark them present:</p>
-          <div id="absentees-result" class="absentees-list"></div>
-        </div>
-      </form>
-    </main>
+      try {
+        const res = await fetch(`${backendUrl}/api/admin/absentees?batch=${batch}&date=${date}&course=${course}`);
+        const data = await res.json();
 
-    <script>
-      window.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("dateField").value = new Date()
-          .toISOString()
-          .split("T")[0];
-      });
-
-      document
-        .getElementById("absentee-form")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          const batch = this.batch.value;
-          const date = this.date.value;
-          const course = this.course.value;
-          const resultBox = document.getElementById("absentees-result");
-          const container = document.getElementById("absentees-container");
-
-          resultBox.innerHTML = '<div class="spinner"></div>';
-          container.style.display = "block";
-
-          // Simulate loading delay (2.5s minimum)
-          await new Promise((resolve) => setTimeout(resolve, 2500));
-
-          try {
-            const backendUrl = "https://iareattendancemgmt.onrender.com";
-            const res = await fetch(
-              `${backendUrl}/api/admin/absentees?batch=${batch}&date=${date}&course=${course}`
-            );
-            const data = await res.json();
-
-            if (!Array.isArray(data) || data.length === 0) {
-              resultBox.innerHTML = `<p style="color:gray;">No absentees found for the selected date/course.</p>`;
-            } else {
-              const sorted = data.sort((a, b) => a.localeCompare(b));
-              resultBox.innerHTML =
-                sorted
-                  .map(
-                    (roll, i) => `
-            <div class="absentee-item">
-              <input type="checkbox" name="presenties" value="${roll}" id="roll-${i}" />
-              <label for="roll-${i}">${roll}</label>
-            </div>
-          `
-                  )
-                  .join("") +
-                `
-            <div style="margin-top: 1.5rem;">
-              <button type="button" class="btn" onclick="submitMarkedPresent()">Mark Selected as Present</button>
-            </div>
-          `;
-            }
-
-            container.scrollIntoView({ behavior: "smooth" });
-          } catch (err) {
-            console.error(err);
-            resultBox.innerHTML = `<p style="color:red;">Server error. Please try again.</p>`;
-          }
-        });
-
-      async function submitMarkedPresent() {
-        const checkboxes = document.querySelectorAll(
-          'input[name="presenties"]:checked'
-        );
-        const selectedRollnos = Array.from(checkboxes).map((cb) => cb.value);
-        const batch = document.querySelector('select[name="batch"]').value;
-        const course = document.querySelector(
-          'input[name="course"]:checked'
-        ).value;
-
-        if (!selectedRollnos.length) {
-          alert("Please select at least one student to mark present.");
+        if (!Array.isArray(data) || data.length === 0) {
+          resultBox.innerHTML = `<p style="color:gray;">No absentees for selected date and course.</p>`;
           return;
         }
 
-        try {
-          const backendUrl = "https://iareattendancemgmt.onrender.com";
-          const res = await fetch(`${backendUrl}/api/admin/mark-present-bulk`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              course,
-              batch,
-              presenties: selectedRollnos,
-            }),
-          });
+        const sortedRolls = [...data].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
-          const result = await res.json();
-          const updatedCount = result.updatedCount || 0;
-
-          document.getElementById("absentees-result").innerHTML = `
-          <div style="background:#e0f7fa; padding:1rem; border-radius:10px; border:1px solid var(--primary);">
-            <h3 style="color: var(--primary);">✅ Attendance Marked</h3>
-            <p><strong>${updatedCount}</strong> students marked as present:</p>
-            <p style="font-weight:bold;">${selectedRollnos.join(", ")}</p>
-            <button class="btn" onclick="window.location.href='index.html'">OK</button>
+        resultBox.innerHTML = `
+          <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+            ${sortedRolls.map((rollno, i) => `
+              <div class="absentee-item">
+                <input type="checkbox" name="presenties" value="${rollno}" id="roll-${i}" />
+                <label for="roll-${i}">${rollno}</label>
+              </div>
+            `).join("")}
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <button type="button" class="btn" onclick="submitMarkedPresent()">Mark Selected as Present</button>
           </div>
         `;
-        } catch (err) {
-          console.error(err);
-          alert("Failed to mark attendance.");
-        }
+      } catch (err) {
+        console.error(err);
+        resultBox.innerHTML = `<p style="color:red;">Server error. Please try again.</p>`;
+      }
+    });
+
+    async function submitMarkedPresent() {
+      const checkboxes = document.querySelectorAll('input[name="presenties"]:checked');
+      const selectedRollnos = Array.from(checkboxes).map(cb => cb.value);
+      const batch = document.querySelector('select[name="batch"]').value;
+      const course = document.querySelector('input[name="course"]:checked').value;
+
+      if (!selectedRollnos.length) {
+        return alert("Please select at least one student to mark present.");
       }
 
-      function logout() {
-        window.location.href = "login.html";
+      try {
+        const res = await fetch(`${backendUrl}/api/admin/mark-present`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ course, batch, presenties: selectedRollnos }),
+        });
+
+        const result = await res.json();
+        alert(`✅ ${result.updatedCount || 0} student(s) marked as present.`);
+      } catch (err) {
+        console.error(err);
+        alert("Error marking attendance.");
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
