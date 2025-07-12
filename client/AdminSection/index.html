@@ -1,173 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard</title>
-  <link rel="shortcut icon" href="./images/logo.png">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <div class="logo" title="University Management System">
-      <img src="/client/AdminSection/image.png" alt="">
-      <h1>IARE</h1>
-    </div>
-    <div class="navbar">
-      <a href="index.html" class="active">
-        <span class="material-icons-sharp">home</span>
-        <h3>Home</h3>
-      </a>
-      <div id="profile-btn">
-        <span class="material-icons-sharp">person</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo" title="University Management System">
+        <img src="image.png" alt="IARE Logo" />
+        <h1>IARE</h1>
       </div>
-      <a href="#">
-        <span class="material-icons-sharp" onclick="logout()">logout</span>
-        <h3 onclick="logout()">Logout</h3>
-      </a>
-    </div>
-    <div class="theme-toggler">
-      <span class="material-icons-sharp active">light_mode</span>
-      <span class="material-icons-sharp">dark_mode</span>
-    </div>
-  </header>
-
-  <div class="container">
-    <aside>
-      <div class="profile">
-        <div class="top">
-          <h2>Admin Profile</h2>
+      <div class="navbar">
+        <a href="index.html" class="active" title="Home">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <div id="profile-btn" title="Profile">
+          <span class="material-icons-sharp">person</span>
         </div>
-        <div class="about">
-          <h5><span class="material-icons-sharp">person_outline</span> NAME</h5>
-          <p id="adminName"></p>
-
-          <h5><span class="material-icons-sharp">confirmation_number</span> ID </h5>
-          <p id="adminId"></p>
-
-          <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
-          <p id="adminEmail"></p>
-        </div>
+        <a href="#" title="Logout" id="logoutBtn">
+          <span class="material-icons-sharp">logout</span>
+          <h3>Logout</h3>
+        </a>
       </div>
-    </aside>
+    </header>
 
-    <main>
-      <h1>Dashboard</h1>
-      <div class="subjects">
-        <div class="eg clickable-box" onclick="window.location.href='manageStudent/manage-student.html'">
-          <span class="material-icons-sharp">groups</span>
-          <h3>Manage Students</h3>
-          <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/000000/student-male.png" alt="Manage Students Icon">
+    <div class="container">
+      <aside>
+        <div class="profile">
+          <div class="top">
+            <h2>Profile</h2>
+          </div>
+          <div class="about">
+            <h5>
+              <span class="material-icons-sharp">person_outline</span> NAME
+            </h5>
+            <p id="adminName"></p>
+
+            <h5>
+              <span class="material-icons-sharp">confirmation_number</span> ID
+            </h5>
+            <p id="adminId"></p>
+
+            <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
+            <p id="adminEmail"></p>
           </div>
         </div>
+      </aside>
 
-        <div class="mth clickable-box" onclick="window.location.href='manageFaculty/manage-faculty.html'">
-          <span class="material-icons-sharp">groups</span>
-          <h3>Manage Faculty</h3>
-          <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/000000/teacher.png" alt="Manage Faculty Icon" />
+      <main>
+        <h1>Dashboard</h1>
+        <div class="subjects">
+          <div class="clickable-box eg" id="manageStudents">
+            <span class="material-icons-sharp">groups</span>
+            <h3>Manage Students</h3>
+            <div class="icon-container1">
+              <img
+                src="https://img.icons8.com/ios-filled/50/000000/student-male.png"
+                alt="Manage Students Icon"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="cg" onclick="updateAttendance()">
-          <span class="material-icons-sharp">how_to_reg</span>
-          <h3>Update Attendance</h3>
-          <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/4CAF50/task-completed.png" alt="Update Attendance Icon" />
+          <div class="clickable-box eg" id="manageFaculty">
+            <span class="material-icons-sharp">groups</span>
+            <h3>Manage Faculty</h3>
+            <div class="icon-container1">
+              <img
+                src="https://img.icons8.com/ios-filled/50/000000/teacher.png"
+                alt="Manage Faculty Icon"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="cg" onclick="window.location.href = 'batch.html'">
-          <span class="material-icons-sharp">dns</span>
-          <h3>Batch-wise Attendance Report</h3>
-          <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/000000/report-card.png" alt="Report Card Icon" />
+          <div class="clickable-box eg" id="updateAttendance">
+            <span class="material-icons-sharp">how_to_reg</span>
+            <h3>Manage Attendance</h3>
+            <div class="icon-container1">
+              <img
+                src="https://img.icons8.com/ios-filled/50/4CAF50/task-completed.png"
+                alt="Update Attendance Icon"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="cg" onclick="getAttendanceReport()">
-          <span class="material-icons-sharp">dns</span>
-          <h3>Download Attendance Summary</h3>
-          <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Combo Chart Icon" />
+          <div class="clickable-box eg" id="batchwiseReport">
+            <span class="material-icons-sharp">dns</span>
+            <h3>Batch-wise Attendance Report</h3>
+            <div class="icon-container1">
+              <img
+                src="https://img.icons8.com/ios-filled/50/000000/report-card.png"
+                alt="Report Card Icon"
+              />
+            </div>
           </div>
+
+          <div class="clickable-box eg" id="downloadReportBox">
+            <span class="material-icons-sharp">dns</span>
+            <h3>Download Attendance Summary</h3>
+
+            <div class="icon-container1">
+              <img
+                src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png"
+                alt="Combo Chart Icon"
+              />
+            </div>
+
+            <div class="download-buttons">
+              <button id="downloadExcel" class="download-btn">Excel</button>
+              <button id="downloadPDF" class="download-btn">PDF</button>
+            </div>
+          </div>
+
+          <div class="clickable-box eg" id="postAnnouncements">
+            <span class="material-icons-sharp">dns</span>
+            <h3>Post Announcements</h3>
+            <div class="icon-container">
+              <span
+                class="material-icons-sharp"
+                style="font-size: 48px; background-color: var(--color-primary)"
+                >campaign</span
+              >
+            </div>
+          </div>
+          <!-- Make this whole box clickable with styling preserved -->
+                <div class="cs clickable-box" onclick="window.location.href='./QrScan/CourseSelection.html'">
+                    <span class="material-icons-sharp">computer</span>
+                    <h3>Scan StudentQR</h3>
+                    <div class="icon-container">
+                        <span class="material-icons-sharp"
+                            style="font-size: 48px; background-color: var(--color-primary);">qr_code</span>
+                    </div>
+                </div>
         </div>
+      </main>
+      <div id="spinnerOverlay" style="display: none">
+        <div class="spinner"></div>
       </div>
-    </main>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const adminId = localStorage.getItem('adminId'); // From login
-      const backendUrl = "https://iareattendancemgmt.onrender.com";
-
-      try {
-        const res = await fetch(`${backendUrl}/api/admin/admin?adminId=${adminId}`);
-        if (!res.ok) throw new Error("Failed to fetch admin profile");
-
-        const profile = await res.json();
-
-        // Update DOM
-        document.getElementById("adminName").textContent = profile.name || "N/A";
-        document.getElementById("adminId").textContent = profile.adminId || "N/A";
-        document.getElementById("adminEmail").textContent = profile.email || "N/A";
-      } catch (err) {
-        console.error("Error loading admin profile:", err);
-        document.getElementById("adminName").textContent = "Unable to load";
-      }
-    });
-
-    function updateAttendance() {
-      window.open("update-attendance.html", "_blank");
-    }
-
-    async function getAttendanceReport() {
-      const backendUrl = "";
-      const batches = [
-        "skillup batch-1", "skillup batch-2", "skillup batch-3",
-        "skillnext batch-1", "skillnext batch-2", "skillnext batch-3",
-        "skillbridge batch-1", "skillbridge batch-2", "skillbridge batch-3", "skillbridge batch-4", "skillbridge batch-5"
-      ];
-
-      const date = new Date().toISOString().slice(0, 10);
-      const params = new URLSearchParams();
-      batches.forEach(batch => params.append("batch", batch));
-      params.append("date", date);
-      params.append("format", "excel");
-
-      try {
-        const response = await fetch(`${backendUrl}/api/admin/attendance-report?${params.toString()}`);
-        if (!response.ok) {
-          const errorData = await response.json();
-          alert("Error: " + errorData.message);
-          return;
-        }
-
-        const blob = await response.blob();
-        const objectUrl = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-        a.href = objectUrl;
-        a.download = `attendance_summary_${date.replace(/-/g, "_")}.xlsx`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(objectUrl);
-      } catch (error) {
-        console.error("Download failed:", error);
-        alert("Failed to download attendance report.");
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem("adminId");
-      window.location.href = "login.html";
-    }
-  </script>
-
-  <script src="app.js"></script>
-</body>
+    </div>
+    <script src="app.js"></script>
+  </body>
 </html>

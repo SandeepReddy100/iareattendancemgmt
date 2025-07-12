@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post Announcement</title>
+
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="../style.css" />
+
+  <!-- Inline Styles -->
+  <style>
+    :root {
+      --color-white: #fff;
+      --color-primary: #00796B;
+      --color-primary-hover: #005f56;
+      --color-dark: #1e1e1e;
+      --color-light: #e0e0e0;
+      --color-bg: #f5f7fa;
+      --border-radius: 0.75rem;
+      --shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--color-bg);
+      color: var(--color-dark);
+    }
+
+   
+    .form-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 5rem 1rem 2rem;
+    }
+
+    form {
+      background: var(--color-white);
+      padding: 2.5rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--color-light);
+      max-width: 700px;
+      width: 100%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    form h2 {
+      color: var(--color-primary);
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: block;
+      color: #333;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      font-size: 1rem;
+      border-radius: 0.6rem;
+      border: 1px solid var(--color-light);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.1);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .batch-checkboxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .batch-checkboxes label {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.6rem;
+      border: 1.5px solid var(--color-primary);
+      background: white;
+      color: var(--color-primary);
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .batch-checkboxes label:hover,
+    .batch-checkboxes input:checked + label {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .batch-checkboxes input[type="checkbox"] {
+      margin-right: 6px;
+      accent-color: var(--color-primary);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      border-radius: 0.6rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.25s ease;
+    }
+
+    .btn:hover {
+      background: var(--color-primary-hover);
+    }
+
+    .cancel-link {
+      display: inline-block;
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #666;
+      text-decoration: none;
+    }
+
+    .cancel-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .form-wrapper {
+        padding: 3rem 1rem;
+      }
+
+      form {
+        padding: 2rem;
+      }
+
+      .batch-checkboxes {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo" title="University Management System">
+      <img src="../image.png" alt="IARE Logo" />
+      <h1>IARE</h1>
+    </div>
+
+    <div class="navbar">
+      <a href="../" class="active" title="Home">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+      <div id="profile-btn" title="Profile">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <a href="/iareattendancemgmt/client/index.html" title="Logout" id="logoutBtn">
+        <span class="material-icons-sharp">logout</span>
+        <h3>Logout</h3>
+      </a>
+    </div>
+
+  </header>
+
+  <div class="form-wrapper">
+    <form id="announcement-form">
+      <h2>Post New Announcement</h2>
+
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="title" placeholder="e.g. 🚀 Weekly LeetCode Challenge #5" required />
+      </div>
+
+      <div class="form-group">
+        <label>Subtitle</label>
+        <input type="text" id="subtitle" placeholder="e.g. Complete problems by Sunday - 10:00 PM" required />
+      </div>
+
+      <div class="form-group">
+        <label>Content</label>
+        <textarea id="content" placeholder="e.g. This week's problems focus on DP and Binary Trees..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Select Batches</label>
+        <div class="batch-checkboxes">
+          <label><input type="checkbox" value="SKILLUP-1" /> SKILLUP-1</label>
+          <label><input type="checkbox" value="SKILLUP-2" /> SKILLUP-2</label>
+          <label><input type="checkbox" value="SKILLNEXT-1" /> SKILLNEXT-1</label>
+          <label><input type="checkbox" value="SKILLNEXT-2" /> SKILLNEXT-2</label>
+          <label><input type="checkbox" value="SKILLNEXT-3" /> SKILLNEXT-3</label>
+          <label><input type="checkbox" value="SKILLBRIDGE-1" /> SKILLBRIDGE-1</label>
+          <label><input type="checkbox" value="SKILLBRIDGE-2" /> SKILLBRIDGE-2</label>
+          <label><input type="checkbox" value="SKILLBRIDGE-3" /> SKILLBRIDGE-3</label>
+          <label><input type="checkbox" value="SKILLBRIDGE-4" /> SKILLBRIDGE-4</label>
+          <label><input type="checkbox" value="SKILLBRIDGE-5" /> SKILLBRIDGE-5</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Post Announcement</button>
+      <a href="../index.html" class="cancel-link">Cancel</a>
+    </form>
+  </div>
+
+  <script src="app.js" rel="script"></script>
+</body>
+</html>
