@@ -951,12 +951,12 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
           right: { style: "medium", color: { argb: "000000" } },
         };
         
-        // Summary data
-        const summaryRow = sheet.addRow(["", "", `Total Students: ${data.length}`, "", "", `Absent: ${absent}`]);
+        // Summary data - Only show Absent count for branch-specific sheets
+        const summaryRow = sheet.addRow(["", "", "", "", "", `Absent: ${absent}`]);
         summaryRow.height = 22;
         
         summaryRow.eachCell((cell, colNumber) => {
-          if (colNumber === 3 || colNumber === 6) {
+          if (colNumber === 6) {
             cell.font = { 
               bold: true, 
               size: 11,
@@ -968,19 +968,11 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
               vertical: "middle" 
             };
             
-            if (colNumber === 3) {
-              cell.fill = { 
-                type: "pattern", 
-                pattern: "solid", 
-                fgColor: { argb: "3498DB" } // Blue background for Total Students
-              };
-            } else if (colNumber === 6) {
-              cell.fill = { 
-                type: "pattern", 
-                pattern: "solid", 
-                fgColor: { argb: "E74C3C" } // Red background for Absent
-              };
-            }
+            cell.fill = { 
+              type: "pattern", 
+              pattern: "solid", 
+              fgColor: { argb: "E74C3C" } // Red background for Absent
+            };
             
             cell.border = {
               top: { style: "thin", color: { argb: "000000" } },
@@ -1052,7 +1044,7 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
 
     // Sheet 1: Complete Report
     const completeSheet = workbook.addWorksheet("Complete Report");
-    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}`);
+    styleHeaders(completeSheet, `B.Tech V Semester - ${shortBatchName}(Both Present & Absent)`);
     addStudentRows(completeSheet, sortedData);
 
     // Branch-wise Absentee Sheets
@@ -1074,16 +1066,16 @@ router.get("/attendance/complete-report/:collectionName", async (req, res) => {
 
       const sheetName = `${shortBatchName}_${branch}`.replace(/[\\\/\?\*\[\]]/g, "").slice(0, 31);
       const sheet = workbook.addWorksheet(sheetName);
-      styleHeaders(sheet, `B.Tech V Semester - ${sheetName}`);
+      styleHeaders(sheet, `B.Tech V Semester - ${shortBatchName}_${branch}(Absent Only)`);
       addStudentRows(sheet, sortedAbsentees, true);
     }
 
     const fileName = `${shortBatchName}_${displayDate}.xlsx`;
-const encodedFileName = encodeURIComponent(fileName);
-res.setHeader(
-  "Content-Disposition",
-  `attachment; filename="${fileName}"; filename*=UTF-8''${encodedFileName}`
-);
+    const encodedFileName = encodeURIComponent(fileName);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"; filename*=UTF-8''${encodedFileName}`
+    );
     res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     await workbook.xlsx.write(res);
     res.end();
@@ -1143,11 +1135,11 @@ router.get("/attendance/complete-report-pdf/:collectionName", async (req, res) =
     // Set response headers
     const fileName = `${shortBatchName}_${displayDate}.pdf`;
     res.setHeader('Content-Type', 'application/pdf');
-const encodedFileName = encodeURIComponent(fileName);
-res.setHeader(
-  "Content-Disposition",
-  `attachment; filename="${fileName}"; filename*=UTF-8''${encodedFileName}`
-);
+    const encodedFileName = encodeURIComponent(fileName);
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"; filename*=UTF-8''${encodedFileName}`
+    );
   
     // Pipe PDF to response
     doc.pipe(res);
@@ -1320,21 +1312,13 @@ res.setHeader(
           
           yPos += 25;
           
-          // Summary data
-          doc.rect(50, yPos, 247, 20)
-             .fillAndStroke('#3498db', '#000000')
-             .fillColor('#ffffff')
-             .fontSize(10)
-             .text(`Total Students: ${data.length}`, 50, yPos + 6, { 
-               width: 247, 
-               align: 'center' 
-             });
-          
-          doc.rect(297, yPos, 248, 20)
+          // Summary data - Only show absent count for branch-specific sheets
+          doc.rect(50, yPos, 495, 20)
              .fillAndStroke('#e74c3c', '#000000')
              .fillColor('#ffffff')
-             .text(`Absent: ${absent}`, 297, yPos + 6, { 
-               width: 248, 
+             .fontSize(10)
+             .text(`Absent: ${absent}`, 50, yPos + 6, { 
+               width: 495, 
                align: 'center' 
              });
              
@@ -1384,7 +1368,7 @@ res.setHeader(
     };
 
     // Generate Complete Report
-    let currentY = addHeaders(doc, `B.Tech V Semester - ${shortBatchName}`);
+    let currentY = addHeaders(doc, `B.Tech V Semester - ${shortBatchName}(Both Present & Absent)`);
     createTable(doc, sortedData, currentY, true, 'complete');
 
     // Generate Branch-wise Absentee Reports
@@ -1416,7 +1400,7 @@ res.setHeader(
 
       // Add new page for each branch
       doc.addPage();
-      const title = `B.Tech V Semester - ${shortBatchName}_${branch}`;
+      const title = `B.Tech V Semester - ${shortBatchName}_${branch}(Absent Only)`;
       currentY = addHeaders(doc, title);
       createTable(doc, sortedAbsentees, currentY, true, 'branch');
     }
@@ -1429,7 +1413,6 @@ res.setHeader(
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 // PATCH /mark-present (Bulk Operation Version)
 router.patch("/mark-present-bulk", async (req, res) => {
   try {
