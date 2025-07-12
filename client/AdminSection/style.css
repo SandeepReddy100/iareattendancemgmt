@@ -144,30 +144,6 @@ header #profile-btn{
     margin: .5rem 2rem 0 0;
     cursor: pointer;
 }
-header .theme-toggler{
-    background: var(--color-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 1.6rem;
-    width: 4.2rem;
-    cursor: pointer;
-    border-radius: var(--border-radius-1);
-    margin-right: 2rem;
-}
-header .theme-toggler span{
-    font-size: 1.2rem;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-header .theme-toggler span.active{
-    background-color: var(--color-primary);
-    color: white;
-    border-radius: var(--border-radius-1);
-}
 
 /* Profile section  */
 aside .profile{
@@ -261,13 +237,7 @@ filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
     margin-top: 35px;
 }
 
-.icon-container1 img {
-    width: 40px;
-    height: 40px;
-filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
 
-
-}
 
 
 
@@ -275,57 +245,7 @@ main .subjects h3{
     margin: 1rem 0 0.6rem;
     font-size: 1rem;
 }
-main .subjects .progress{
-    position: relative;
-    width: 89px;
-    height: 89px;
-    border-radius: 50%;
-    margin: auto;
-}
-main .subjects svg circle{
-    fill: none;
-    stroke: var(--color-primary);
-    stroke-width: 8;
-    stroke-linecap: round;
-    transform: translate(5px, 5px);
-    stroke-dasharray: 110;
-    stroke-dashoffset: 92;
-}
-main .subjects .eg svg circle{
-    stroke-dashoffset: 25;
-    stroke-dasharray: 210;
-}
-main .subjects .mth svg circle{
-    stroke-dashoffset: 7;
-    stroke-dasharray: 210;
-}
-main .subjects .cs svg circle{
-    stroke-dashoffset: 35;
-    stroke-dasharray: 210;
-}
-main .subjects .cg svg circle{
-    stroke-dashoffset: 0;
-    stroke-dasharray: 210;
-}
-main .subjects .net svg circle{
-    stroke-dashoffset: 5;
-    stroke-dasharray: 210;
-}
-main .subjects svg {
-    width: 100%;
-    height: auto;
-    max-width: 120px; /* or whatever fits best inside your card */
-}
 
-main .subjects .progress .number{
-    position: absolute;
-    top: 0;left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 main .subjects small{
     margin-top: 1rem;
     display: block;
@@ -357,67 +277,7 @@ main .subjects small{
     cursor: pointer;
 }
 
-main .timetable{
-    margin-top: 2rem;
-}
-main .timetable h2{
-    margin-bottom: .8rem;
-}
-main .timetable table{
-    background-color: var(--color-white);
-    width: 100%;
-    border-radius: var(--card-border-radius);
-    padding: var(--card-padding);
-    text-align: center;
-    box-shadow: var(--box-shadow);
-    transition: all 300ms ease;
-}
-main .timetable span{display: none;}
-main .timetable table:hover{box-shadow: none;}
-main table tbody td{
-    height: 2.8rem;
-    border-bottom: 1px solid var(--color-light);
-    color: var(--color-dark-varient);
-}
-main table tbody tr:last-child td{border: none;}
-
-main .timetable.active{
-    width: 100%;
-    height: 100vh;
-    position: fixed;
-    top: 0;left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-main .timetable.active h2{
-    color: var(--color-dark);
-}
-main .timetable.active table{
-    width: 90%;
-    max-width: 1000px;
-    position: relative;
-}
-main .timetable.active span{
-    display: block;
-    font-size: 2rem;
-    color: var(--color-dark);
-    cursor: pointer;
-}
-.timetable div{
-    position: relative;
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-main .timetable.active .closeBtn{
-    position: absolute;
-    top: 5%;right: 5%;
-}
-
-
+/* 
 .right{margin-top: 2.2rem;padding-left: 1.5rem;}
 
 .right .announcements h2{margin-bottom: .8rem;}
@@ -433,7 +293,7 @@ main .timetable.active .closeBtn{
     gap: 1rem;
     line-height: 1.5;
     padding: .5rem 0;
-}
+} */
 
 
 /* MEDIA QUERIES  */
@@ -452,11 +312,7 @@ main .timetable.active .closeBtn{
         grid-template-columns: repeat(2, 1fr);
         gap: 1;
     }
-    main .timetable{
-        width: 150%;
-        position: absolute;
-        padding: 4rem 0 0 0;
-    }
+    
 }
 @media screen and (max-width: 768px) {
     main .subjects svg {

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Manage Faculty</title>
   <link rel="stylesheet" href="../style.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -18,10 +20,24 @@
       --color-info: #7d8da1;
       --color-dark: #2d2d2d;
       --color-light: rgba(132, 139, 200, 0.18);
+    :root {
+      --color-primary: #00796B;
+      --color-danger: #ff5252;
+      --color-warning: #ffbb55;
+      --color-success: #41f1b6;
+      --color-white: #ffffff;
+      --color-info: #7d8da1;
+      --color-dark: #2d2d2d;
+      --color-light: rgba(132, 139, 200, 0.18);
 
       --border-radius-1: 0.4rem;
       --border-radius-2: 1.2rem;
+      --border-radius-1: 0.4rem;
+      --border-radius-2: 1.2rem;
 
+      --card-padding: 1.8rem;
+      --box-shadow: 0 2rem 3rem var(--color-light);
+    }
       --card-padding: 1.8rem;
       --box-shadow: 0 2rem 3rem var(--color-light);
     }
@@ -34,7 +50,20 @@
       list-style: none;
       font-family: 'Poppins', sans-serif;
     }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      list-style: none;
+      font-family: 'Poppins', sans-serif;
+    }
 
+    body {
+      background-color: #f6f6f9;
+      color: var(--color-dark);
+      overflow-x: hidden;
+    }
     body {
       background-color: #f6f6f9;
       color: var(--color-dark);
@@ -188,7 +217,22 @@
       align-items: center;
       justify-content: center;
     }
+    .icon-container1 {
+      width: 80px;
+      height: 80px;
+      margin: 1rem auto 0;
+      border: 5px solid var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
+    .icon-container1 img {
+      width: 40px;
+      height: 40px;
+      filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
+    }
     .icon-container1 img {
       width: 40px;
       height: 40px;
@@ -261,12 +305,24 @@
         grid-template-columns: 1fr;
         gap: 1rem;
       }
+      .subjects {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
 
       .icon-container1 {
         width: 60px;
         height: 60px;
       }
+      .icon-container1 {
+        width: 60px;
+        height: 60px;
+      }
 
+      .icon-container1 img {
+        width: 30px;
+        height: 30px;
+      }
       .icon-container1 img {
         width: 30px;
         height: 30px;
@@ -278,7 +334,9 @@
       }
     }
   </style>
+
 </head>
+
 <body>
   <header>
     <div class="logo" title="University Management System">
@@ -311,7 +369,8 @@
           <span class="material-icons-sharp">person_add</span>
           <h3>Add Faculty</h3>
           <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/4CAF50/add-user-group-man-man.png" alt="Add Faculty" />
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary);">person_add_alt_1</span>
           </div>
         </div>
 
@@ -319,7 +378,8 @@
           <span class="material-icons-sharp">edit</span>
           <h3>Update Faculty</h3>
           <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/FFC107/available-updates.png" alt="Update Faculty" />
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary);">edit_note</span>
           </div>
         </div>
 
@@ -327,7 +387,8 @@
           <span class="material-icons-sharp">delete</span>
           <h3>Delete Faculty</h3>
           <div class="icon-container1">
-            <img src="https://img.icons8.com/ios-filled/50/FF5252/delete-user-male.png" alt="Delete Faculty" />
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary);">delete_forever</span>
           </div>
         </div>
 
@@ -335,4 +396,5 @@
     </main>
   </div>
 </body>
+
 </html>

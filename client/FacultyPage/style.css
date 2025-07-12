@@ -20,7 +20,7 @@
     --box-shadow: 0 2rem 3rem var(--color-light)
 }
 
-.dark-theme {
+body.dark-theme {
     --color-background: #181a1e;
     --color-white: #202528;
     --color-dark: #edeffd;
@@ -148,11 +148,14 @@ header .logo {
 
 header .logo h2{
     margin-top: 0.8rem;
+    padding-right: 4rem;
+    /* padding: 4rem; */
 }
 
 header .logo img {
     width: 3.5rem;
     height: 3.5rem;
+    /* padding-right: 4rem; */
 }
 
 header,
@@ -167,7 +170,7 @@ header .navbar {
 header .navbar a {
     display: flex;
     margin-left: 2rem;
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: center;
     justify-content: space-between;
     position: relative;
@@ -198,7 +201,9 @@ header .navbar a.active::before {
 header #profile-btn {
     display: none;
     font-size: 2rem;
-    margin: .5rem 2rem 0 0;
+    margin: .5rem 0 0 0;
+    /* margin-left: 2rem; */
+    /* padding-right:2rem; */
     cursor: pointer;
 }
 

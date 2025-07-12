@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 
-  
 </head>
 
 <body>
@@ -40,7 +39,16 @@
         <h3 onclick="logout()">Logout</h3>
       </a>
     </div>
+
+     <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+
+   
+
   </header>
+
   <div class="container">
     <aside>
       <div class="profile">
@@ -105,14 +113,26 @@
         </div>
       </div>
 
-      <div class="container2">
-        <section class="today-timetable">
-          <h2><span class="material-icons-sharp">event</span> Today's Timetable</h2>
-          <div class="periods" id="timetableContainer">
-            <!-- Dynamic periods will be injected here -->
-          </div>
-        </section>
+      <div class="bottom-sections">
+        <div class="container2">
+          <section class="today-timetable">
+            <h2><span class="material-icons-sharp">event</span> Today's Timetable</h2>
+            <div class="periods" id="timetableContainer">
+              <!-- Dynamic periods will be injected here -->
+            </div>
+          </section>
+        </div>
+
+        <div class="container3">
+          <section class="announcement-section">
+            <h2><span class="material-icons-sharp">campaign</span> Announcements</h2>
+            <ul class="announcement-list" id="announcementList">
+              <li>Loading announcements...</li>
+            </ul>
+          </section>
+        </div>
       </div>
+
     </main>
     <!-- Spinner Overlay -->
     <div id="spinner-overlay" style="
@@ -134,7 +154,10 @@
   </footer>
   <script src="app.js"></script>
   <script src="timeTable.js"></script>
- 
+
+  
+
+
 
 </body>
 
