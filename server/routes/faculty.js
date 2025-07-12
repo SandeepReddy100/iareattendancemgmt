@@ -33,7 +33,7 @@ router.post('/update-password', async (req, res) => {
   }
 
   try {
-    const faculty = await Faculty.findOne({ email: facultyEmail });
+    const faculty = await Faculty.findOne({ facultyEmail });
 
     if (!faculty) {
       return res.status(404).json({ message: 'Faculty not found' });

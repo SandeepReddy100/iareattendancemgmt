@@ -4,10 +4,19 @@ const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
 const backendUrl = "https://iareattendancemgmt.onrender.com";
+const lightModeIcon = themeToggler.querySelector('span:nth-child(1)');
+const darkModeIcon = themeToggler.querySelector('span:nth-child(2)');
 
 profileBtn.onclick = function () {
   sideMenu.classList.toggle('active');
 }
+
+themeToggler.addEventListener('click', () => {
+  document.body.classList.toggle('dark-theme');
+  lightModeIcon.classList.toggle('active');
+  darkModeIcon.classList.toggle('active');
+});
+
 
 window.onscroll = () => {
     sideMenu.classList.remove('active');

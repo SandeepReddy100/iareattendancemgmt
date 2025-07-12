@@ -4,11 +4,20 @@ const themeToggler = document.querySelector(".theme-toggler");
 const nextDay = document.getElementById('nextDay');
 const prevDay = document.getElementById('prevDay');
 const backendUrl = "https://iareattendancemgmt.onrender.com";
+const lightModeIcon = themeToggler.querySelector('span:nth-child(1)');
+const darkModeIcon = themeToggler.querySelector('span:nth-child(2)');
 
 
 profileBtn.onclick = function () {
   sideMenu.classList.toggle('active');
 }
+
+
+themeToggler.addEventListener('click', () => {
+  document.body.classList.toggle('dark-theme');
+  lightModeIcon.classList.toggle('active');
+  darkModeIcon.classList.toggle('active');
+});
 
 window.onscroll = () => {
   sideMenu.classList.remove('active');
@@ -333,7 +342,7 @@ const batchWiseTimetable = {
       { time: "9:30AM - 12:15PM", subject: "CP", room: "5102" }
     ]
   },
-  "SKILLBRIDGE-1": {
+  "SKILLBRIDGE BATCH-1": {
     Monday: [
       { time: "9:30AM - 12:15PM", subject: "CP", room: "5101" }
     ],
@@ -353,7 +362,7 @@ const batchWiseTimetable = {
       { time: "1:15PM - 3:50PM", subject: "DBMS", room: "5101" }
     ]
   },
-  "SKILLBRIDGE-2": {
+  "SKILLBRIDGE BATCH-2": {
     Monday: [
       { time: "9:30AM - 12:15PM", subject: "CP", room: "5005" }
     ],
@@ -373,7 +382,7 @@ const batchWiseTimetable = {
       { time: "1:15PM - 3:50PM", subject: "JFS", room: "5005" }
     ]
   },
-  "SKILLBRIDGE-3": {
+  "SKILLBRIDGE BATCH-3": {
     Monday: [
       { time: "9:30AM - 12:15PM", subject: "JFS", room: "5201" }
     ],
@@ -393,7 +402,7 @@ const batchWiseTimetable = {
       { time: "1:15PM - 3:50PM", subject: "CP", room: "5201" }
     ]
   },
-  "SKILLBRIDGE-4": {
+  "SKILLBRIDGE BATCH-4": {
     Monday: [
       { time: "1:15PM - 3:50PM", subject: "JFS", room: "5101" }
     ],
@@ -413,7 +422,7 @@ const batchWiseTimetable = {
       { time: "9:30AM - 12:15PM", subject: "DBMS", room: "5101" }
     ]
   },
-  "SKILLBRIDGE-5": {
+  "SKILLBRIDGE BATCH-5": {
     Monday: [
       { time: "1:15PM - 3:50PM", subject: "CP", room: "5106" }
     ],
@@ -481,3 +490,50 @@ function logout() {
   window.location.href = '/';
 }
 
+
+
+// Announcements Selection
+
+
+window.addEventListener("DOMContentLoaded", () => {
+  const profileData = JSON.parse(localStorage.getItem("profileData"));
+  if (profileData && profileData.batch) {
+    fetchAnnouncements(profileData.batch);
+  }
+});
+
+
+
+function fetchAnnouncements(batch) {
+  fetch(`https://your-backend.com/api/announcements?batch=${batch}`)
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("announcementList");
+      list.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        list.innerHTML = "<li>No announcements available.</li>";
+        return;
+      }
+
+      // Show max 3 announcements
+      const announcementsToShow = data.slice(0, 3);
+
+      announcementsToShow.forEach(announcement => {
+        const card = document.createElement("li");
+        card.classList.add("announcement-card");
+
+        card.innerHTML = `
+          <div class="announcement-title">${announcement.title}</div>
+          <div class="announcement-subtitle">${announcement.subtitle}</div>
+          <div class="announcement-content">${announcement.content}</div>
+        `;
+
+        list.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error("Failed to load announcements:", error);
+      document.getElementById("announcementList").innerHTML = "<li>Error loading announcements.</li>";
+    });
+}

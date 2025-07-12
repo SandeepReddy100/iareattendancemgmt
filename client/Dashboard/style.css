@@ -20,14 +20,15 @@
     --box-shadow: 0 2rem 3rem var(--color-light)
 }
 
-.dark-theme {
-    --color-background: #181a1e;
-    --color-white: #202528;
-    --color-dark: #edeffd;
-    --color-dark-varient: #a3bdcc;
-    --color-light: rgba(0, 0, 0, 0.4);
-    --box-shadow: 0 2rem 3rem var(--color-light)
+body.dark-theme {
+  --color-background: #181a1e;
+  --color-white: #202528;
+  --color-dark: #edeffd;
+  --color-dark-varient: #a3bdcc;
+  --color-light: rgba(0, 0, 0, 0.4);
+  --box-shadow: 0 2rem 3rem var(--color-light);
 }
+
 
 
 * {
@@ -196,6 +197,33 @@ header #profile-btn {
     font-size: 2rem;
     margin: .5rem 2rem 0 0;
     cursor: pointer;
+}
+
+header .theme-toggler {
+    background: var(--color-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 1.6rem;
+    width: 4.2rem;
+    cursor: pointer;
+    border-radius: var(--border-radius-1);
+    margin-right: 2rem;
+}
+
+header .theme-toggler span {
+    font-size: 1.2rem;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .theme-toggler span.active {
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--border-radius-1);
 }
 
 
@@ -406,7 +434,7 @@ main .subjects small {
     color: #e0f2f1;
 }
 .container2 .today-timetable {
-      max-width: 800px;
+      min-width: 555px;
       background: var(--color-white);
       padding: 2rem;
       border-radius: var(--card-border-radius);
@@ -575,6 +603,7 @@ main .subjects small {
     header .theme-toggler {
         margin: 0;
     }
+    
 
     aside {
         position: absolute;
@@ -675,6 +704,7 @@ main .subjects small {
     .qr-card {
         width: 90%;
         margin-top: 1rem;
+        margin-left: 2rem;
     }
 
     .attendance-section {
@@ -728,6 +758,9 @@ main .subjects small {
     flex-direction: column-reverse; /* This reverses the order */
     gap: 2rem;
   }
+  main .container2 .today-timetable {
+        min-width: 345px;
+    }
 } 
 
 
@@ -735,4 +768,122 @@ main .subjects small {
     main .subjects {
         grid-template-columns: repeat(4, 1fr);
     }
+
+    main .container2 .today-timetable {
+        min-width: 725px;
+    }
 }
+
+
+.bottom-sections {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.container3 {
+  flex: 1;
+  min-width: 300px;
+}
+
+.announcement-section {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--box-shadow);
+  margin-top: 2rem;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.announcement-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.4rem;
+  color: var(--color-primary);
+  margin-bottom: 3rem;
+}
+
+.announcement-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.announcement-list li {
+  padding: 1rem;
+  border-left: 5px solid var(--color-primary);
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  margin-bottom: 1rem;
+  border-radius: var(--border-radius-2);
+  font-size: 0.95rem;
+  color: var(--color-dark-varient);
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease;
+}
+
+.announcement-list li:hover {
+  transform: translateY(-3px);
+}
+.announcement-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.announcement-card {
+  background: var(--color-white);
+  border-left: 6px solid var(--color-primary);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-2);
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.announcement-card:hover {
+  transform: translateY(-4px);
+}
+
+.announcement-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-bottom: 0.5rem;
+}
+
+.announcement-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-info);
+  margin-bottom: 0.8rem;
+}
+
+.announcement-content {
+  font-size: 0.95rem;
+  color: var(--color-dark-varient);
+  line-height: 1.5;
+}
+
+@media screen and (max-width: 768px) {
+  .bottom-sections {
+    flex-direction: column;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+

@@ -1,11 +1,14 @@
 <!-- attendanceanalysis.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Group Attendance Chart</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
     :root {
       --color-primary: #00796B;
@@ -26,7 +29,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      padding-top: 2rem;
     }
 
     .chart-container {
@@ -37,6 +40,7 @@
       border-radius: var(--card-border-radius);
       box-shadow: var(--box-shadow);
       margin-bottom: 2rem;
+      padding-top: 4rem;
     }
 
     table {
@@ -48,7 +52,8 @@
       overflow: hidden;
     }
 
-    th, td {
+    th,
+    td {
       padding: 1rem;
       text-align: center;
       border-bottom: 1px solid var(--color-light);
@@ -67,7 +72,33 @@
 </head>
 
 <body>
-  <h2 style="color: var(--color-primary); margin-bottom: 1rem;">Group Attendance Bar Chart</h2>
+
+  <header>
+    <div class="logo" title="University Management System">
+      <img src="IARE-LOGO.png" alt>
+      <h2>IARE</h2>
+    </div>
+    <div class="navbar">
+      <a href="index.html" class="active">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+     
+      <!-- <div id="profile-btn">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <a href="#">
+        <span class="material-icons-sharp" onclick="logout()">logout</span>
+        <h3 onclick="logout()">Logout</h3>
+      </a> -->
+    </div>
+    <div class="theme-toggler">
+      <span class="material-icons-sharp active">light_mode</span>
+      <span class="material-icons-sharp">dark_mode</span>
+    </div>
+
+  </header>
+  <h2 style="color: var(--color-primary); margin-bottom: 1rem; padding-top: 8rem;">Group Attendance Bar Chart</h2>
   <div class="chart-container">
     <canvas id="attendanceChart"></canvas>
   </div>
@@ -167,5 +198,8 @@
     document.getElementById("totalAbsent").textContent = totalAbsent;
     document.getElementById("grandTotal").textContent = totalPresent + totalAbsent;
   </script>
+
+  <script src="app.js"></script>
 </body>
+
 </html>
