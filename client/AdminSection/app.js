@@ -1,5 +1,4 @@
   const backendUrl = "https://iareattendancemgmt.onrender.com";
-
   function showSpinner() {
   document.getElementById("spinnerOverlay").style.display = "flex";
 }
@@ -119,12 +118,7 @@ function getFormattedDateDDMMYYYY() {
     header?.classList.toggle("active", window.scrollY > 0);
   });
 
-  // Logout
-  function logout() {
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.href = "/";
-  }
+  
 
   // Batch list
   const batches = [
@@ -134,10 +128,12 @@ function getFormattedDateDDMMYYYY() {
     "skillbridge batch-4", "skillbridge batch-5"
   ];
 async function downloadAttendanceExcel() {
-  const date = getFormattedDateDDMMYYYY();
+  const date = new Date().toISOString().slice(0, 10); // ✅ For backend
+  const displayDate = date.split("-").reverse().join("-"); // ✅ For filename
+
   const params = new URLSearchParams();
   batches.forEach(batch => params.append("batch", batch));
-  params.append("date", date);
+  params.append("date", date); // Send ISO format
 
   try {
     showSpinner();
@@ -149,7 +145,7 @@ async function downloadAttendanceExcel() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `attendanceSummary_${date}.xlsx`;
+    a.download = `attendanceSummary_${displayDate}.xlsx`; // ✅ Display format
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -165,7 +161,9 @@ async function downloadAttendanceExcel() {
 }
 
 async function downloadAttendancePDF() {
-  const date = getFormattedDateDDMMYYYY();
+  const date = new Date().toISOString().slice(0, 10); // ✅ For backend
+  const displayDate = date.split("-").reverse().join("-"); // ✅ For filename
+
   const params = new URLSearchParams();
   batches.forEach(batch => params.append("batch", batch));
   params.append("date", date);
@@ -179,7 +177,7 @@ async function downloadAttendancePDF() {
     const url = URL.createObjectURL(blob);
 
     const disposition = response.headers.get('Content-Disposition');
-    let filename = `attendanceSummary_${date}.pdf`;
+    let filename = `attendanceSummary_${displayDate}.pdf`;
 
     if (disposition && disposition.indexOf("filename=") !== -1) {
       const match = disposition.match(/filename="?([^"]+)"?/);
@@ -205,3 +203,10 @@ async function downloadAttendancePDF() {
 
 
 
+
+// Logout
+  function logout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "../";
+  }
