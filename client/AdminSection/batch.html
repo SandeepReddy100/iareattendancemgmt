@@ -11,16 +11,7 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    :root {
-      --color-bg: #f4f4f4;
-      --color-white: #ffffff;
-      --color-dark: #333;
-      --color-primary: #00796b;
-      --color-primary-hover: #005f56;
-      --color-light: #ccc;
-      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      --border-radius-2: 1rem;
-    }
+    
 
     body {
       margin: 0;
@@ -159,14 +150,14 @@
         <h1>IARE</h1>
       </div>
       <div class="navbar">
-        <a href="index.html" class="active" title="Home">
+        <a href="./index.html" class="active" title="Home">
           <span class="material-icons-sharp">home</span>
           <h3>Home</h3>
         </a>
         <div id="profile-btn" title="Profile">
           <span class="material-icons-sharp">person</span>
         </div>
-        <a href="#" title="Logout" id="logoutBtn">
+        <a href="#" title="Logout" onclick="logout()">
           <span class="material-icons-sharp">logout</span>
           <h3>Logout</h3>
         </a>
@@ -190,6 +181,7 @@
           <option value="" disabled selected>Select Batch</option>
           <option value="attendance_skillup-1">SKILLUP BATCH-1</option>
           <option value="attendance_skillup-2">SKILLUP BATCH-2</option>
+          <option value="attendance_skillup-3">SKILLUP BATCH-3</option>
           <option value="attendance_skillnext-1">SKILLNEXT BATCH-1</option>
           <option value="attendance_skillnext-2">SKILLNEXT BATCH-2</option>
           <option value="attendance_skillnext-3">SKILLNEXT BATCH-3</option>
@@ -215,7 +207,6 @@
   </main>
  <script>
   const backendUrl = "https://iareattendancemgmt.onrender.com";
-
   function showToast(message, isError = false) {
     const toast = document.createElement("div");
     toast.textContent = message;
@@ -246,7 +237,7 @@
         ? "SB"
         : "NA";
 
-    return `V-${code}-${number}`;
+    return `V-${code}${number}`;
   }
 
   // ✅ Format today’s date as DD-MM-YYYY
@@ -321,6 +312,15 @@
     const url = `${backendUrl}/api/admin/attendance/complete-report/${batch}`;
     downloadFileFromBackend(url, batch, "xlsx", "✅ Excel downloaded");
   });
+
+  
+
+// Logout
+  function logout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "../";
+  }
 </script>
 
 
