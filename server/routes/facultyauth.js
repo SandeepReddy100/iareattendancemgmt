@@ -16,13 +16,14 @@ router.post('/login', async (req, res) => {
     if (faculty.passwordfa !== password) {
       return res.status(401).json({ message: 'Invalid password' });
     }
-
+    console.log(faculty);
     res.status(200).json({
       message: 'Login successful',
       faculty:{
         name: faculty.name,
         facultyid: faculty.facultyid,
-        email: faculty.email
+        email: faculty.email,
+        batches_assigned :faculty.batches_assigned,
       },
     });
   } catch (err) {

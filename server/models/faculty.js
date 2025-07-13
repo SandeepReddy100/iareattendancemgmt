@@ -20,6 +20,10 @@ const facultySchema = new mongoose.Schema({
     unique: true,
     match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
   },
+  designation: { type: String },  
+  subjects_assigned: [String],   
+  batches_assigned: [String], 
+
 }, { timestamps: true });
 
 module.exports = mongoose.model('Faculty', facultySchema, "faculty");
