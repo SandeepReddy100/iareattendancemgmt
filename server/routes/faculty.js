@@ -24,35 +24,38 @@ router.get('/:facultyid', async (req, res) => {
   }
 });
 
-// POST: Update Faculty Password
-router.post('/update-password', async (req, res) => {
-  const { facultyEmail, currentPassword, newPassword } = req.body;
+// Update Password Route
+router.post("/update-password", async (req, res) => {
+  const { email, password, newpassword } = req.body;
 
-  if (!facultyEmail || !currentPassword || !newPassword) {
-    return res.status(400).json({ message: 'facultyEmail, currentPassword, and newPassword are required' });
+  // Validate input
+  if (!email || !password || !newpassword) {
+    return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    const faculty = await Faculty.findOne({ facultyEmail });
+    // Find the faculty by email
+    const faculty = await Faculty.findOne({ email });
 
     if (!faculty) {
-      return res.status(404).json({ message: 'Faculty not found' });
+      return res.status(404).json({ message: "Faculty not found" });
     }
 
-    if (faculty.passwordfa !== currentPassword) {
-      return res.status(401).json({ message: 'Current password is incorrect' });
+    // Check if current password matches
+    if (faculty.passwordfa !== password) {
+      return res.status(401).json({ message: "Incorrect current password" });
     }
 
-    faculty.passwordfa = newPassword;
+    // Update password
+    faculty.passwordfa = newpassword;
     await faculty.save();
 
-    res.json({ message: 'Faculty password updated successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
-
 // POST /api/announcements
 router.post("/announcements", async (req, res) => {
   try {
