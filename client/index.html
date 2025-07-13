@@ -138,7 +138,7 @@
     const signInBtn = document.getElementById("loginBtn");
     const btnText = document.getElementById("btnText");
     const loader = document.getElementById("loader");
-    const backendUrl = "";
+    const backendUrl = "https://iareattendancemgmt.onrender.com";
     
     // Role selector functionality
     const labels = document.querySelectorAll("#roleSelector label");
@@ -173,8 +173,7 @@
       const username = usernameInput.value.trim(); 
       const password = passwordInput.value.trim();
       const role = roleInput ? roleInput.value : "";
-      const backendUrl = "http://localhost:5000"
-      // const backendUrl = "https://iareattendancemgmt.onrender.com";
+      // const backendUrl = "http://localhost:5000"
       // Clear previous messages
       messageBox.classList.remove("show", "success", "error");
       messageBox.textContent = "";
