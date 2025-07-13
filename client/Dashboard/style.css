@@ -807,6 +807,53 @@ main .subjects small {
     color: var(--color-dark-varient);
 }
 
+@media screen and (max-width: 600px) {
+  .period {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  .period .left {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .period .left .material-icons-sharp {
+    font-size: 1.6rem;
+    padding: 0.4rem;
+  }
+
+  .period .info {
+    flex-grow: 1;
+  }
+
+  .period .subject {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--color-dark);
+}
+.period .faculty {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-dark);
+}
+  .period .room {
+    font-size: 0.85rem;
+  }
+
+  .period .time {
+    align-self: flex-end;
+    font-size: 0.9rem;
+    margin-left: auto;
+    margin-top: -1.5rem;
+  }
+}
+
+
 
 .announcement-section {
     background: var(--color-white);
