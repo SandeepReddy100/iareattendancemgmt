@@ -188,7 +188,7 @@
           <option value="CP">CP</option>
           <option value="JFS">JFS</option>
           <option value="DBMS">DBMS</option>
-         <option value="AWS">DBMS</option>
+         <option value="AWS">AWS</option>
 
         </select>
 
@@ -276,8 +276,28 @@
           });
 
           const result = await res.json();
-          document.getElementById("present-count").innerHTML = `Present Marked: ${selectedRolls.length}<br>Roll Numbers: ${selectedRolls.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).join(", ")}`;
-          showMessage("Attendance submitted successfully", "success");
+
+const sortedRolls = selectedRolls.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+const presentCountElement = document.getElementById("present-count");
+
+if (presentCountElement) {
+  presentCountElement.innerHTML = `
+    <div style="background-color: #e6f7ff; border: 1px solid #91d5ff; padding: 1rem; border-radius: 10px; color: #0050b3; font-family: 'Segoe UI', sans-serif;">
+      <h3 style="margin-bottom: 0.5rem; font-weight: 600;">✅ Attendance Submitted</h3>
+      <p style="margin: 0.3rem 0;"><strong>Present Marked:</strong> ${sortedRolls.length}</p>
+      <p style="margin: 0.3rem 0;"><strong>Roll Numbers:</strong></p>
+      <div style="max-height: 120px; overflow-y: auto; padding: 0.5rem; background: #f0faff; border-radius: 5px;">
+        <ul style="list-style: none; padding-left: 1rem; margin: 0;">
+          ${sortedRolls.map(roll => `<li style="margin: 2px 0;">🎓 ${roll}</li>`).join("")}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+showMessage("✅ Attendance submitted successfully", "success");
+
         } catch (err) {
           console.error(err);
           showMessage("Error submitting attendance", "error");
