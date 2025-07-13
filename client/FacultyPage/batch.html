@@ -1,144 +1,325 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Dashboard</title>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <link rel="shortcut icon" href="./images/logo.png">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Download Attendance Report</title>
+<link rel="shortcut icon" href="IARE-LOGO.png" type="image/x-icon">
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
 
-    <style>
-        header {
-            position: relative;
-        }
+  <style>
+    
 
-        .change-password-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 90vh;
-        }
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+    }
 
-        .change-password-container form {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-radius: var(--border-radius-2);
-            padding: 3.5rem;
-            background-color: var(--color-white);
-            box-shadow: var(--box-shadow);
-            width: 95%;
-            max-width: 32rem;
-        }
+    .form-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4rem 1rem;
+      min-height: 100vh;
+      background: var(--color-bg);
+    }
 
-        .change-password-container form select {
-            border: 1px solid var(--color-light);
-            padding: 0.4rem;
-            width: 100%;
-            background: transparent;
-            border-radius: var(--border-radius-1);
-            font-size: 1rem;
-        }
+    .form-card {
+      background: var(--color-white);
+      border-radius: var(--border-radius-2);
+      box-shadow: var(--box-shadow);
+      padding: 2.5rem;
+      max-width: 420px;
+      width: 100%;
+    }
 
-        .change-password-container form:hover {
-            box-shadow: none;
-        }
+    .form-card h2 {
+      text-align: center;
+      color: var(--color-dark);
+      margin-bottom: 0.5rem;
+      font-size: 1.5rem;
+    }
 
-        .change-password-container form input[type=password] {
-            border: none;
-            outline: none;
-            border: 1px solid var(--color-light);
-            background: transparent;
-            height: 2rem;
-            width: 100%;
-            padding: 0 .5rem;
-        }
+    .form-card .text-muted {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #777;
+    }
 
-        .change-password-container form .box {
-            padding: .5rem 0;
-        }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
 
-        .change-password-container form .box p {
-            line-height: 2;
-        }
+    .select-field {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid var(--color-light);
+      background: white;
+      color: #333;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
 
-        .change-password-container form h2+p {
-            margin: .4rem 0 1.2rem 0;
-        }
+    .select-field:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.1);
+    }
 
-        .btn {
-            background: none;
-            border: none;
-            border: 2px solid var(--color-primary) !important;
-            border-radius: var(--border-radius-1);
-            padding: .5rem 1rem;
-            color: var(--color-white);
-            background-color: var(--color-primary);
-            cursor: pointer;
-            margin: 1rem 1.5rem 1rem 0;
-            margin-top: 1.5rem;
-        }
+    .download-buttons {
+      display: flex;
+      gap: 1rem;
+    }
 
-        .btn:hover {
-            color: var(--color-primary);
-            background-color: transparent;
-        }
-    </style>
+    .download-btn {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      background: var(--color-primary);
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
 
+
+    #spinnerOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      display: none;
+      background-color: rgba(0, 0, 0, 0.4);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid #ccc;
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+    }
+
+    .toast.error {
+      background: #e53935;
+    }
+  </style>
 </head>
-
 <body>
+
     <header>
-        <div class="logo">
-            <img src="IARE-LOGO.png" alt="iare_logo">
-            <h2>IARE</h2>
+      <div class="logo" title="University Management System">
+        <img src="IARE-LOGO.png" alt="IARE Logo" />
+        <h1>IARE</h1>
+      </div>
+      <div class="navbar">
+        <a href="./index.html" class="active" title="Home">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <div id="profile-btn" title="Profile">
+          <span class="material-icons-sharp">person</span>
         </div>
-
-
-        <div class="theme-toggler">
-            <span class="material-icons-sharp active">light_mode</span>
-            <span class="material-icons-sharp">dark_mode</span>
-        </div>
+        <a href="#" title="Logout" onclick="logout()">
+          <span class="material-icons-sharp">logout</span>
+          <h3>Logout</h3>
+        </a>
+      </div>
     </header>
 
-    <div class="change-password-container">
-        <form id="course-form">
-            <h2>Select Batch</h2>
-            <p class="text-muted">Choose any one batch</p>
-            <div class="box">
-                <p class="text-muted">Select Batch</p>
-                <select name="batch" required>
-                    <option value="" disabled selected>Select Batch</option>
-                    <option value="SKILLUP-1">SKILLUP BATCH-1</option>
-                    <option value="SKILLUP-2">SKILLUP BATCH-2</option>
-                    <option value="SKILLNEXT-1">SKILLNEXT BATCH-1</option>
-                    <option value="SKILLNEXT-2">SKILLNEXT BATCH-2</option>
-                    <option value="SKILLNEXT-3">SKILLNEXT BATCH-3</option>
-                    <option value="SKILLBRIDGE-1">SKILLBRIDGE BATCH-1</option>
-                    <option value="SKILLBRIDGE-2">SKILLBRIDGE BATCH-2</option>
-                    <option value="SKILLBRIDGE-3">SKILLBRIDGE BATCH-3</option>
-                    <option value="SKILLBRIDGE-4">SKILLBRIDGE BATCH-4</option>
-                    <option value="SKILLBRIDGE-5">SKILLBRIDGE BATCH-5</option>
+  <!-- Spinner -->
+  <div id="spinnerOverlay"><div class="spinner"></div></div>
 
-                </select>
-            </div>
-            <div class="button">
-                <input type="submit" value="Submit" class="btn">
-                <a href="FacultyPage/index.html" class="text-muted">Cancel</a>
-            </div>
-        </form>
-        <!-- <div id="qr-reader" style="width: 300px; display: none; margin-top: 20px;"></div> -->
+  <!-- Toast -->
+  <div id="toast"></div>
 
-    </div>
+  <main class="form-container">
+    <form id="downloadForm" class="form-card">
+      <h2>Select Batch</h2>
+      <p class="text-muted">Download Attendance Report</p>
 
+      <div class="form-group">
+        <label for="batchSelect">Batch</label>
+        <select name="batch" id="batchSelect" required class="select-field">
+          <option value="" disabled selected>Select Batch</option>
+          <option value="attendance_skillup-1">SKILLUP BATCH-1</option>
+          <option value="attendance_skillup-2">SKILLUP BATCH-2</option>
+          <option value="attendance_skillup-3">SKILLUP BATCH-3</option>
+          <option value="attendance_skillnext-1">SKILLNEXT BATCH-1</option>
+          <option value="attendance_skillnext-2">SKILLNEXT BATCH-2</option>
+          <option value="attendance_skillnext-3">SKILLNEXT BATCH-3</option>
+          <option value="attendance_skillbridge-1">SKILLBRIDGE BATCH-1</option>
+          <option value="attendance_skillbridge-2">SKILLBRIDGE BATCH-2</option>
+          <option value="attendance_skillbridge-3">SKILLBRIDGE BATCH-3</option>
+          <option value="attendance_skillbridge-4">SKILLBRIDGE BATCH-4</option>
+          <option value="attendance_skillbridge-5">SKILLBRIDGE BATCH-5</option>
+        </select>
+      </div>
+
+      <!-- PDF Button -->
+      <button type="button" class="download-btn" id="downloadPdfBtn">
+        <span class="material-icons-sharp">picture_as_pdf</span> Download PDF
+      </button>
+
+      <!-- Excel Button -->
+      <button type="button" class="download-btn" id="downloadExcelBtn" style="margin-top: 1rem;">
+        <span class="material-icons-sharp">grid_on</span> Download Excel
+      </button>
+
+    </form>
+  </main>
+ <script>
+  const backendUrl = "https://iareattendancemgmt.onrender.com";
+  function showToast(message, isError = false) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    toast.className = `toast ${isError ? "error" : ""}`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function showSpinner() {
+    document.getElementById("spinnerOverlay").style.display = "flex";
+  }
+
+  function hideSpinner() {
+    document.getElementById("spinnerOverlay").style.display = "none";
+  }
+
+  // ✅ Convert full batch name to short code: V-SU-1, V-SN-2, etc.
+  function getShortBatchName(fullBatchName) {
+    const batchPart = fullBatchName.split("_")[1]?.toUpperCase() || "";
+    const [type, number] = batchPart.split("-");
+
+    let code =
+      type === "SKILLUP"
+        ? "SU"
+        : type === "SKILLNEXT"
+        ? "SN"
+        : type === "SKILLBRIDGE"
+        ? "SB"
+        : "NA";
+
+    return `V-${code}${number}`;
+  }
+
+  // ✅ Format today’s date as DD-MM-YYYY
+  function getTodayDateFormatted() {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, "0");
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const year = today.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  // ✅ Unified function to download PDF/Excel with correct filename
+  async function downloadFileFromBackend(url, fullBatchName, fileExtension, successMessage) {
+    try {
+      showSpinner();
+
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Download failed");
+
+      // Try to extract filename from headers
+      const contentDisposition = response.headers.get("Content-Disposition");
+      let filename;
+
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match && match[1]) {
+          filename = match[1];
+        }
+      }
+
+      // If not present in header, generate from batch + date
+      if (!filename) {
+        const shortBatch = getShortBatchName(fullBatchName);
+        const today = getTodayDateFormatted();
+        filename = `${shortBatch}-${today}-attendanceReport.${fileExtension}`;
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(blobUrl);
+      showToast(successMessage);
+    } catch (error) {
+      console.error(error);
+      showToast("❌ Download failed", true);
+    } finally {
+      hideSpinner();
+    }
+  }
+
+  // ✅ PDF Button Click
+  document.getElementById("downloadPdfBtn").addEventListener("click", () => {
+    const batch = document.getElementById("batchSelect").value;
+    if (!batch) return showToast("⚠️ Please select a batch", true);
+
+    const url = `${backendUrl}/api/admin/attendance/complete-report-pdf/${batch}`;
+    downloadFileFromBackend(url, batch, "pdf", "✅ PDF downloaded");
+  });
+
+  // ✅ Excel Button Click
+  document.getElementById("downloadExcelBtn").addEventListener("click", () => {
+    const batch = document.getElementById("batchSelect").value;
+    if (!batch) return showToast("⚠️ Please select a batch", true);
+
+    const url = `${backendUrl}/api/admin/attendance/complete-report/${batch}`;
+    downloadFileFromBackend(url, batch, "xlsx", "✅ Excel downloaded");
+  });
+
+  
+
+// Logout
+  function logout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = "../";
+  }
+</script>
 
 
 </body>
-
-<script src="app.js"></script>
-
 </html>

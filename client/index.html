@@ -9,6 +9,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
     rel="stylesheet"
   />
+  <link rel="shortcut icon" href="IARE-LOGO.png" type="image/x-icon">
 </head>
 <body>
   <div class="main-container">
@@ -125,7 +126,7 @@
 
         <!-- Footer -->
         <div class="footer-text">
-          Need help? <a href="#">Contact Support</a>
+          Need help? <a href="contact.html">Contact Support</a>
         </div>
       </div>
     </div>
@@ -172,9 +173,8 @@
       const username = usernameInput.value.trim(); 
       const password = passwordInput.value.trim();
       const role = roleInput ? roleInput.value : "";
-      // const backendUrl = "http://localhost:5000"
-      const backendUrl = "https://iareattendancemgmt.onrender.com";
-      // const backendUrl = "https://iareattendancemgmt-production.up.railway.app/";
+      const backendUrl = "http://localhost:5000"
+      // const backendUrl = "https://iareattendancemgmt.onrender.com";
       // Clear previous messages
       messageBox.classList.remove("show", "success", "error");
       messageBox.textContent = "";
@@ -215,6 +215,8 @@
           } else if (role === "faculty") {
             localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("facultyid", data.faculty.facultyid);
+            // localStorage.setItem("assignedbatches",JSON.stringify(data.batches_assigned));
+            console.log(data.faculty);
             localStorage.setItem("facultyData",JSON.stringify(data.faculty))
             setTimeout(() => {
               window.location.href = "FacultyPage/index.html";

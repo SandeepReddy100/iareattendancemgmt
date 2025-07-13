@@ -7,16 +7,36 @@ const backendUrl = "https://iareattendancemgmt.onrender.com";
 const lightModeIcon = themeToggler.querySelector('span:nth-child(1)');
 const darkModeIcon = themeToggler.querySelector('span:nth-child(2)');
 
-
+// Toggle sidebar
 profileBtn.onclick = function () {
   sideMenu.classList.toggle('active');
-}
+};
 
+// On page load: Apply saved theme
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-theme");
+    lightModeIcon.classList.remove("active");
+    darkModeIcon.classList.add("active");
+  } else {
+    document.body.classList.remove("dark-theme");
+    lightModeIcon.classList.add("active");
+    darkModeIcon.classList.remove("active");
+  }
+});
 
+// Theme toggler logic
 themeToggler.addEventListener('click', () => {
   document.body.classList.toggle('dark-theme');
-  lightModeIcon.classList.toggle('active');
-  darkModeIcon.classList.toggle('active');
+  const isDark = document.body.classList.contains('dark-theme');
+
+  // Toggle icons
+  lightModeIcon.classList.toggle('active', !isDark);
+  darkModeIcon.classList.toggle('active', isDark);
+
+  // Save to localStorage
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
 });
 
 window.onscroll = () => {
@@ -445,7 +465,6 @@ const batchWiseTimetable = {
 
 };
 
-
 function renderTodayTimetable() {
   const container = document.getElementById("timetableContainer");
   const today = new Date().toLocaleDateString("en-US", { weekday: "long" });
@@ -457,10 +476,72 @@ function renderTodayTimetable() {
       const studentData = JSON.parse(studentDataRaw);
       batch = studentData.batch || "";
     } catch (e) {
-      console.warn("Failed to parse facultyData from localStorage.");
+      console.warn("Failed to parse profileData from localStorage.");
     }
   }
-  console.log(batch, today);
+
+  const batchSubjectFacultyMap = {
+    // SKILLUP-1
+    "SKILLUP BATCH-1_CP": "Dr. B. Padmaja || Dr. B Ravi Kumar",
+    "SKILLUP BATCH-1_JFS": "Mr. I N V Surya Narayana || Dr. M Madhusudhan Reddy",
+    "SKILLUP BATCH-1_DBMS": "Mr. B Ramesh || Mr. P V Narsimha Rao",
+    "SKILLUP BATCH-1_AWS": "Dr. C.V. Rama Padmaja || Dr. B Ravi Kumar",
+
+    // SKILLUP-2
+    "SKILLUP BATCH-2_CP": "Dr. B. Padmaja || Dr B Surekha Reddy",
+    "SKILLUP BATCH-2_JFS": "Mr. E Krishna Rao Patro || Dr. K. Viswanath Allamraju",
+    "SKILLUP BATCH-2_DBMS": "Ms. K Mayuri || Mr. P V Narsimha Rao",
+    "SKILLUP BATCH-2_AWS": "Dr. C.V. Rama Padmaja || Dr B Surekha Reddy",
+
+    // SKILLUP-3 
+    "SKILLUP BATCH-3_CP": "Dr. V Maheshwar Reddy || Ms. G Ajitha",
+    "SKILLUP BATCH-3_JFS": "Mr. I N V Surya Narayana || Mr. B Ramesh",
+    "SKILLUP BATCH-3_DBMS": "Mr. B Ramesh || Mr. P V Narsimha Rao ",
+    "SKILLUP BATCH-3_AWS": "Dr. C V R Padmaja || Ms. G Ajitha",
+
+    // SKILLNEXT-1
+    "SKILLNEXT BATCH-1_CP": "Dr. V Maheshwar Reddy || Dr. D Khalandar Basha ",
+    "SKILLNEXT BATCH-1_JFS": "Mr. E Krishna Rao Patro  || Dr. A Naresh Kumar ",
+    "SKILLNEXT BATCH-1_DBMS": "Ms. K Mayuri  || Mr. P V Narsimha Rao ",
+    
+    // SKILLNEXT-2
+    "SKILLNEXT BATCH-2_CP": "Dr. C V R Padmaja || Mr. A Srikanth ",
+    "SKILLNEXT BATCH-2_JFS": "Mr. E Krishna Rao Patro  || Mr. A Somaiah ",
+    "SKILLNEXT BATCH-2_DBMS": "Ms. K Mayuri  || Mr. P V Narsimha Rao ",
+    
+    // SKILLNEXT-3
+    "SKILLNEXT BATCH-3_CP": "Dr. C V R Padmaja || Dr. B Padmaja  ",
+    "SKILLNEXT BATCH-3_JFS": "Mr. I N V Surya Narayana  || Ms. K Mayuri ",
+    "SKILLNEXT BATCH-3_DBMS": "Ms. K Mayuri  || Dr. A Naresh Kumar  ",
+
+    // SKILLBRIDGE-1
+    "SKILLBRIDGE BATCH-1_CP": "Dr. D Khalandar Basha || Ms. S Lakshmana Chary ",
+    "SKILLBRIDGE BATCH-1_JFS": "Ms. M Padmaja || Mr. B Madhusudhan Rao ",
+    "SKILLBRIDGE BATCH-1_DBMS": "Mr. B Ramesh || Dr. S China Venkateswarlu ",
+
+    // SKILLBRIDGE-2
+    "SKILLBRIDGE BATCH-2_CP": "Mr. A Srikanth || Mr. P Shiva Kumar ",
+    "SKILLBRIDGE BATCH-2_JFS": "Mr. B Madhusudhan Rao || Ms. K Mayuri ",
+    "SKILLBRIDGE BATCH-2_DBMS": "Mr. B Ramesh || Dr. S China Venkateswarlu ",
+
+    // SKILLBRIDGE-3
+    "SKILLBRIDGE BATCH-3_CP": "Dr. V Maheshwar Reddy || Mr. S Srikanth",
+    "SKILLBRIDGE BATCH-3_JFS": "Mr. I N V Surya Narayana || Mr. E Krishna Rao Patro",
+    "SKILLBRIDGE BATCH-3_DBMS": "Mr. B Ramesh || Dr. M Madhusudhan Reddy ",
+
+    // SKILLBRIDGE-4
+    "SKILLBRIDGE BATCH-4_CP": "Mr. A Srikanth || Mr. P Venkata Mahesh ",
+    "SKILLBRIDGE BATCH-4_JFS": "Mr. B Madhusudhan Rao || Mr. E Krishna Rao Patro ",
+    "SKILLBRIDGE BATCH-4_DBMS": "Mr. P V Narasimha Rao  || Ms. K Mayuri ",
+
+    // SKILLBRIDGE-5
+    "SKILLBRIDGE BATCH-5_CP": "Dr. D Khalandar Basha  || Dr. V Ajay Kishen Kumar ",
+    "SKILLBRIDGE BATCH-5_JFS": "Ms. M Padmaja || Dr. S China Venkateswarlu",
+    "SKILLBRIDGE BATCH-5_DBMS": "Mr. P V Narasimha Rao  || Mr. B Ramesh "
+
+    
+    
+  };
 
   const todaySchedule = (batchWiseTimetable[batch] && batchWiseTimetable[batch][today]) || [];
 
@@ -469,18 +550,27 @@ function renderTodayTimetable() {
     return;
   }
 
-  container.innerHTML = todaySchedule.map(slot => `
-      <div class="period">
-        <div class="left">
-          <span class="material-icons-sharp">schedule</span>
-          <div class="info">
+  container.innerHTML = todaySchedule.map(slot => {
+  const facultyKey = `${batch}_${slot.subject}`;
+  const facultyName = batchSubjectFacultyMap[facultyKey] || "N/A";
+
+  return `
+    <div class="period">
+      <div class="left">
+        <span class="material-icons-sharp">schedule</span>
+        <div class="info">
+          <div class="subject-line">
             <div class="subject">${slot.subject}</div>
-            <div class="room">Room: ${slot.room}</div>
+            <div class="faculty"><b>${facultyName}</b></div>
           </div>
+          <div class="room">Room: ${slot.room}</div>
         </div>
-        <div class="time">${slot.time}</div>
       </div>
-    `).join("");
+      <div class="time">${slot.time}</div>
+    </div>
+  `;
+}).join("");
+
 }
 
 document.addEventListener("DOMContentLoaded", renderTodayTimetable);
@@ -496,37 +586,50 @@ function logout() {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-  const profileData = JSON.parse(localStorage.getItem("profileData"));
-  if (profileData && profileData.batch) {
-    fetchAnnouncements(profileData.batch);
-  }
-});
+    const profileData = JSON.parse(localStorage.getItem("profileData"));
+    const batch = profileData.batch;
 
+    const formatBatch = batch
+      .replace(/BATCH/gi, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .toLowerCase();
 
+    if (formatBatch) {
+      fetchAnnouncements(formatBatch);
+    }
+  });
 
-function fetchAnnouncements(batch) {
-  fetch(`https://your-backend.com/api/announcements?batch=${batch}`)
+  function fetchAnnouncements(batch) {
+  fetch(`${backendUrl}/api/student/announcements/${batch}`)
     .then(res => res.json())
     .then(data => {
       const list = document.getElementById("announcementList");
       list.innerHTML = "";
 
-      if (!data || data.length === 0) {
+      if (!data.announcements || data.announcements.length === 0) {
         list.innerHTML = "<li>No announcements available.</li>";
         return;
       }
 
-      // Show max 3 announcements
-      const announcementsToShow = data.slice(0, 3);
+      const announcementsToShow = data.announcements.slice(0, 3);
 
-      announcementsToShow.forEach(announcement => {
+      announcementsToShow.forEach((announcement, index) => {
         const card = document.createElement("li");
         card.classList.add("announcement-card");
+
+        const formattedContent = formatContent(announcement.content);
 
         card.innerHTML = `
           <div class="announcement-title">${announcement.title}</div>
           <div class="announcement-subtitle">${announcement.subtitle}</div>
-          <div class="announcement-content">${announcement.content}</div>
+          <div class="announcement-content" id="content-${index}">
+            ${formattedContent}
+          </div>
+          <button class="copy-btn" onclick="copyToClipboard(${index})" title="Copy Announcement">
+            <span class="material-icons-sharp">content_copy</span>
+          </button>
         `;
 
         list.appendChild(card);
@@ -537,3 +640,43 @@ function fetchAnnouncements(batch) {
       document.getElementById("announcementList").innerHTML = "<li>Error loading announcements.</li>";
     });
 }
+
+function formatContent(content) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return content.replace(urlRegex, url => {
+    return `<a href="${url}" target="_blank" class="announcement-link">${url}</a>`;
+  });
+}
+
+function copyToClipboard(index) {
+  const title = document.querySelectorAll(".announcement-title")[index]?.innerText || "";
+  const subtitle = document.querySelectorAll(".announcement-subtitle")[index]?.innerText || "";
+  const content = document.getElementById(`content-${index}`)?.innerText || "";
+
+  const fullText = `${title}\n${subtitle}\n${content}`;
+  navigator.clipboard.writeText(fullText).then(() => {
+    showCopyPopup(index);
+  }).catch(err => {
+    console.error("Failed to copy:", err);
+  });
+}
+
+function showCopyPopup(index) {
+  const card = document.querySelectorAll(".announcement-card")[index];
+  const popup = document.createElement("div");
+  popup.className = "copy-popup";
+  popup.textContent = "Copied!";
+
+  card.appendChild(popup);
+
+  setTimeout(() => {
+    popup.classList.add("show");
+    setTimeout(() => {
+      popup.classList.remove("show");
+      setTimeout(() => card.removeChild(popup), 300);
+    }, 1500);
+  }, 10);
+}
+
+
+
