@@ -1,253 +1,488 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IARE Attendance Management</title>
-  <link rel="stylesheet" href="style.css">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="shortcut icon" href="IARE-LOGO.png" type="image/x-icon">
-</head>
-<body>
-  <div class="main-container">
-    <!-- Left Section - Image (40%) -->
-    <div class="image-section">
-      <div class="image-content">
-        <!-- Modern Education Illustration -->
-        <svg class="main-illustration" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-          <!-- Background Circle -->
-          <circle cx="200" cy="200" r="180" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
-          
-          <!-- Books Stack -->
-          <rect x="120" y="280" width="60" height="8" rx="2" fill="#ffffff" opacity="0.9"/>
-          <rect x="125" y="270" width="50" height="8" rx="2" fill="#ffffff" opacity="0.8"/>
-          <rect x="130" y="260" width="40" height="8" rx="2" fill="#ffffff" opacity="0.7"/>
-          
-          <!-- Laptop -->
-          <rect x="160" y="240" width="80" height="50" rx="4" fill="#ffffff" opacity="0.9"/>
-          <rect x="165" y="245" width="70" height="35" rx="2" fill="#10b981"/>
-          <rect x="170" y="250" width="60" height="25" rx="1" fill="#064e3b"/>
-          
-          <!-- Student Figure -->
-          <circle cx="200" cy="150" r="25" fill="#ffffff" opacity="0.9"/>
-          <rect x="185" y="175" width="30" height="45" rx="15" fill="#ffffff" opacity="0.8"/>
-          <rect x="175" y="200" width="15" height="30" rx="7" fill="#ffffff" opacity="0.7"/>
-          <rect x="210" y="200" width="15" height="30" rx="7" fill="#ffffff" opacity="0.7"/>
-          
-          <!-- Graduation Cap -->
-          <rect x="180" y="130" width="40" height="8" rx="2" fill="#ffffff"/>
-          <polygon points="200,125 190,135 210,135" fill="#ffffff"/>
-          <circle cx="210" cy="135" r="2" fill="#fbbf24"/>
-          
-          <!-- Floating Elements -->
-          <circle cx="120" cy="120" r="8" fill="#ffffff" opacity="0.6">
-            <animate attributeName="cy" values="120;110;120" dur="3s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="280" cy="140" r="6" fill="#ffffff" opacity="0.5">
-            <animate attributeName="cy" values="140;130;140" dur="4s" repeatCount="indefinite"/>
-          </circle>
-          <circle cx="300" cy="200" r="4" fill="#ffffff" opacity="0.4">
-            <animate attributeName="cy" values="200;195;200" dur="2s" repeatCount="indefinite"/>
-          </circle>
-          
-          <!-- Knowledge Symbols -->
-          <text x="100" y="180" font-family="Arial" font-size="20" fill="#ffffff" opacity="0.6">📚</text>
-          <text x="280" y="180" font-family="Arial" font-size="18" fill="#ffffff" opacity="0.5">🎓</text>
-          <text x="300" y="250" font-family="Arial" font-size="16" fill="#ffffff" opacity="0.4">💡</text>
-          <text x="80" y="240" font-family="Arial" font-size="14" fill="#ffffff" opacity="0.3">✏️</text>
-        </svg>
-        
-        <div class="image-text">
-          <h1>Learn & Grow</h1>
-  <p>Revolutionizing classroom management with instant QR check-ins and hassle-free tracking for students and faculty.</p>
-        </div>
-      </div>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Primary Meta Tags -->
+    <title>IARE Smart Attendance Portal</title>
+    <meta name="title" content="IARE Smart Attendance Portal" />
+    <meta
+      name="description"
+      content="A QR code-based attendance system for IARE Institute streamline and secure student attendance. Built for smart education environments."
+    />
 
-    <!-- Right Section - Login Form (60%) -->
-    <div class="login-section">
-      <div class="container">
-        <!-- IARE Logo -->
-        <div class="logo-wrapper">
-          <img src="image.png" alt="IARE Logo" />
-        </div>
+    <!-- Keywords -->
+    <meta
+      name="keywords"
+      content="QR attendance system, student attendance IARE, QR code education, smart classroom, digital attendance, QR tracking system, IARE portal, vercel app, attendance management system"
+    />
 
-        <!-- Title -->
-        <div class="title-wrapper">
-          <h2>Welcome</h2>
-          <p>Sign in to access your account</p>
-        </div>
+    <!-- Author -->
+    <!-- Developer Metadata -->
+    <meta name="author" content="Mohammad Azaruddin Shaik, Tavva Sandeep Kumar Reddy, Burugu Sai Nitin" />
+    <meta name="creator" content="Student Developers" />
+    <meta name="application-name" content="IARE Smart Attendance Portal" />
+    <meta
+      name="developer"
+      content="https://github.com/mohammadazaruddinshaik, ,https://github.com/SandeepReddy100, https://github.com/SandeepReddy100"
+    />
 
-        <!-- Message Box -->
-        <div id="messageBox"></div>
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://iareattendancemgmt.vercel.app/" />
 
-        <!-- Form -->
-        <form id="loginForm">
-          <!-- Role Selector -->
-          <div id="roleSelector">
-            <label data-role="student">
-              <input type="radio" name="role" value="student" checked />
-              Student
-            </label>
-            <label data-role="faculty">
-              <input type="radio" name="role" value="faculty" />
-              Faculty
-            </label>
-            <label data-role="admin">
-              <input type="radio" name="role" value="admin" />
-              Admin
-            </label>
-          </div>
+    <!-- Robots -->
+    <meta name="robots" content="index, follow" />
 
-          <!-- Username -->
-          <div class="input-group">
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" required placeholder="Enter your username" />
-          </div>
-
-          <!-- Password -->
-          <div class="input-group">
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" required placeholder="Enter your password" />
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" id="loginBtn">
-            <span id="btnText">Sign In</span>
-            <svg id="loader" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-          </button>
-        </form>
-
-        <!-- Footer -->
-        <div class="footer-text">
-          Need help? <a href="contact.html">Contact Support</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    const form = document.getElementById("loginForm");
-    const messageBox = document.getElementById("messageBox");
-    const signInBtn = document.getElementById("loginBtn");
-    const btnText = document.getElementById("btnText");
-    const loader = document.getElementById("loader");
-    const backendUrl = "https://iareattendancemgmt.onrender.com";
+    <!-- Open Graph / Facebook / LinkedIn -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://iareattendancemgmt.vercel.app/" />
+    <meta
+      property="og:title"
+      content="QR Attendance System | IARE Smart Attendance Portal"
+    />
+    <meta
+      property="og:description"
+      content="An efficient QR code-based student attendance tracking system developed for IARE faculty and students. Fast. Reliable. Paperless."
+    />
     
-    // Role selector functionality
-    const labels = document.querySelectorAll("#roleSelector label");
+    <!-- Replace with your actual image path -->
 
-    function updateActive() {
-      labels.forEach((label) => {
-        const radio = label.querySelector('input[type="radio"]');
-        if (radio.checked) {
-          label.classList.add("selected");
-        } else {
-          label.classList.remove("selected");
-        }
-      });
-    }
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://iareattendancemgmt.vercel.app/" />
+    <meta
+      name="twitter:title"
+      content="QR Attendance System | IARE Smart Attendance Portal"
+    />
+    <meta
+      name="twitter:description"
+      content="Smart QR attendance solution for students and faculty at IARE. Track attendance digitally with ease and security."
+    />
+    <meta
+      name="twitter:image"
+      content="https://iareattendancemgmt.vercel.app/assets/banner.png"
+    />
+    <!-- Replace with your actual image path -->
 
-    labels.forEach((label) => {
-      label.addEventListener("click", () => {
-        setTimeout(updateActive, 10);
-      });
-    });
+    <!-- Favicon -->
 
-    updateActive();
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="IARE-LOGO.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- Left Section - Image (40%) -->
+      <div class="image-section">
+        <div class="image-content">
+          <!-- Modern Education Illustration -->
+          <svg
+            class="main-illustration"
+            viewBox="0 0 400 400"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <!-- Background Circle -->
+            <circle
+              cx="200"
+              cy="200"
+              r="180"
+              fill="rgba(255,255,255,0.1)"
+              stroke="rgba(255,255,255,0.2)"
+              stroke-width="2"
+            />
 
-    // Form submission
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+            <!-- Books Stack -->
+            <rect
+              x="120"
+              y="280"
+              width="60"
+              height="8"
+              rx="2"
+              fill="#ffffff"
+              opacity="0.9"
+            />
+            <rect
+              x="125"
+              y="270"
+              width="50"
+              height="8"
+              rx="2"
+              fill="#ffffff"
+              opacity="0.8"
+            />
+            <rect
+              x="130"
+              y="260"
+              width="40"
+              height="8"
+              rx="2"
+              fill="#ffffff"
+              opacity="0.7"
+            />
 
-      const usernameInput = document.getElementById("username");
-      const passwordInput = document.getElementById("password");
-      const roleInput = document.querySelector('input[name="role"]:checked');
+            <!-- Laptop -->
+            <rect
+              x="160"
+              y="240"
+              width="80"
+              height="50"
+              rx="4"
+              fill="#ffffff"
+              opacity="0.9"
+            />
+            <rect
+              x="165"
+              y="245"
+              width="70"
+              height="35"
+              rx="2"
+              fill="#10b981"
+            />
+            <rect
+              x="170"
+              y="250"
+              width="60"
+              height="25"
+              rx="1"
+              fill="#064e3b"
+            />
 
-      const username = usernameInput.value.trim(); 
-      const password = passwordInput.value.trim();
-      const role = roleInput ? roleInput.value : "";
-      // const backendUrl = "http://localhost:5000"
-      // Clear previous messages
-      messageBox.classList.remove("show", "success", "error");
-      messageBox.textContent = "";
+            <!-- Student Figure -->
+            <circle cx="200" cy="150" r="25" fill="#ffffff" opacity="0.9" />
+            <rect
+              x="185"
+              y="175"
+              width="30"
+              height="45"
+              rx="15"
+              fill="#ffffff"
+              opacity="0.8"
+            />
+            <rect
+              x="175"
+              y="200"
+              width="15"
+              height="30"
+              rx="7"
+              fill="#ffffff"
+              opacity="0.7"
+            />
+            <rect
+              x="210"
+              y="200"
+              width="15"
+              height="30"
+              rx="7"
+              fill="#ffffff"
+              opacity="0.7"
+            />
 
-      // Validation
-      if (!username || !password || !role) {
-        showMessage("Please fill in all fields and select your role.", "error");
-        return;
-      }
+            <!-- Graduation Cap -->
+            <rect x="180" y="130" width="40" height="8" rx="2" fill="#ffffff" />
+            <polygon points="200,125 190,135 210,135" fill="#ffffff" />
+            <circle cx="210" cy="135" r="2" fill="#fbbf24" />
 
-      const endpoint = `${backendUrl}/api/${role}login/login`;
+            <!-- Floating Elements -->
+            <circle cx="120" cy="120" r="8" fill="#ffffff" opacity="0.6">
+              <animate
+                attributeName="cy"
+                values="120;110;120"
+                dur="3s"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <circle cx="280" cy="140" r="6" fill="#ffffff" opacity="0.5">
+              <animate
+                attributeName="cy"
+                values="140;130;140"
+                dur="4s"
+                repeatCount="indefinite"
+              />
+            </circle>
+            <circle cx="300" cy="200" r="4" fill="#ffffff" opacity="0.4">
+              <animate
+                attributeName="cy"
+                values="200;195;200"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </circle>
 
-      // Show loading state
-      btnText.textContent = "Signing in...";
-      loader.classList.add("visible");
-      signInBtn.disabled = true;
+            <!-- Knowledge Symbols -->
+            <text
+              x="100"
+              y="180"
+              font-family="Arial"
+              font-size="20"
+              fill="#ffffff"
+              opacity="0.6"
+            >
+              📚
+            </text>
+            <text
+              x="280"
+              y="180"
+              font-family="Arial"
+              font-size="18"
+              fill="#ffffff"
+              opacity="0.5"
+            >
+              🎓
+            </text>
+            <text
+              x="300"
+              y="250"
+              font-family="Arial"
+              font-size="16"
+              fill="#ffffff"
+              opacity="0.4"
+            >
+              💡
+            </text>
+            <text
+              x="80"
+              y="240"
+              font-family="Arial"
+              font-size="14"
+              fill="#ffffff"
+              opacity="0.3"
+            >
+              ✏️
+            </text>
+          </svg>
 
-      try {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        });
+          <div class="image-text">
+            <h1>Learn & Grow</h1>
+            <p>
+              Revolutionizing classroom management with instant QR check-ins and
+              hassle-free tracking for students and faculty.
+            </p>
+          </div>
+        </div>
+      </div>
 
-        const data = await response.json();
+      <!-- Right Section - Login Form (60%) -->
+      <div class="login-section">
+        <div class="container">
+          <!-- IARE Logo -->
+          <div class="logo-wrapper">
+            <img src="image.png" alt="IARE Logo" />
+          </div>
 
-        if (response.ok) {
-          showMessage("Login successful!...", "success");
+          <!-- Title -->
+          <div class="title-wrapper">
+            <h2>Welcome</h2>
+            <p>Sign in to access your account</p>
+          </div>
 
-          // Store user data and redirect
-          if (role === "student" && data.student?.rollno) {
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("rollno", data.student.rollno);
-            localStorage.setItem("profileData", JSON.stringify(data.student));
-            setTimeout(() => {
-              window.location.href = "Dashboard/index.html";
-            }, 2500);
-          } else if (role === "faculty") {
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("facultyid", data.faculty.facultyid);
-            // localStorage.setItem("assignedbatches",JSON.stringify(data.batches_assigned));
-            console.log(data.faculty);
-            localStorage.setItem("facultyData",JSON.stringify(data.faculty))
-            setTimeout(() => {
-              window.location.href = "FacultyPage/index.html";
-            }, 2500);
-          } else if (role === "admin") {
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("adminId", data.adminId);
-            setTimeout(() => {
-              window.location.href = "AdminSection/index.html";
-            }, 2500);
+          <!-- Message Box -->
+          <div id="messageBox"></div>
+
+          <!-- Form -->
+          <form id="loginForm">
+            <!-- Role Selector -->
+            <div id="roleSelector">
+              <label data-role="student">
+                <input type="radio" name="role" value="student" checked />
+                Student
+              </label>
+              <label data-role="faculty">
+                <input type="radio" name="role" value="faculty" />
+                Faculty
+              </label>
+              <label data-role="admin">
+                <input type="radio" name="role" value="admin" />
+                Admin
+              </label>
+            </div>
+
+            <!-- Username -->
+            <div class="input-group">
+              <label for="username">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                placeholder="Enter your username"
+              />
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="loginBtn">
+              <span id="btnText">Sign In</span>
+              <svg
+                id="loader"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Footer -->
+          <div class="footer-text">
+            Need help? <a href="contact.html">Contact Support</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const messageBox = document.getElementById("messageBox");
+      const signInBtn = document.getElementById("loginBtn");
+      const btnText = document.getElementById("btnText");
+      const loader = document.getElementById("loader");
+      const backendUrl = "https://iareattendancemgmt.onrender.com";
+
+      // Role selector functionality
+      const labels = document.querySelectorAll("#roleSelector label");
+
+      function updateActive() {
+        labels.forEach((label) => {
+          const radio = label.querySelector('input[type="radio"]');
+          if (radio.checked) {
+            label.classList.add("selected");
+          } else {
+            label.classList.remove("selected");
           }
-        } else {
-          showMessage(data.message || "Invalid credentials. Please try again.", "error");
-        }
-      } catch (error) {
-        console.error("Login error:", error);
-        showMessage("Connection error. Please check your internet and try again.", "error");
-      } finally {
-        // Reset button state
-        btnText.textContent = "Sign In";
-        loader.classList.remove("visible");
-        signInBtn.disabled = false;
+        });
       }
-    });
 
-    function showMessage(text, type) {
-      messageBox.textContent = text;
-      messageBox.classList.add("show", type);
-      setTimeout(() => {
-        messageBox.classList.remove("show");
-      }, 4000);
-    }
-  </script>
-</body>
+      labels.forEach((label) => {
+        label.addEventListener("click", () => {
+          setTimeout(updateActive, 10);
+        });
+      });
+
+      updateActive();
+
+      // Form submission
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const roleInput = document.querySelector('input[name="role"]:checked');
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+        const role = roleInput ? roleInput.value : "";
+        // const backendUrl = "http://localhost:5000"
+        // Clear previous messages
+        messageBox.classList.remove("show", "success", "error");
+        messageBox.textContent = "";
+
+        // Validation
+        if (!username || !password || !role) {
+          showMessage(
+            "Please fill in all fields and select your role.",
+            "error"
+          );
+          return;
+        }
+
+        const endpoint = `${backendUrl}/api/${role}login/login`;
+
+        // Show loading state
+        btnText.textContent = "Signing in...";
+        loader.classList.add("visible");
+        signInBtn.disabled = true;
+
+        try {
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showMessage("Login successful!...", "success");
+
+            // Store user data and redirect
+            if (role === "student" && data.student?.rollno) {
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("rollno", data.student.rollno);
+              localStorage.setItem("profileData", JSON.stringify(data.student));
+              setTimeout(() => {
+                window.location.href = "Dashboard/index.html";
+              }, 2500);
+            } else if (role === "faculty") {
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("facultyid", data.faculty.facultyid);
+              // localStorage.setItem("assignedbatches",JSON.stringify(data.batches_assigned));
+              console.log(data.faculty);
+              localStorage.setItem("facultyData", JSON.stringify(data.faculty));
+              setTimeout(() => {
+                window.location.href = "FacultyPage/index.html";
+              }, 2500);
+            } else if (role === "admin") {
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("adminId", data.adminId);
+              setTimeout(() => {
+                window.location.href = "AdminSection/index.html";
+              }, 2500);
+            }
+          } else {
+            showMessage(
+              data.message || "Invalid credentials. Please try again.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          showMessage(
+            "Connection error. Please check your internet and try again.",
+            "error"
+          );
+        } finally {
+          // Reset button state
+          btnText.textContent = "Sign In";
+          loader.classList.remove("visible");
+          signInBtn.disabled = false;
+        }
+      });
+
+      function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.classList.add("show", type);
+        setTimeout(() => {
+          messageBox.classList.remove("show");
+        }, 4000);
+      }
+    </script>
+  </body>
 </html>
