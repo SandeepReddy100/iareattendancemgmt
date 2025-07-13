@@ -185,6 +185,9 @@ main .subjects{
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1.6rem;
+
+    min-width: 240px;
+    min-height: 150px;
 }
 
 main .subjects > div{
@@ -241,9 +244,13 @@ filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
 
 
 
+
+
 main .subjects h3{
     margin: 1rem 0 0.6rem;
     font-size: 1rem;
+    min-width: 10rem;
+    min-height: 4rem;
 }
 
 main .subjects small{

@@ -1,149 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
-    <link rel="shortcut icon" href="./images/logo.png" />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header>
-      <div class="logo" title="University Management System">
-        <img src="image.png" alt="IARE Logo" />
-        <h1>IARE</h1>
-      </div>
-      <div class="navbar">
-        <a href="index.html" class="active" title="Home">
-          <span class="material-icons-sharp">home</span>
-          <h3>Home</h3>
-        </a>
-        <div id="profile-btn" title="Profile">
-          <span class="material-icons-sharp">person</span>
-        </div>
-        <a href="#" title="Logout" id="logoutBtn">
-          <span class="material-icons-sharp">logout</span>
-          <h3>Logout</h3>
-        </a>
-      </div>
-    </header>
 
-    <div class="container">
-      <aside>
-        <div class="profile">
-          <div class="top">
-            <h2>Profile</h2>
-          </div>
-          <div class="about">
-            <h5>
-              <span class="material-icons-sharp">person_outline</span> NAME
-            </h5>
-            <p id="adminName"></p>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link rel="shortcut icon" href="./images/logo.png" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-            <h5>
-              <span class="material-icons-sharp">confirmation_number</span> ID
-            </h5>
-            <p id="adminId"></p>
-
-            <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
-            <p id="adminEmail"></p>
-          </div>
-        </div>
-      </aside>
-
-      <main>
-        <h1>Dashboard</h1>
-        <div class="subjects">
-          <div class="clickable-box eg" id="manageStudents">
-            <span class="material-icons-sharp">groups</span>
-            <h3>Manage Students</h3>
-            <div class="icon-container1">
-              <img
-                src="https://img.icons8.com/ios-filled/50/000000/student-male.png"
-                alt="Manage Students Icon"
-              />
-            </div>
-          </div>
-
-          <div class="clickable-box eg" id="manageFaculty">
-            <span class="material-icons-sharp">groups</span>
-            <h3>Manage Faculty</h3>
-            <div class="icon-container1">
-              <img
-                src="https://img.icons8.com/ios-filled/50/000000/teacher.png"
-                alt="Manage Faculty Icon"
-              />
-            </div>
-          </div>
-
-          <div class="clickable-box eg" id="updateAttendance">
-            <span class="material-icons-sharp">how_to_reg</span>
-            <h3>Manage Attendance</h3>
-            <div class="icon-container1">
-             <img src="https://img.icons8.com/ios-filled/50/4CAF50/task-completed.png" alt="Update Attendance Icon" />
-
-            </div>
-          </div>
-
-          <div class="clickable-box eg" id="batchwiseReport">
-            <span class="material-icons-sharp">dns</span>
-            <h3>Batch-wise Attendance Report</h3>
-            <div class="icon-container1">
-              <img
-                src="https://img.icons8.com/ios-filled/50/000000/report-card.png"
-                alt="Report Card Icon"
-              />
-            </div>
-          </div>
-
-          <div class="clickable-box eg" id="downloadReportBox">
-            <span class="material-icons-sharp">dns</span>
-            <h3>Download Attendance Summary</h3>
-
-            <div class="icon-container1">
-              <img
-                src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png"
-                alt="Combo Chart Icon"
-              />
-            </div>
-
-            <div class="download-buttons">
-              <button id="downloadExcel" class="download-btn">Excel</button>
-              <button id="downloadPDF" class="download-btn">PDF</button>
-            </div>
-          </div>
-
-          <div class="clickable-box eg" id="postAnnouncements">
-            <span class="material-icons-sharp">dns</span>
-            <h3>Post Announcements</h3>
-            <div class="icon-container">
-              <span
-                class="material-icons-sharp"
-                style="font-size: 48px; background-color: var(--color-primary)"
-                >campaign</span
-              >
-            </div>
-          </div>
-          <!-- Make this whole box clickable with styling preserved -->
-                <div class="cs clickable-box" onclick="window.location.href='./QrScan/CourseSelection.html'">
-                    <span class="material-icons-sharp">computer</span>
-                    <h3>Scan StudentQR</h3>
-                    <div class="icon-container">
-                        <span class="material-icons-sharp"
-                            style="font-size: 48px; background-color: var(--color-primary);">qr_code</span>
-                    </div>
-                </div>
-        </div>
-      </main>
-      <div id="spinnerOverlay" style="display: none">
-        <div class="spinner"></div>
-      </div>
+<body>
+  <header>
+    <div class="logo" title="University Management System">
+      <img src="image.png" alt="IARE Logo" />
+      <h1>IARE</h1>
     </div>
-    <script src="app.js"></script>
-  </body>
+    <div class="navbar">
+      <a href="index.html" class="active" title="Home">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+      <div id="profile-btn" title="Profile">
+        <span class="material-icons-sharp">person</span>
+      </div>
+      <a href="#" title="Logout" id="logoutBtn">
+        <span class="material-icons-sharp">logout</span>
+        <h3>Logout</h3>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside>
+      <div class="profile">
+        <div class="top">
+          <h2>Profile</h2>
+        </div>
+        <div class="about">
+          <h5>
+            <span class="material-icons-sharp">person_outline</span> NAME
+          </h5>
+          <p id="adminName"></p>
+
+          <h5>
+            <span class="material-icons-sharp">confirmation_number</span> ID
+          </h5>
+          <p id="adminId"></p>
+
+          <h5><span class="material-icons-sharp">email</span> EMAIL</h5>
+          <p id="adminEmail"></p>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <h1>Dashboard</h1>
+      <div class="subjects">
+        <div class="clickable-box eg" id="manageStudents">
+          <span class="material-icons-sharp">groups</span>
+          <h3>Manage Students</h3>
+          <div class="icon-container1">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">groups</span>
+
+          </div>
+        </div>
+
+        <div class="clickable-box eg" id="manageFaculty">
+          <span class="material-icons-sharp">groups</span>
+          <h3>Manage Faculty</h3>
+          <div class="icon-container1">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">supervisor_account</span>
+
+          </div>
+        </div>
+
+        <div class="clickable-box eg" id="updateAttendance">
+          <span class="material-icons-sharp">how_to_reg</span>
+          <h3>Manage Attendance</h3>
+          <div class="icon-container1">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">event_available</span>
+
+          </div>
+        </div>
+
+        <div class="clickable-box eg" id="batchwiseReport">
+          <span class="material-icons-sharp">dns</span>
+          <h3>Batch-wise Attendance Report</h3>
+          <div class="icon-container1">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">view_list</span>
+
+          </div>
+        </div>
+
+        <div class="clickable-box eg" id="downloadReportBox">
+          <span class="material-icons-sharp">dns</span>
+          <h3>Download Attendance Summary</h3>
+
+          <div class="icon-container1">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">summarize</span>
+
+          </div>
+
+          <div class="download-buttons">
+            <button id="downloadExcel" class="download-btn">Excel</button>
+            <button id="downloadPDF" class="download-btn">PDF</button>
+          </div>
+        </div>
+
+        <div class="clickable-box eg" id="postAnnouncements">
+          <span class="material-icons-sharp">dns</span>
+          <h3>Post Announcements</h3>
+          <div class="icon-container">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary)">campaign</span>
+          </div>
+        </div>
+        <!-- Make this whole box clickable with styling preserved -->
+        <div class="cs clickable-box" onclick="window.location.href='./QrScan/CourseSelection.html'">
+          <span class="material-icons-sharp">computer</span>
+          <h3>Scan StudentQR</h3>
+          <div class="icon-container">
+            <span class="material-icons-sharp"
+              style="font-size: 48px; background-color: var(--color-primary);">qr_code</span>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="spinnerOverlay" style="display: none">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+
 </html>
