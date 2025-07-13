@@ -89,18 +89,13 @@ router.get("/attendance-report", async (req, res) => {
       allSummaries.push(...Object.values(branchData));
     }
 
-    // Generate Excel with enhanced styling
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet("PAT Attendance Summary");
 
-    // Enhanced sheet settings
-    sheet.views = [{ state: 'normal' }];
-
-    // Format date to DD-MM-YYYY
     const formatDateForDisplay = (dateString) => {
       const dateObj = new Date(dateString);
       if (isNaN(dateObj.getTime())) return dateString;
-
       const day = String(dateObj.getDate()).padStart(2, "0");
       const month = String(dateObj.getMonth() + 1).padStart(2, "0");
       const year = dateObj.getFullYear();
@@ -109,36 +104,26 @@ router.get("/attendance-report", async (req, res) => {
 
     const displayDate = formatDateForDisplay(date);
 
-    // Enhanced header styling with gradient colors and better fonts
     const headerRows = [
-      ["Institute of Aeronautical Engineering", "1f4e79", 16, "FFFFFF"], // Dark blue background, white text
-      [`PAT Attendance Summary - ${displayDate}`, "2e75b6", 14, "FFFFFF"], // Medium blue
-      ["Career Development Center", "3d85c6", 12, "FFFFFF"], // Light blue
-      ["B.Tech V Semester Attendance Summary", "4a90e2", 11, "FFFFFF"], // Lighter blue
+      ["Institute of Aeronautical Engineering", "1f4e79", 16, "FFFFFF"],
+      [`PAT Attendance Summary - ${displayDate}`, "2e75b6", 14, "FFFFFF"],
+      ["Career Development Center", "3d85c6", 12, "FFFFFF"],
+      ["B.Tech V Semester Attendance Summary", "4a90e2", 11, "FFFFFF"],
     ];
 
     headerRows.forEach(([text, bgColor, fontSize, textColor], i) => {
       const row = sheet.addRow([text, "", "", "", ""]);
       sheet.mergeCells(`A${i + 1}:E${i + 1}`);
-      
-      row.getCell(1).font = { 
-        bold: true, 
+      row.getCell(1).font = {
+        bold: true,
         size: fontSize,
         color: { argb: textColor },
-        name: "Calibri"
+        name: "Calibri",
       };
-      row.getCell(1).alignment = { 
-        horizontal: "center", 
-        vertical: "middle" 
-      };
-      row.height = fontSize + 8; // Dynamic row height
-      
-      row.eachCell(cell => {
-        cell.fill = { 
-          type: "pattern", 
-          pattern: "solid", 
-          fgColor: { argb: bgColor } 
-        };
+      row.getCell(1).alignment = { horizontal: "center", vertical: "middle" };
+      row.height = fontSize + 8;
+      row.eachCell((cell) => {
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: bgColor } };
         cell.border = {
           top: { style: "medium", color: { argb: "000000" } },
           left: { style: "medium", color: { argb: "000000" } },
@@ -148,39 +133,13 @@ router.get("/attendance-report", async (req, res) => {
       });
     });
 
-    // Add spacing row
-    const spacingRow = sheet.addRow(["", "", "", "", ""]);
-    spacingRow.height = 5;
-    spacingRow.eachCell(cell => {
-      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "F8F9FA" } };
-    });
+    sheet.addRow(["", "", "", "", ""]);
 
-    // Enhanced column headers with better styling
-    const headerRow = sheet.addRow([
-      "BATCH",
-      "BRANCH",
-      "Total Strength",
-      "Present",
-      "Absent",
-    ]);
-    headerRow.height = 25;
-    
+    const headerRow = sheet.addRow(["BATCH", "BRANCH", "Total Strength", "Present", "Absent"]);
     headerRow.eachCell((cell, colNumber) => {
-      cell.fill = { 
-        type: "pattern", 
-        pattern: "solid", 
-        fgColor: { argb: "34495e" } // Dark gray
-      };
-      cell.font = { 
-        bold: true, 
-        size: 12,
-        color: { argb: "FFFFFF" },
-        name: "Calibri"
-      };
-      cell.alignment = { 
-        horizontal: "center", 
-        vertical: "middle" 
-      };
+      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "34495e" } };
+      cell.font = { bold: true, size: 12, color: { argb: "FFFFFF" }, name: "Calibri" };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
       cell.border = {
         top: { style: "medium", color: { argb: "000000" } },
         left: { style: "medium", color: { argb: "000000" } },
@@ -189,158 +148,87 @@ router.get("/attendance-report", async (req, res) => {
       };
     });
 
-    // Enhanced column widths
     sheet.columns = [
-      { width: 25 }, // BATCH
-      { width: 25 }, // BRANCH
-      { width: 20 }, // Total Strength
-      { width: 20 }, // Presenties
-      { width: 20 }, // Absenties
+      { width: 25 },
+      { width: 25 },
+      { width: 20 },
+      { width: 20 },
+      { width: 20 },
     ];
 
-    // Data Rows with enhanced styling
+    const batchGroups = {};
+    allSummaries.forEach(item => {
+      if (!batchGroups[item.batch]) batchGroups[item.batch] = [];
+      batchGroups[item.batch].push(item);
+    });
+
     let totalPresent = 0;
     let totalAbsent = 0;
 
-    allSummaries.forEach((item, index) => {
-      const row = sheet.addRow([
-        item.batch,
-        item.branch,
-        item.strength,
-        item.presenties,
-        item.absenties,
-      ]);
+    Object.entries(batchGroups).forEach(([batchName, rows]) => {
+      const groupStartRow = sheet.lastRow.number + 1;
 
-      totalPresent += item.presenties;
-      totalAbsent += item.absenties;
+      rows.forEach((item, index) => {
+        // Only show batch name in first row of each group
+        const batchCellValue = index === 0 ? batchName : "";
+        const row = sheet.addRow([batchCellValue, item.branch, item.strength, item.presenties, item.absenties]);
+        totalPresent += item.presenties;
+        totalAbsent += item.absenties;
+        row.height = 22;
 
-      row.height = 22;
+        row.eachCell((cell, colNumber) => {
+          cell.font = { name: "Calibri", size: 11 };
+          cell.alignment = { vertical: "middle", horizontal: colNumber === 2 ? "left" : "center" };
+          cell.border = {
+            top: { style: "thin", color: { argb: "CCCCCC" } },
+            left: { style: "thin", color: { argb: "CCCCCC" } },
+            bottom: { style: "thin", color: { argb: "CCCCCC" } },
+            right: { style: "thin", color: { argb: "CCCCCC" } },
+          };
 
-      row.eachCell((cell, colNumber) => {
-        // Enhanced font styling
-        cell.font = { 
-          name: "Calibri", 
-          size: 11
-        };
-        
-        // Better alignment
-        cell.alignment = { 
-          vertical: "middle", 
-          horizontal: colNumber === 2 ? "left" : "center" // Branch name left-aligned
-        };
-        
-        // Enhanced borders
-        cell.border = {
-          top: { style: "thin", color: { argb: "CCCCCC" } },
-          left: { style: "thin", color: { argb: "CCCCCC" } },
-          bottom: { style: "thin", color: { argb: "CCCCCC" } },
-          right: { style: "thin", color: { argb: "CCCCCC" } },
-        };
-
-        // Conditional formatting for present and absent
-        if (colNumber === 4) { // Present column
-          cell.fill = { 
-            type: "pattern", 
-            pattern: "solid", 
-            fgColor: { argb: "D4F3D0" } // Light green for present
-          };
-          cell.font = { 
-            ...cell.font, 
-            color: { argb: "2E7D32" }, // Dark green text
-            bold: true
-          };
-        } else if (colNumber === 5) { // Absent column
-          cell.fill = { 
-            type: "pattern", 
-            pattern: "solid", 
-            fgColor: { argb: "FFEBEE" } // Light red for absent
-          };
-          cell.font = { 
-            ...cell.font, 
-            color: { argb: "C62828" }, // Dark red text
-            bold: true
-          };
-        } else {
-          // Alternating row colors for better readability
-          const bgColor = (index % 2 === 0) ? "F8F9FA" : "FFFFFF";
-          cell.fill = { 
-            type: "pattern", 
-            pattern: "solid", 
-            fgColor: { argb: bgColor } 
-          };
-        }
+          if (colNumber === 4) {
+            cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "D4F3D0" } };
+            cell.font = { ...cell.font, color: { argb: "2E7D32" }, bold: true };
+          } else if (colNumber === 5) {
+            cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFEBEE" } };
+            cell.font = { ...cell.font, color: { argb: "C62828" }, bold: true };
+          } else {
+            const bgColor = (sheet.lastRow.number - groupStartRow) % 2 === 0 ? "F8F9FA" : "FFFFFF";
+            cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: bgColor } };
+          }
+        });
       });
+
+      // Merge cells in first column if there are multiple rows for same batch
+      const groupEndRow = sheet.lastRow.number;
+      if (rows.length > 1) {
+        sheet.mergeCells(`A${groupStartRow}:A${groupEndRow}`);
+        const mergedCell = sheet.getCell(`A${groupStartRow}`);
+        mergedCell.alignment = { vertical: "middle", horizontal: "center" };
+      }
     });
 
-    // Enhanced Totals Row
-    const spacingRow2 = sheet.addRow(["", "", "", "", ""]);
-    spacingRow2.height = 10;
-    spacingRow2.eachCell(cell => {
-      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "F8F9FA" } };
-    });
-
-    // Summary header
+    sheet.addRow(["", "", "", "", ""]);
     const summaryHeaderRow = sheet.addRow(["", "SUMMARY", "", "", ""]);
     sheet.mergeCells(`B${summaryHeaderRow.number}:E${summaryHeaderRow.number}`);
-    summaryHeaderRow.height = 25;
-    
-    summaryHeaderRow.getCell(2).font = { 
-      bold: true, 
-      size: 12,
-      color: { argb: "FFFFFF" },
-      name: "Calibri"
-    };
-    summaryHeaderRow.getCell(2).alignment = { 
-      horizontal: "center", 
-      vertical: "middle" 
-    };
-    summaryHeaderRow.getCell(2).fill = { 
-      type: "pattern", 
-      pattern: "solid", 
-      fgColor: { argb: "3498DB" } // Blue background for header
-    };
-    summaryHeaderRow.getCell(2).border = {
-      top: { style: "medium", color: { argb: "000000" } },
-      left: { style: "medium", color: { argb: "000000" } },
-      bottom: { style: "medium", color: { argb: "000000" } },
-      right: { style: "medium", color: { argb: "000000" } },
-    };
+    summaryHeaderRow.getCell(2).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "3498DB" } };
+    summaryHeaderRow.getCell(2).font = { bold: true, size: 12, color: { argb: "FFFFFF" }, name: "Calibri" };
+    summaryHeaderRow.getCell(2).alignment = { horizontal: "center", vertical: "middle" };
 
-    // Enhanced totals row
     const totalRow = sheet.addRow([
-      "TOTAL", 
-      `Total Students: ${totalPresent + totalAbsent}`, 
-      totalPresent + totalAbsent, 
-      totalPresent, 
-      totalAbsent
+      "TOTAL",
+      `Total Students: ${totalPresent + totalAbsent}`,
+      totalPresent + totalAbsent,
+      totalPresent,
+      totalAbsent,
     ]);
-    totalRow.height = 25;
-    
+
     totalRow.eachCell((cell, colNumber) => {
-      cell.font = { 
-        bold: true, 
-        size: 11,
-        color: { argb: "FFFFFF" },
-        name: "Calibri"
-      };
-      cell.alignment = { 
-        horizontal: "center", 
-        vertical: "middle" 
-      };
-      
-      // Color coding for totals
-      if (colNumber === 1) {
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "34495e" } }; // Dark gray
-      } else if (colNumber === 2) {
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "3498DB" } }; // Blue
-      } else if (colNumber === 3) {
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "9B59B6" } }; // Purple
-      } else if (colNumber === 4) {
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "27AE60" } }; // Green
-      } else if (colNumber === 5) {
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "E74C3C" } }; // Red
-      }
-      
+      cell.font = { bold: true, size: 11, color: { argb: "FFFFFF" }, name: "Calibri" };
+      cell.alignment = { horizontal: "center", vertical: "middle" };
+
+      const colors = ["34495e", "3498DB", "9B59B6", "27AE60", "E74C3C"];
+      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: colors[colNumber - 1] } };
       cell.border = {
         top: { style: "medium", color: { argb: "000000" } },
         left: { style: "medium", color: { argb: "000000" } },
@@ -349,17 +237,10 @@ router.get("/attendance-report", async (req, res) => {
       };
     });
 
-    // Set response headers
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=attendance_summary_${displayDate.replace(
-        /-/g,
-        "_"
-      )}.xlsx`
+      `attachment; filename=attendance_summary_${displayDate.replace(/-/g, "_")}.xlsx`
     );
 
     await workbook.xlsx.write(res);
@@ -369,7 +250,6 @@ router.get("/attendance-report", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 router.get("/attendance-report-pdf", async (req, res) => {
   const { batch, date } = req.query;
 
@@ -473,6 +353,33 @@ router.get("/attendance-report-pdf", async (req, res) => {
 
     const addColoredRect = (x, y, width, height, color) => {
       doc.rect(x, y, width, height).fill(color);
+    };
+
+    const addSimpleText = (text, x, y, width, height, bgColor, textColor, fontSize = 11, align = "center") => {
+      // Draw background
+      doc.rect(x, y, width, height).fill(bgColor);
+      
+      // Draw border
+      doc.rect(x, y, width, height).stroke("#cccccc");
+      
+      // Add text
+      doc
+        .fillColor(textColor)
+        .fontSize(fontSize)
+        .font("Helvetica");
+      
+      const padding = align === "center" ? 0 : 5;
+      const textWidth = width - (padding * 2);
+      
+      doc.text(
+        text,
+        x + padding,
+        y + (height - fontSize) / 2,
+        {
+          width: textWidth,
+          align: align,
+        }
+      );
     };
 
     const addTextWithBackground = (
@@ -594,10 +501,22 @@ router.get("/attendance-report-pdf", async (req, res) => {
     let totalPresent = 0;
     let totalAbsent = 0;
 
-    allSummaries.forEach((item, index) => {
+    // Sort summaries by batch name for consistent ordering
+    allSummaries.sort((a, b) => {
+      if (a.batch === b.batch) {
+        return a.branch.localeCompare(b.branch);
+      }
+      return a.batch.localeCompare(b.batch);
+    });
+
+    let rowIndex = 0;
+    
+    // Flatten the data and show batch name in every row (simpler approach)
+    allSummaries.forEach((item) => {
       totalPresent += item.presenties;
       totalAbsent += item.absenties;
 
+      // Check if we need a new page
       if (currentY + rowHeight > doc.page.height - 100) {
         doc.addPage();
         currentY = 50;
@@ -605,10 +524,10 @@ router.get("/attendance-report-pdf", async (req, res) => {
         drawTableHeader();
       }
 
-      let tableX = 50;
-      const isEvenRow = index % 2 === 0;
+      const isEvenRow = rowIndex % 2 === 0;
       const rowBgColor = isEvenRow ? colors.lightGray : colors.white;
 
+      // Always show batch name in every row (no grouping complexity)
       const rowData = [
         item.batch,
         item.branch,
@@ -617,10 +536,13 @@ router.get("/attendance-report-pdf", async (req, res) => {
         item.absenties.toString(),
       ];
 
+      let tableX = 50;
+      
       rowData.forEach((data, colIndex) => {
         let bgColor = rowBgColor;
         let textColor = colors.black;
 
+        // Apply special colors for present/absent columns
         if (colIndex === 3) {
           bgColor = colors.lightGreen;
           textColor = "#2e7d32";
@@ -629,20 +551,28 @@ router.get("/attendance-report-pdf", async (req, res) => {
           textColor = "#c62828";
         }
 
-        addColoredRect(tableX, currentY, colWidths[colIndex], rowHeight, bgColor);
+        // Draw background rectangle
+        doc.rect(tableX, currentY, colWidths[colIndex], rowHeight).fill(bgColor);
+        
+        // Draw border (stroke only, no fill)
         doc.rect(tableX, currentY, colWidths[colIndex], rowHeight).stroke("#cccccc");
+
+        // Add text
         doc
           .fillColor(textColor)
           .fontSize(11)
           .font(colIndex >= 3 ? "Helvetica-Bold" : "Helvetica");
 
         const textAlign = colIndex === 1 ? "left" : "center";
+        const padding = textAlign === "center" ? 0 : 5;
+        const textWidth = colWidths[colIndex] - (padding * 2);
+        
         doc.text(
           data,
-          textAlign === "center" ? tableX : tableX + 5,
+          tableX + padding,
           currentY + (rowHeight - 11) / 2,
           {
-            width: colWidths[colIndex] - (textAlign === "center" ? 0 : 10),
+            width: textWidth,
             align: textAlign,
           }
         );
@@ -651,6 +581,7 @@ router.get("/attendance-report-pdf", async (req, res) => {
       });
 
       currentY += rowHeight;
+      rowIndex++;
     });
 
     // Summary section
@@ -662,6 +593,7 @@ router.get("/attendance-report-pdf", async (req, res) => {
 
     currentY += 20;
 
+    // Draw summary header
     addTextWithBackground(
       "SUMMARY",
       50,
@@ -675,6 +607,7 @@ router.get("/attendance-report-pdf", async (req, res) => {
     );
     currentY += rowHeight;
 
+    // Draw summary data
     const summaryData = [
       {
         text: "TOTAL",
