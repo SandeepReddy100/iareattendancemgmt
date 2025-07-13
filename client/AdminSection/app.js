@@ -1,5 +1,5 @@
-  // const backendUrl = "https://iareattendancemgmt.onrender.com";
-  const backendUrl = "http://localhost:5000"
+  const backendUrl = "https://iareattendancemgmt.onrender.com";
+  // const backendUrl = "http://localhost:5000"
   function showSpinner() {
   document.getElementById("spinnerOverlay").style.display = "flex";
 }
