@@ -51,7 +51,6 @@ window.addEventListener("load", () => {
   }, 1000); // 1.5 seconds
 });
 function updateProfileUI(student) {
-  console.log("Updating profile UI with student:", student);
 
   const roll = student.rollno || "N/A";
   const batch = student.batch || "N/A";
