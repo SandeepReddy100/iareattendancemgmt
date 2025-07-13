@@ -1,373 +1,383 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Students</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Manage Students</title>
+    <!-- Material Icons + External Styles -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../style.css" />
 
-  <!-- Material Icons + External Styles -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet" />
-  <link rel="stylesheet" href="../style.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+      :root {
+        --color-primary: #00796b;
+        --color-danger: #ff5252;
+        --color-warning: #ffbb55;
+        --color-success: #41f1b6;
+        --color-white: #ffffff;
+        --color-info: #7d8da1;
+        --color-dark: #2d2d2d;
+        --color-light: rgba(132, 139, 200, 0.18);
+        :root {
+          --color-primary: #00796b;
+          --color-danger: #ff5252;
+          --color-warning: #ffbb55;
+          --color-success: #41f1b6;
+          --color-white: #ffffff;
+          --color-info: #7d8da1;
+          --color-dark: #2d2d2d;
+          --color-light: rgba(132, 139, 200, 0.18);
 
-    :root {
-      --color-primary: #00796B;
-      --color-danger: #ff5252;
-      --color-warning: #ffbb55;
-      --color-success: #41f1b6;
-      --color-white: #ffffff;
-      --color-info: #7d8da1;
-      --color-dark: #2d2d2d;
-      --color-light: rgba(132, 139, 200, 0.18);
-    :root {
-      --color-primary: #00796B;
-      --color-danger: #ff5252;
-      --color-warning: #ffbb55;
-      --color-success: #41f1b6;
-      --color-white: #ffffff;
-      --color-info: #7d8da1;
-      --color-dark: #2d2d2d;
-      --color-light: rgba(132, 139, 200, 0.18);
+          --border-radius-1: 0.4rem;
+          --border-radius-2: 1.2rem;
+          --border-radius-1: 0.4rem;
+          --border-radius-2: 1.2rem;
 
-      --border-radius-1: 0.4rem;
-      --border-radius-2: 1.2rem;
-      --border-radius-1: 0.4rem;
-      --border-radius-2: 1.2rem;
+          --card-padding: 1.8rem;
+          --box-shadow: 0 2rem 3rem var(--color-light);
+        }
+        --card-padding: 1.8rem;
+        --box-shadow: 0 2rem 3rem var(--color-light);
+      }
 
-      --card-padding: 1.8rem;
-      --box-shadow: 0 2rem 3rem var(--color-light);
-    }
-      --card-padding: 1.8rem;
-      --box-shadow: 0 2rem 3rem var(--color-light);
-    }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-decoration: none;
+        list-style: none;
+        font-family: "Poppins", sans-serif;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-decoration: none;
+        list-style: none;
+        font-family: "Poppins", sans-serif;
+      }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      text-decoration: none;
-      list-style: none;
-      font-family: 'Poppins', sans-serif;
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      text-decoration: none;
-      list-style: none;
-      font-family: 'Poppins', sans-serif;
-    }
+      body {
+        background-color: #f6f6f9;
+        color: var(--color-dark);
+        overflow-x: hidden;
+      }
+      body {
+        background-color: #f6f6f9;
+        color: var(--color-dark);
+        overflow-x: hidden;
+      }
 
-    body {
-      background-color: #f6f6f9;
-      color: var(--color-dark);
-      overflow-x: hidden;
-    }
-    body {
-      background-color: #f6f6f9;
-      color: var(--color-dark);
-      overflow-x: hidden;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 3rem;
-      color: var(--color-info);
-      position: sticky;
-      top: 0;
-      width: 100%;
-      background-color: var(--color-white);
-      box-shadow: var(--box-shadow);
-      z-index: 1000;
-    }
-
-    header .logo {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      margin-right: auto;
-    }
-
-    header .logo img {
-      width: 3.5rem;
-      height: 3.5rem;
-    }
-
-    header .navbar {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding: 0 3rem;
-    }
-
-    header .navbar a {
-      display: flex;
-      margin-left: 2rem;
-      gap: 1rem;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-      height: 3.7rem;
-      transition: all 300ms ease;
-      padding: 0 2rem;
-      color: var(--color-dark);
-    }
-
-    header .navbar a:hover {
-      padding-top: 1.5rem;
-    }
-
-    header .navbar a.active {
-      background: var(--color-light);
-      color: var(--color-primary);
-    }
-
-    header .navbar a.active::before {
-      content: "";
-      background-color: var(--color-primary);
-      position: absolute;
-      height: 5px;
-      width: 100%;
-      left: 0;
-      top: 0;
-    }
-
-    header #profile-btn {
-      display: none;
-      font-size: 2rem;
-      margin: 0.5rem 2rem 0 0;
-      cursor: pointer;
-    }
-
-    header .theme-toggler {
-      background: var(--color-light);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 1.6rem;
-      width: 4.2rem;
-      cursor: pointer;
-      border-radius: var(--border-radius-1);
-      margin-right: 2rem;
-    }
-
-    header .theme-toggler span {
-      font-size: 1.2rem;
-      width: 50%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    header .theme-toggler span.active {
-      background-color: var(--color-primary);
-      color: white;
-      border-radius: var(--border-radius-1);
-    }
-
-    .container {
-      padding: 2rem;
-      width: 100%;
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: var(--color-dark);
-    }
-
-    .subjects {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem;
-    }
-
-    .subjects > div {
-      background-color: var(--color-white);
-      padding: 1.5rem;
-      border-radius: var(--border-radius-2);
-      box-shadow: var(--box-shadow);
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .subjects > div:hover {
-      transform: translateY(-5px);
-      box-shadow: none;
-    }
-
-    .subjects h3 {
-      margin-top: 1rem;
-      font-size: 1.1rem;
-      color: var(--color-dark);
-    }
-
-    .icon-container1 {
-      width: 80px;
-      height: 80px;
-      margin: 1rem auto 0;
-      border: 5px solid var(--color-primary);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .icon-container1 {
-      width: 80px;
-      height: 80px;
-      margin: 1rem auto 0;
-      border: 5px solid var(--color-primary);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .icon-container1 img {
-      width: 40px;
-      height: 40px;
-      filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
-    }
-    .icon-container1 img {
-      width: 40px;
-      height: 40px;
-      filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
-    }
-
-    form {
-      max-width: 400px;
-      margin: 2rem auto;
-      background-color: var(--color-white);
-      padding: 2rem;
-      border-radius: var(--border-radius-2);
-      box-shadow: var(--box-shadow);
-    }
-
-    form h2 {
-      margin-bottom: 0.5rem;
-      color: var(--color-primary);
-    }
-
-    form p {
-      margin-bottom: 1rem;
-      color: var(--color-info);
-    }
-
-    form input,
-    form select {
-      width: 100%;
-      padding: 0.6rem;
-      margin-bottom: 1rem;
-      border: 1px solid var(--color-light);
-      border-radius: var(--border-radius-1);
-      font-size: 1rem;
-    }
-
-    form .btn {
-      display: inline-block;
-      background-color: var(--color-primary);
-      color: var(--color-white);
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: var(--border-radius-1);
-      cursor: pointer;
-      margin-top: 1rem;
-      transition: background-color 0.3s ease;
-    }
-
-    form .btn:hover {
-      background-color: transparent;
-      color: var(--color-primary);
-      border: 2px solid var(--color-primary);
-    }
-
-    form .cancel-link {
-      margin-left: 1rem;
-      color: var(--color-danger);
-      font-weight: 500;
-    }
-
-    .text-center {
-      text-align: center;
-    }
-
-    @media (max-width: 600px) {
       header {
-        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 3rem;
+        color: var(--color-info);
+        position: sticky;
+        top: 0;
+        width: 100%;
+        background-color: var(--color-white);
+        box-shadow: var(--box-shadow);
+        z-index: 1000;
+      }
+
+      header .logo {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        margin-right: auto;
+      }
+
+      header .logo img {
+        width: 3.5rem;
+        height: 3.5rem;
+      }
+
+      header .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 3rem;
+      }
+
+      header .navbar a {
+        display: flex;
+        margin-left: 2rem;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        height: 3.7rem;
+        transition: all 300ms ease;
+        padding: 0 2rem;
+        color: var(--color-dark);
+      }
+
+      header .navbar a:hover {
+        padding-top: 1.5rem;
+      }
+
+      header .navbar a.active {
+        background: var(--color-light);
+        color: var(--color-primary);
+      }
+
+      header .navbar a.active::before {
+        content: "";
+        background-color: var(--color-primary);
+        position: absolute;
+        height: 5px;
+        width: 100%;
+        left: 0;
+        top: 0;
+      }
+
+      header #profile-btn {
+        display: none;
+        font-size: 2rem;
+        margin: 0.5rem 2rem 0 0;
+        cursor: pointer;
+      }
+
+      header .theme-toggler {
+        background: var(--color-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 1.6rem;
+        width: 4.2rem;
+        cursor: pointer;
+        border-radius: var(--border-radius-1);
+        margin-right: 2rem;
+      }
+
+      header .theme-toggler span {
+        font-size: 1.2rem;
+        width: 50%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      header .theme-toggler span.active {
+        background-color: var(--color-primary);
+        color: white;
+        border-radius: var(--border-radius-1);
+      }
+
+      .container {
+        padding: 2rem;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        color: var(--color-dark);
       }
 
       .subjects {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem;
       }
-      .subjects {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+
+      .subjects > div {
+  background-color: var(--color-white);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-2);
+  box-shadow: var(--box-shadow);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* 🔥 This aligns vertically */
+  height: 100%; /* Optional: to ensure vertical centering if height is consistent */
+}
+
+
+      .subjects > div:hover {
+        transform: translateY(-5px);
+        box-shadow: none;
+      }
+
+      .subjects h3 {
+        margin-top: 1rem;
+        font-size: 1.1rem;
+        color: var(--color-dark);
       }
 
       .icon-container1 {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
+        margin: 1rem auto 0;
+        border: 5px solid var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .icon-container1 {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
+        margin: 1rem auto 0;
+        border: 5px solid var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .icon-container1 img {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
+        filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
+      }
+      .icon-container1 img {
+        width: 40px;
+        height: 40px;
+        filter: invert(32%) sepia(41%) saturate(810%) hue-rotate(137deg);
       }
 
       form {
-        margin: 1rem;
-        padding: 1.5rem;
+        max-width: 400px;
+        margin: 2rem auto;
+        background-color: var(--color-white);
+        padding: 2rem;
+        border-radius: var(--border-radius-2);
+        box-shadow: var(--box-shadow);
       }
-    }
-    h2{
-      padding-left: 1rem;
-    }
-  </style>
 
+      form h2 {
+        margin-bottom: 0.5rem;
+        color: var(--color-primary);
+      }
 
-</head>
+      form p {
+        margin-bottom: 1rem;
+        color: var(--color-info);
+      }
 
-<body>
-  <header>
-    <div class="logo" title="University Management System">
-      <img src="../image.png" alt="IARE Logo" />
-      <h1>IARE</h1>
-    </div>
+      form input,
+      form select {
+        width: 100%;
+        padding: 0.6rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--color-light);
+        border-radius: var(--border-radius-1);
+        font-size: 1rem;
+      }
 
-    <div class="navbar">
-      <a href="../" class="active" title="Home">
-        <span class="material-icons-sharp">home</span>
-        <h3>Home</h3>
-      </a>
-      <div id="profile-btn" title="Profile">
-        <span class="material-icons-sharp">person</span>
+      form .btn {
+        display: inline-block;
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: var(--border-radius-1);
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      form .btn:hover {
+        background-color: transparent;
+        color: var(--color-primary);
+        border: 2px solid var(--color-primary);
+      }
+
+      form .cancel-link {
+        margin-left: 1rem;
+        color: var(--color-danger);
+        font-weight: 500;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      @media (max-width: 600px) {
+        header {
+          padding: 0 1rem;
+        }
+
+        .subjects {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .subjects {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .icon-container1 {
+          width: 60px;
+          height: 60px;
+        }
+        .icon-container1 {
+          width: 60px;
+          height: 60px;
+        }
+
+        .icon-container1 img {
+          width: 30px;
+          height: 30px;
+        }
+
+        form {
+          margin: 1rem;
+          padding: 1.5rem;
+        }
+      }
+      h2 {
+        padding-left: 1rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="logo" title="University Management System">
+        <img src="../image.png" alt="IARE Logo" />
+        <h1>IARE</h1>
       </div>
-      <a href="/iareattendancemgmt/client/index.html" title="Logout" id="logoutBtn">
-        <span class="material-icons-sharp">logout</span>
-        <h3>Logout</h3>
-      </a>
-    </div>
-  </header>
 
-  <!-- Main Section -->
-  <div class="container">
-    <main>
-      <h2>Manage Student</h2>
-      <div class="subjects">
+      <div class="navbar">
+        <a href="../" class="active" title="Home">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <div id="profile-btn" title="Profile">
+          <span class="material-icons-sharp">person</span>
+        </div>
+        <a
+          href="/iareattendancemgmt/client/index.html"
+          title="Logout"
+          id="logoutBtn"
+        >
+          <span class="material-icons-sharp">logout</span>
+          <h3>Logout</h3>
+        </a>
+      </div>
+    </header>
 
-        <!-- <div class="cs clickable-box" onclick="window.location.href='add-student.html'">
+    <!-- Main Section -->
+    <div class="container">
+      <main>
+        <h2>Manage Student</h2>
+        <div class="subjects">
+          <!-- <div class="cs clickable-box" onclick="window.location.href='add-student.html'">
           <span class="material-icons-sharp">person_add</span>
           <h3>Add Student</h3>
           <div class="icon-container1">
@@ -376,31 +386,52 @@
           </div>
         </div> -->
 
-        <div class="cg clickable-box" onclick="window.location.href='update-student.html'">
-          <span class="material-icons-sharp">edit</span>
-          <h3>Update Student</h3>
-          <div class="icon-container1">
-            <span class="material-icons-sharp"
-              style="font-size: 48px; background-color: var(--color-primary);">edit</span>
+          <div
+            class="mth clickable-box"
+            onclick="window.location.href='view-student.html'"
+          >
+            <span class="material-icons-sharp">search</span>
+            <h3>View Student</h3>
+            <div class="icon-container1">
+              <span
+                class="material-icons-sharp"
+                style="font-size: 48px; background-color: var(--color-primary)"
+                >person_search</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="cg clickable-box"
+            onclick="window.location.href='update-student.html'"
+          >
+            <span class="material-icons-sharp">edit</span>
+            <h3>Update Student</h3>
+            <div class="icon-container1">
+              <span
+                class="material-icons-sharp"
+                style="font-size: 48px; background-color: var(--color-primary)"
+                >edit</span
+              >
+            </div>
+          </div>
+
+          <div
+            class="mth clickable-box"
+            onclick="window.location.href='delete-student.html'"
+          >
+            <span class="material-icons-sharp">delete</span>
+            <h3>Delete Student</h3>
+            <div class="icon-container1">
+              <span
+                class="material-icons-sharp"
+                style="font-size: 48px; background-color: var(--color-primary)"
+                >delete</span
+              >
+            </div>
           </div>
         </div>
-
-        <div class="mth clickable-box" onclick="window.location.href='delete-student.html'">
-          <span class="material-icons-sharp">delete</span>
-          <h3>Delete Student</h3>
-          <div class="icon-container1">
-            <span class="material-icons-sharp"
-              style="font-size: 48px; background-color: var(--color-primary);">delete</span>
-          </div>
-        </div>
-        
-        
-
-
-
-      </div>
-    </main>
-  </div>
-</body>
-
+      </main>
+    </div>
+  </body>
 </html>
