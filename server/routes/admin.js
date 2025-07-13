@@ -1743,4 +1743,118 @@ router.post("/announcements", async (req, res) => {
   }
 });
 
+// 📌 GET all roll numbers from a dynamic collection
+router.get("/get-rollnos", async (req, res) => {
+  try {
+    const { collectionName } = req.query;
+
+    // 🛡️ Validate input
+    if (!collectionName) {
+      return res.status(400).json({ message: "Missing 'collectionName' in query params" });
+    }
+
+    // ✅ Dynamically get the Mongoose model
+    const Attendance = getAttendanceModel(collectionName);
+
+    // 🔍 Only fetch the 'rollno' field for each document
+    const documents = await Attendance.find({}, { rollno: 1, _id: 0 });
+
+    // 🎯 Extract roll numbers into a clean array
+    const rollnos = documents.map(doc => doc.rollno);
+
+    // ✅ Send response
+    res.status(200).json({
+      message: `Roll numbers fetched successfully from '${collectionName}'`,
+      count: rollnos.length,
+      rollnos
+    });
+
+  } catch (error) {
+    console.error("❌ Error fetching roll numbers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/mark-attendance", async (req, res) => {
+  try {
+    const { rollnos, batch, course, date } = req.body;
+
+    if (!Array.isArray(rollnos) || !batch || !course || !date) {
+      return res.status(400).json({ message: "rollnos (array), batch, course, and date are required" });
+    }
+
+    const collectionName = batch;
+    const Attendance = getAttendanceModel(collectionName);
+    const now = new Date();
+
+    const allStudents = await Attendance.find({}, "rollno dailyLogs");
+
+    const bulkOps = [];
+    const updatedPresent = [];
+    const updatedAbsent = [];
+
+    for (const student of allStudents) {
+      const alreadyMarked = student.dailyLogs.some(log => log.date === date && log.course === course);
+      if (alreadyMarked) continue;
+
+      const isPresent = rollnos.includes(student.rollno);
+      const hasAnyMarkedToday = student.dailyLogs.some(log => log.date === date);
+
+      const incOps = {
+        [`courseAttendance.${course}.totalDays`]: 1,
+        "overallAttendance.totalDays": hasAnyMarkedToday ? 0 : 1
+      };
+
+      if (isPresent) {
+        incOps[`courseAttendance.${course}.presentDays`] = 1;
+        if (!hasAnyMarkedToday) {
+          incOps["overallAttendance.presentDays"] = 1;
+        }
+      }
+
+      // Clean out zeroes from incOps (optional)
+      Object.keys(incOps).forEach(key => {
+        if (incOps[key] === 0) delete incOps[key];
+      });
+
+      bulkOps.push({
+        updateOne: {
+          filter: { rollno: student.rollno },
+          update: {
+            $push: {
+              dailyLogs: {
+                date,
+                course,
+                status: isPresent ? "present" : "absent"
+              }
+            },
+            $inc: incOps,
+            $set: { lastUpdated: now }
+          }
+        }
+      });
+
+      if (isPresent) updatedPresent.push(student.rollno);
+      else updatedAbsent.push(student.rollno);
+    }
+
+    if (bulkOps.length > 0) {
+      await Attendance.bulkWrite(bulkOps);
+    }
+
+    res.status(200).json({
+      message: "Attendance marked successfully",
+      markedPresent: updatedPresent.length,
+      markedAbsent: updatedAbsent.length,
+      presentRollnos: updatedPresent,
+      absentRollnos: updatedAbsent
+    });
+
+  } catch (error) {
+    console.error("❌ Error marking attendance:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 module.exports = router;

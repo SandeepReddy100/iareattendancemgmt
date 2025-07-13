@@ -462,3 +462,12 @@ main .subjects small{
     transform: translateX(-50%) translateY(-10px);
   }
 }
+
+.clickable-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;     /* Horizontally center */
+  justify-content: flex-start; /* Vertically center */
+  text-align: start;      /* Center text inside */
+  padding: 1rem;
+}

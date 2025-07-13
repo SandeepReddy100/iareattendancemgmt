@@ -70,6 +70,9 @@ function getFormattedDateDDMMYYYY() {
     document.getElementById("postAnnouncements").addEventListener("click", () => {
       window.location.href = "postAnnouncements/post-annoucement.html";
     });
+    document.getElementById("markAttendance")?.addEventListener("click", () => {
+      window.open("mark-attendance.html");
+    });
 
     // Report downloads
     document.getElementById("downloadExcel")?.addEventListener("click", downloadAttendanceExcel);

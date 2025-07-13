@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mark Attendance</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Fonts & Icons -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp"
+      rel="stylesheet"
+    />
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background: var(--color-background);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        /* background: var(--color-primary); */
+        padding: 1rem 2rem;
+        box-shadow: var(--box-shadow);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+      }
+
+      main {
+  padding: 2rem;
+  padding-top: 10rem; /* Add this line or increase it as needed */
+  max-width: 900px;
+  margin: auto;
+}
+
+      form {
+        background: var(--color-white);
+        padding: 2rem;
+        border-radius: var(--border-radius-2);
+        box-shadow: var(--box-shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+        margin-bottom: 2rem;
+      }
+
+      form h2 {
+        margin-top: 0;
+        font-size: 1.5rem;
+        color: var(--color-dark);
+      }
+
+      form label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      form input,
+      form select {
+        padding: 0.75rem;
+        border: 1px solid var(--color-light);
+        border-radius: var(--border-radius-1);
+        font-size: 1rem;
+        width: 100%;
+      }
+
+      .btn {
+        background: var(--color-primary);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: var(--border-radius-1);
+        font-size: 1rem;
+        cursor: pointer;
+        align-self: flex-start;
+        transition: background 0.3s ease;
+      }
+
+      .btn:hover {
+        background: #005bb5;
+      }
+
+      .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .checkbox-item {
+        background: white;
+        border: 1px solid var(--color-light);
+        padding: 0.75rem 1rem;
+        border-radius: var(--border-radius-1);
+        box-shadow: var(--box-shadow);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .message {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border-radius: var(--border-radius-1);
+        font-weight: 500;
+      }
+
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .loader {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid var(--color-primary);
+        border-top: 3px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="./image.png" alt="IARE Logo" />
+        <h1>IARE</h1>
+      </div>
+      <div class="navbar">
+        <a href="./">
+          <span class="material-icons-sharp">home</span>
+          <h3>Home</h3>
+        </a>
+        <a href="/iareattendancemgmt/client/index.html" id="logoutBtn">
+          <span class="material-icons-sharp">logout</span>
+          <h3>Logout</h3>
+        </a>
+      </div>
+    </header>
+
+
+    <main>
+      <form id="mark-attendance-form">
+        <h2>Mark Attendance</h2>
+        <label for="batch">Batch</label>
+        <select name="batch" id="batch" required>
+          <option value="">Select Batch</option>
+          <option value="attendance_skillup-1">Skillup-1</option>
+          <option value="attendance_skillup-2">Skillup-2</option>
+          <option value="attendance_skillup-3">Skillup-3</option>
+          <option value="attendance_skillnext-1">Skillnext-1</option>
+          <option value="attendance_skillnext-2">Skillnext-2</option>
+          <option value="attendance_skillnext-3">Skillnext-3</option>
+          <option value="attendance_skillbridge-1">Skillbridge-1</option>
+          <option value="attendance_skillbridge-2">Skillbridge-2</option>
+          <option value="attendance_skillbridge-3">Skillbridge-3</option>
+          <option value="attendance_skillbridge-4">Skillbridge-4</option>
+          <option value="attendance_skillbridge-5">Skillbridge-5</option>
+        </select>
+
+        <label for="course">Course</label>
+        <select name="course" id="course" required>
+          <option value="">Select Course</option>
+          <option value="CP">CP</option>
+          <option value="JFS">JFS</option>
+          <option value="DBMS">DBMS</option>
+         <option value="AWS">DBMS</option>
+
+        </select>
+
+        <label for="date">Date</label>
+        <input type="date" name="date" id="date" required />
+
+        <button type="submit" class="btn" id="fetch-btn" disabled>
+          Get Students <span id="spinner" style="display:none;" class="loader"></span>
+        </button>
+      </form>
+
+      <div id="student-list" style="display: none;">
+        <form id="submit-attendance-form">
+          <h3>Select Present Students</h3>
+          <p id="total-count"></p>
+          <div class="checkbox-grid" id="checkboxes"></div>
+          <button class="btn" type="submit">Mark Attendance</button>
+        </form>
+        <div id="present-count" style="margin-top: 1rem; font-weight: 500;"></div>
+        <div id="messageBox"></div>
+      </div>
+    </main>
+
+    <script>
+  const backendUrl = "https://iareattendancemgmt.onrender.com";
+
+      window.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("date").value = new Date().toISOString().split("T")[0];
+      });
+
+      document.getElementById("batch").addEventListener("change", () => {
+        document.getElementById("fetch-btn").disabled = document.getElementById("batch").value === "";
+      });
+
+      document.getElementById("mark-attendance-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const batch = document.getElementById("batch").value;
+        const checkboxesDiv = document.getElementById("checkboxes");
+        const studentListDiv = document.getElementById("student-list");
+        const totalCountEl = document.getElementById("total-count");
+        const spinner = document.getElementById("spinner");
+
+        spinner.style.display = "inline-block";
+        checkboxesDiv.innerHTML = "";
+        totalCountEl.textContent = "";
+
+        try {
+          const res = await fetch(`${backendUrl}/api/admin/get-rollnos?collectionName=${batch}`);
+          const data = await res.json();
+
+          const sortedRolls = [...data.rollnos].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+          sortedRolls.forEach((roll, index) => {
+            checkboxesDiv.innerHTML += `
+              <div class="checkbox-item">
+                <input type="checkbox" name="rollnos" value="${roll}" id="student-${index}" />
+                <label for="student-${index}">${roll}</label>
+              </div>`;
+          });
+
+          totalCountEl.textContent = `Total Students: ${sortedRolls.length}`;
+          studentListDiv.style.display = "block";
+        } catch (err) {
+          showMessage("Failed to fetch roll numbers", "error");
+          console.error(err);
+        } finally {
+          spinner.style.display = "none";
+        }
+      });
+
+      document.getElementById("submit-attendance-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const selectedRolls = Array.from(document.querySelectorAll('input[name="rollnos"]:checked')).map(cb => cb.value);
+        const batch = document.getElementById("batch").value;
+        const course = document.getElementById("course").value;
+        const date = document.getElementById("date").value;
+
+        if (!selectedRolls.length) return showMessage("Please select at least one student", "error");
+
+        try {
+          const res = await fetch(`${backendUrl}/api/admin/mark-attendance`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ rollnos: selectedRolls, batch, course, date })
+          });
+
+          const result = await res.json();
+          document.getElementById("present-count").innerHTML = `Present Marked: ${selectedRolls.length}<br>Roll Numbers: ${selectedRolls.sort((a, b) => a.localeCompare(b, undefined, { numeric: true })).join(", ")}`;
+          showMessage("Attendance submitted successfully", "success");
+        } catch (err) {
+          console.error(err);
+          showMessage("Error submitting attendance", "error");
+        }
+      });
+
+      function showMessage(message, type) {
+        const box = document.getElementById("messageBox");
+        box.className = `message ${type}`;
+        box.textContent = message;
+      }
+    </script>
+  </body>
+</html>
