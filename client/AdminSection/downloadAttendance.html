@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Session-wise Attendance Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet"/>
+  <link rel="stylesheet" href="./style.css"/>
+  <style>
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--color-background);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--color-white);
+      box-shadow: var(--box-shadow);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .navbar a {
+      text-decoration: none;
+      color: #333;
+      margin-left: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    main {
+      padding-top: 120px;
+    }
+
+    form {
+      background: var(--color-white);
+      padding: 2rem;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: var(--box-shadow);
+      border-radius: var(--border-radius-2);
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    form label {
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    form select,
+    form input[type="date"] {
+      padding: 0.8rem;
+      border: 1px solid var(--color-light);
+      border-radius: var(--border-radius-1);
+      background: var(--color-background);
+      outline: none;
+    }
+
+    form select:focus,
+    form input[type="date"]:focus {
+      border-color: var(--color-primary);
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkbox-group label {
+      padding: 0.5rem 1rem;
+      border: 1.5px solid var(--color-primary);
+      border-radius: var(--border-radius-1);
+      cursor: pointer;
+      color: var(--color-primary);
+      background: white;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-group input[type="checkbox"]:checked + label {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    form .btn {
+      background: var(--color-primary);
+      color: white;
+      padding: 0.8rem;
+      border: none;
+      border-radius: var(--border-radius-1);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      form {
+        padding: 1.5rem;
+      }
+
+      .checkbox-group {
+        flex-direction: column;
+      }
+    }
+
+    main {
+  padding-top: 120px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 40px;
+}
+main {
+  padding: 120px 20px 60px;
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  width: 100%;
+  max-width: 600px;
+}
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.5rem;  /* You can increase this value as needed */
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <img src="./image.png" alt="IARE Logo" />
+      <h1>IARE</h1>
+    </div>
+    <div class="navbar">
+      <a href="./">
+        <span class="material-icons-sharp">home</span>
+        <h3>Home</h3>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <form id="report-form">
+      <h2>📄 Download Attendance Report</h2>
+
+      <div>
+        <label>Batch (Select One or More)</label>
+        <div class="checkbox-group">
+          <input type="checkbox" id="b1" name="batch" value="attendance_skillup-1" />
+          <label for="b1">SKILLUP BATCH-1</label>
+
+          <input type="checkbox" id="b2" name="batch" value="attendance_skillup-2" />
+          <label for="b2">SKILLUP BATCH-2</label>
+
+          <input type="checkbox" id="b3" name="batch" value="attendance_skillup-3" />
+          <label for="b3">SKILLUP BATCH-3</label>
+
+          <input type="checkbox" id="b4" name="batch" value="attendance_skillnext-1" />
+          <label for="b4">SKILLNEXT BATCH-1</label>
+
+          <input type="checkbox" id="b5" name="batch" value="attendance_skillnext-2" />
+          <label for="b5">SKILLNEXT BATCH-2</label>
+
+          <input type="checkbox" id="b6" name="batch" value="attendance_skillnext-3" />
+          <label for="b6">SKILLNEXT BATCH-3</label>
+
+          <input type="checkbox" id="b7" name="batch" value="attendance_skillbridge-1" />
+          <label for="b7">SKILLBRIDGE BATCH-1</label>
+
+          <input type="checkbox" id="b8" name="batch" value="attendance_skillbridge-2" />
+          <label for="b8">SKILLBRIDGE BATCH-2</label>
+
+          <input type="checkbox" id="b9" name="batch" value="attendance_skillbridge-3" />
+          <label for="b9">SKILLBRIDGE BATCH-3</label>
+
+          <input type="checkbox" id="b10" name="batch" value="attendance_skillbridge-4" />
+          <label for="b10">SKILLBRIDGE BATCH-4</label>
+
+          <input type="checkbox" id="b11" name="batch" value="attendance_skillbridge-5" />
+          <label for="b11">SKILLBRIDGE BATCH-5</label>
+        </div>
+      </div>
+
+      <div>
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required />
+      </div>
+
+      <div>
+        <label for="session">Session</label>
+        <select id="session" name="session" required>
+          <option value="" disabled selected>Select Session</option>
+          <option value="FN">Forenoon (FN)</option>
+          <option value="AN">Afternoon (AN)</option>
+        </select>
+      </div>
+
+      <button type="button" id="pdfBtn" class="btn">Download PDF Report</button>
+      <button type="button" id="excelBtn" class="btn">Download Excel Report</button>
+
+      <div class="message" id="messageBox"></div>
+    </form>
+  </main>
+
+  <script>
+  const backendUrl = "https://iareattendancemgmt.onrender.com";
+
+  document.getElementById("date").value = new Date().toISOString().split("T")[0];
+
+  const getSelectedBatches = () => {
+    return Array.from(document.querySelectorAll('input[name="batch"]:checked'))
+      .map(el => el.value);
+  };
+
+  const showMessage = (text, color) => {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.style.color = color;
+    messageBox.textContent = text;
+  };
+
+  const buildParams = (batches, date, session) => {
+    const params = new URLSearchParams();
+    batches.forEach(batch => params.append("batch", batch));
+    params.append("date", date);
+    params.append("session", session);
+    return params.toString();
+  };
+
+  const formatDate = (isoDate) => {
+    const [year, month, day] = isoDate.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
+  // PDF Download
+  document.getElementById("pdfBtn").addEventListener("click", () => {
+    const date = document.getElementById("date").value;
+    const session = document.getElementById("session").value;
+    const batches = getSelectedBatches();
+
+    if (!batches.length || !date || !session) {
+      showMessage("⚠️ Please select batch(es), date, and session.", "crimson");
+      return;
+    }
+
+    const formattedDate = formatDate(date);
+    const fileName = `VSEM_${session}-${formattedDate}-AttendanceReport.pdf`;
+
+    showMessage("⏳ Downloading PDF Report...", "green");
+    const params = buildParams(batches, date, session);
+
+    fetch(`${backendUrl}/api/admin/attendance-batch-report-pdf?${params}`)
+      .then(response => {
+        if (!response.ok) throw new Error("Failed to generate PDF report.");
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        showMessage("✅ PDF Report downloaded successfully!", "green");
+      })
+      .catch(err => {
+        console.error(err);
+        showMessage("❌ Error generating PDF report.", "crimson");
+      });
+  });
+
+  // Excel Download
+  document.getElementById("excelBtn").addEventListener("click", () => {
+    const date = document.getElementById("date").value;
+    const session = document.getElementById("session").value;
+    const batches = getSelectedBatches();
+
+    if (!batches.length || !date || !session) {
+      showMessage("⚠️ Please select batch(es), date, and session.", "crimson");
+      return;
+    }
+
+    const formattedDate = formatDate(date);
+    const fileName = `VSEM_${session}-${formattedDate}-AttendanceReport.xlsx`;
+
+    showMessage("⏳ Downloading Excel Report...", "green");
+    const params = buildParams(batches, date, session) + "&format=excel";
+
+    fetch(`${backendUrl}/api/admin/attendance-batch-report?${params}`)
+      .then(response => {
+        if (!response.ok) throw new Error("Failed to generate Excel report.");
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+        showMessage("✅ Excel Report downloaded successfully!", "green");
+      })
+      .catch(err => {
+        console.error(err);
+        showMessage("❌ Error generating Excel report.", "crimson");
+      });
+  });
+</script>
+
+</body>
+</html>
