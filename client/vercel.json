@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/dashboard/",
+      "destination": "/Dashboard/index.html"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/AdminSection/index.html"
+    },
+    {
+      "source": "/faculty/",
+      "destination": "/FacultyPage/index.html"
+    }
+  ]
+}

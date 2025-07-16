@@ -109,42 +109,49 @@ function updateAttendanceUI(attendanceData) {
   // Helper to create a card
   function createCard(title, present, total, icon, colorClass = "") {
     const percent = total === 0 ? 0 : Math.round((present / total) * 100);
-    const circumference = 210;
-    let offset = circumference;
-
-    if (total > 0) {
-      // Avoid 0 offset glitch by slightly offsetting 100%
-      offset = percent === 100 ? 0.01 : circumference - (percent / 100) * circumference;
+    
+    // Circle configuration
+    const radius = 36;
+    const circumference = 2 * Math.PI * radius; // More precise calculation
+    
+    // Calculate stroke-dashoffset for progress
+    let strokeDashoffset = circumference;
+    if (total > 0 && percent > 0) {
+      // For proper animation, we need to calculate how much of the circle to fill
+      const progressRatio = percent / 100;
+      strokeDashoffset = circumference * (1 - progressRatio);
     }
-
 
     const div = document.createElement("div");
     div.className = `${colorClass}`;
 
     div.innerHTML = `
-    <span class="material-icons-sharp">${icon}</span>
-    <h3>${title}</h3>
-    <h2>${present}/${total}</h2>
-    <div class="progress">
-  <svg>
-    ${(total === 0 || percent === 0)
-        ? `<!-- No circle rendered -->`
-        : `<circle cx="38" cy="38" r="36"
-            style="
-              stroke-dasharray: ${circumference};
-              stroke-dashoffset: ${offset};
-            ">
-        </circle>`
-      }
-  </svg>
-  <div class="number"><p>${percent}%</p></div>
-</div>
-    <small class="text-muted">Last 24 Hours</small>
-  `;
+      <span class="material-icons-sharp">${icon}</span>
+      <h3>${title}</h3>
+      <h2>${present}/${total}</h2>
+      <div class="progress">
+        <svg>
+          <circle 
+            cx="38" 
+            cy="38" 
+            r="${radius}"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${strokeDashoffset}"
+            transform="rotate(-90 38 38)"
+            style="transition: stroke-dashoffset 0.5s ease-in-out;">
+          </circle>
+        </svg>
+        <div class="number"><p>${percent}%</p></div>
+      </div>
+      <small class="text-muted">Last 24 Hours</small>
+    `;
 
     container.appendChild(div);
   }
-
 
   // Add overall attendance card
   createCard("Overall Attendance", overallAttendance.presentDays, overallAttendance.totalDays, "architecture", "eg");
